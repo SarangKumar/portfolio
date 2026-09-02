@@ -1,4 +1,17 @@
 {
   "title": "Resume",
-  "download": "Download resume"
+  "metadata": {
+    "title": "Resume",
+    "description": "Resume overview, preview, and download for recruiting conversations."
+  },
+  "intro": "A recruiter-oriented resume view. Multiple versions can be published later.",
+  "placeholder": "A resume will be published here.",
+  "versions": "Resume versions",
+  "preview": "Resume preview",
+  "previewUnavailable": "A resume preview will appear here when a file is published.",
+  "download": "Download resume",
+  "downloadUnavailable": "A downloadable resume file is not published yet.",
+  "recruiterTitle": "Hiring conversation",
+  "recruiterBody": "For roles and interviews, use the contact page.",
+  "recruiterAction": "Contact"
 }

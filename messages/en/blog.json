@@ -1,4 +1,15 @@
 {
-  "title": "Blog",
-  "readMore": "Read more"
+  "title": "Writing",
+  "metadata": {
+    "title": "Writing",
+    "description": "Public notes and articles."
+  },
+  "intro": "Public writing only. Notes appear here when they are published.",
+  "placeholder": "Articles will be listed here when they are published.",
+  "readMore": "Read more",
+  "tags": "Tags",
+  "categories": "Categories",
+  "published": "Published {date}",
+  "updated": "Updated {date}",
+  "readingTime": "{minutes} min read"
 }

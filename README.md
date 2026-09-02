@@ -2,7 +2,7 @@
 
 Production-grade Next.js application foundation for a public portfolio and later private engineering tools.
 
-This repository currently has project setup, the design system, UI primitives, the global shell, and public Home, About, Experience, Skills, and Projects pages. Other application pages are not implemented yet.
+This repository currently has project setup, the design system, UI primitives, the global shell, and public Home, About, Experience, Skills, Projects, Resume, Blog, and Contact pages. Certifications and badges appear on About and Resume when published. Other application pages are not implemented yet.
 
 ## Scripts
 
@@ -36,7 +36,7 @@ This repository currently has project setup, the design system, UI primitives, t
 | Design tokens      | `src/app/globals.css`           |
 | Motion conventions | `src/lib/motion.ts`             |
 
-The global shell (`src/components/layout`) provides header, footer, skip link, and page container. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data` — unpublished fields render as placeholders instead of invented content. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. `project_view` events are typed for later analytics so the home page can rank the top three projects by popularity.
+The global shell (`src/components/layout`) provides header, footer, skip link, and page container. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data` — unpublished fields render as placeholders instead of invented content. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. Blog posts use `/blog/[slug]` with Markdown rendered by `react-markdown`. Resume supports multiple versions, preview, download, and typed `resume_*` events. Contact accepts a validated form; delivery uses optional `CONTACT_WEBHOOK_URL`. `project_view` and `article_view` events are typed for later analytics so the home page can rank the top three projects by popularity.
 
 Locale-aware routing uses `src/app/[locale]` and `next-intl`. English is the only locale. Message namespaces live in `messages/{locale}/`. UI copy should use `useTranslations` / `getTranslations` from next-intl — do not wrap those APIs. Page-level `generateMetadata` should pass `{ locale, namespace }` into `getTranslations` so metadata can be localized later.
 
@@ -56,3 +56,4 @@ Copy `.env.example` to `.env.local`.
 
 - `NEXT_PUBLIC_*` — safe for the browser
 - All other variables — server-only; import from `src/lib/env/server.ts` (`server-only`)
+- `CONTACT_WEBHOOK_URL` — optional server endpoint for contact form delivery. When unset, the form still validates and reports that delivery is not configured.

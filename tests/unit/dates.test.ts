@@ -1,6 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 import {
   formatExperiencePeriod,
+  formatIsoDate,
   layoutExperienceBars,
   timelineYearLabels,
   yearMonthToUtc,
@@ -14,6 +15,10 @@ describe("dates", () => {
     expect(formatExperiencePeriod("2024-03", null, "en", "Present")).toBe(
       "Mar 2024 – Present",
     );
+  });
+
+  it("formats ISO calendar dates in UTC", () => {
+    expect(formatIsoDate("2024-01-15", "en")).toBe("Jan 15, 2024");
   });
 
   it("lays out duration bars against a shared time range", () => {

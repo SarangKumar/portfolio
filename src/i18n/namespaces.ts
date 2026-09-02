@@ -9,6 +9,7 @@ export const messageNamespaces = [
   "resume",
   "blog",
   "contact",
+  "credentials",
   "terminal",
   "accessibility",
   "errors",

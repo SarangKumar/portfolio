@@ -1,7 +1,25 @@
 {
   "title": "Contact",
-  "name": "Name",
+  "metadata": {
+    "title": "Contact",
+    "description": "Email, profiles, and a short contact form for hiring conversations."
+  },
+  "intro": "A compact path for recruiting and work conversations.",
   "email": "Email",
+  "emailUnavailable": "A public email address will be published here.",
+  "emailAction": "Send email",
+  "social": "Profiles",
+  "socialPlaceholder": "Public profiles will be listed here.",
+  "formTitle": "Message",
+  "name": "Name",
   "message": "Message",
-  "send": "Send message"
+  "send": "Send message",
+  "sending": "Sending",
+  "success": "Message accepted for delivery.",
+  "error": "The message could not be sent.",
+  "unavailable": "Form delivery is not configured yet. Use email if it is available.",
+  "required": "This field is required.",
+  "invalidEmail": "Enter a valid email address.",
+  "tooLong": "This field is too long.",
+  "honeypot": "Leave this field empty."
 }

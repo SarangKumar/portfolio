@@ -10,3 +10,7 @@ export function absoluteUrl(path: string): string {
 export function projectPath(slug: string): `/projects/${string}` {
   return `/projects/${slug}`;
 }
+
+export function articlePath(slug: string): `/blog/${string}` {
+  return `/blog/${slug}`;
+}

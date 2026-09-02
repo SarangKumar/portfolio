@@ -7,4 +7,5 @@ import "server-only";
  */
 export const serverEnv = {
   nodeEnv: process.env.NODE_ENV,
+  contactWebhookUrl: process.env.CONTACT_WEBHOOK_URL ?? "",
 } as const;

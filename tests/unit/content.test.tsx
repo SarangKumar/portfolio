@@ -2,9 +2,13 @@ import { describe, expect, it } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { PreviewCard } from "@/components/content/preview-card";
+import { badges } from "@/data/badges";
+import { posts } from "@/data/blog";
+import { certifications } from "@/data/certifications";
 import { experience } from "@/data/experience";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
+import { resumes } from "@/data/resumes";
 import { skills } from "@/data/skills";
 import {
   experienceForSkill,
@@ -44,6 +48,10 @@ describe("content helpers", () => {
     expect(isEmptyList(projects)).toBe(true);
     expect(isEmptyList(experience)).toBe(true);
     expect(isEmptyList(skills)).toBe(true);
+    expect(isEmptyList(posts)).toBe(true);
+    expect(isEmptyList(resumes)).toBe(true);
+    expect(isEmptyList(certifications)).toBe(true);
+    expect(isEmptyList(badges)).toBe(true);
     expect(isEmptyList([{ id: "1" }])).toBe(false);
   });
 });

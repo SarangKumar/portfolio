@@ -3,6 +3,7 @@ import accessibility from "../../messages/en/accessibility.json";
 import blog from "../../messages/en/blog.json";
 import common from "../../messages/en/common.json";
 import contact from "../../messages/en/contact.json";
+import credentials from "../../messages/en/credentials.json";
 import errors from "../../messages/en/errors.json";
 import experience from "../../messages/en/experience.json";
 import home from "../../messages/en/home.json";
@@ -24,6 +25,7 @@ export const enMessages = {
   resume,
   blog,
   contact,
+  credentials,
   terminal,
   accessibility,
   errors,

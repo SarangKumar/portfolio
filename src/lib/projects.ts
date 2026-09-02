@@ -1,10 +1,9 @@
 import type { ProjectItem } from "@/data/projects";
+import { isPublicSlug } from "@/lib/slug";
 import { projectPath } from "@/lib/url";
 
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-
 export function isProjectSlug(value: string): boolean {
-  return SLUG_PATTERN.test(value);
+  return isPublicSlug(value);
 }
 
 export function getProjectBySlug(
