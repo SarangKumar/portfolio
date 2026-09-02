@@ -193,6 +193,40 @@
   }
 }
 
+@utility skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  &:focus,
+  &:focus-visible {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 50;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    border-width: 1px;
+    border-radius: var(--ds-radius-sm);
+    border-color: var(--border);
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    padding: 0.25rem 0.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+}
+
 @utility app-container {
   width: 100%;
   max-width: var(--container-app);

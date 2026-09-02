@@ -1,5 +1,6 @@
 import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
+import { MediaImage } from "@/components/content/media-image";
 import { cn } from "@/lib/cn";
 import { getExternalAnchorProps, isExternalHref } from "@/lib/href";
 
@@ -47,6 +48,21 @@ const markdownComponents: Components = {
       {children}
     </pre>
   ),
+  img: ({ src, alt }) => {
+    if (!src || typeof src !== "string") {
+      return null;
+    }
+
+    return (
+      <MediaImage
+        src={src}
+        alt={alt ?? ""}
+        width={1200}
+        height={675}
+        className="rounded-md border border-border object-cover"
+      />
+    );
+  },
 };
 
 type MarkdownContentProps = {

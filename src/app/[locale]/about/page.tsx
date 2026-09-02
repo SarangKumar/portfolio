@@ -1,13 +1,13 @@
 import { AboutPage } from "@/features/about/about-page";
 import {
   activateLocale,
-  pageMetadata,
+  publicPageMetadata,
   type LocalePageProps,
 } from "@/lib/locale-page";
 
 export async function generateMetadata({ params }: LocalePageProps) {
   const { locale } = await params;
-  return pageMetadata(locale, "about");
+  return publicPageMetadata(locale, "about");
 }
 
 export default async function Page({ params }: LocalePageProps) {

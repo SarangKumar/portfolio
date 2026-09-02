@@ -1,3 +1,4 @@
+import { MediaImage } from "@/components/content/media-image";
 import { RelatedItemList } from "@/components/content/related-item-list";
 import type { Skill } from "@/data/skills";
 import { cn } from "@/lib/cn";
@@ -38,11 +39,12 @@ export function CredentialCard({
     >
       <div className="flex gap-3">
         {imageSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <MediaImage
             src={imageSrc}
             alt=""
-            className="size-10 shrink-0 rounded-sm border border-border object-cover bg-muted"
+            width={40}
+            height={40}
+            className="size-10 shrink-0 rounded-sm border border-border object-cover"
           />
         ) : null}
         <div className="stack-compact min-w-0">

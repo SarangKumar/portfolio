@@ -6,7 +6,7 @@ import {
   rankProjectsByPopularity,
 } from "@/analytics/ranking";
 import { hasUsefulPopularityData } from "@/analytics/visualizations";
-import { HorizontalBarChart } from "@/components/charts";
+import { HorizontalBarChart } from "@/components/charts/lazy";
 import { ArticleGrid } from "@/components/content/article-grid";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { CtaBanner } from "@/components/content/cta-banner";

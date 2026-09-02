@@ -1,3 +1,4 @@
+import { MediaImage } from "@/components/content/media-image";
 import type { ProjectMedia } from "@/data/projects";
 import { cn } from "@/lib/cn";
 
@@ -30,14 +31,12 @@ export function ProjectMediaGallery({
               playsInline
             />
           ) : (
-            // Local and remote media are authored; next/image remote hosts are not configured yet.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <MediaImage
               src={item.src}
               alt={item.alt}
               width={item.width ?? 1200}
               height={item.height ?? 675}
-              className={cn("aspect-video w-full object-cover bg-muted")}
+              className={cn("aspect-video w-full object-cover")}
             />
           )}
         </li>

@@ -3,7 +3,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { absoluteUrl } from "@/lib/url";
+import { metadataTitle, shareMetadata } from "@/lib/seo";
 
 export type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -19,6 +19,17 @@ export type MetadataNamespace =
   | "resume"
   | "blog"
   | "contact";
+
+const pagePaths: Record<MetadataNamespace, string> = {
+  home: "/",
+  about: "/about",
+  experience: "/experience",
+  skills: "/skills",
+  projects: "/projects",
+  resume: "/resume",
+  blog: "/blog",
+  contact: "/contact",
+};
 
 export function resolvePageLocale(locale: string) {
   return hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
@@ -63,23 +74,19 @@ export async function pageMetadata(
 
 export async function publicPageMetadata(
   locale: string,
-  namespace: Exclude<MetadataNamespace, "home">,
-  path: string,
+  namespace: MetadataNamespace,
+  path: string = pagePaths[namespace],
 ): Promise<Metadata> {
   const metadata = await pageMetadata(locale, namespace);
-  const url = absoluteUrl(path);
-  const title = typeof metadata.title === "string" ? metadata.title : namespace;
+  const title = metadataTitle(metadata, namespace);
+  const description = metadata.description ?? "";
 
   return {
     ...metadata,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "website",
+    ...shareMetadata({
       title,
-      description: metadata.description ?? undefined,
-      url,
-    },
+      description,
+      path,
+    }),
   };
 }

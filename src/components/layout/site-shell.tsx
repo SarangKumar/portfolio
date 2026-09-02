@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { PublicTerminal } from "@/features/terminal/public-terminal";
+import { PublicTerminal } from "@/components/layout/public-terminal-lazy";
 import { PageViewTracker } from "@/analytics/page-view-tracker";
 import { PageContainer } from "@/components/layout/page-container";
 import { SiteFooter } from "@/components/layout/site-footer";

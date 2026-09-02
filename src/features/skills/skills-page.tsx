@@ -3,7 +3,7 @@ import {
   skillCategoryRadarPoints,
   hasUsefulRadarData,
 } from "@/analytics/visualizations";
-import { RadarChart } from "@/components/charts";
+import { RadarChart } from "@/components/charts/lazy";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { PageHeader } from "@/components/content/page-header";
 import { PageSection } from "@/components/content/page-section";

@@ -7,7 +7,7 @@ import {
 
 export async function generateMetadata({ params }: LocalePageProps) {
   const { locale } = await params;
-  return publicPageMetadata(locale, "resume", "/resume");
+  return publicPageMetadata(locale, "resume");
 }
 
 export default async function Page({ params }: LocalePageProps) {

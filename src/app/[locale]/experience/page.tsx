@@ -1,13 +1,13 @@
 import { ExperiencePage } from "@/features/experience/experience-page";
 import {
   activateLocale,
-  pageMetadata,
+  publicPageMetadata,
   type LocalePageProps,
 } from "@/lib/locale-page";
 
 export async function generateMetadata({ params }: LocalePageProps) {
   const { locale } = await params;
-  return pageMetadata(locale, "experience");
+  return publicPageMetadata(locale, "experience");
 }
 
 export default async function Page({ params, searchParams }: LocalePageProps) {

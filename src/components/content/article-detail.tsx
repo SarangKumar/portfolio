@@ -1,5 +1,6 @@
 import { ArticleViewTracker } from "@/analytics/article-view-tracker";
 import { MarkdownContent } from "@/components/content/markdown-content";
+import { MediaImage } from "@/components/content/media-image";
 import { ProjectTags } from "@/components/content/project-tags";
 import type { BlogPost } from "@/data/blog";
 
@@ -36,12 +37,14 @@ export function ArticleDetail({
         <ProjectTags tags={post.categories} label={categoriesLabel} />
       </header>
       {post.coverImage ? (
-        // Cover images are authored local or remote assets.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <MediaImage
           src={post.coverImage.src}
           alt={post.coverImage.alt}
-          className="aspect-video w-full rounded-md border border-border object-cover bg-muted"
+          width={1200}
+          height={675}
+          priority
+          sizes="(min-width: 768px) 40rem, 100vw"
+          className="aspect-video w-full rounded-md border border-border object-cover"
         />
       ) : null}
       <MarkdownContent content={post.content} />
