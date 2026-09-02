@@ -4,6 +4,8 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { routing } from "@/i18n/routing";
+import { cn } from "@/lib/cn";
+import { fontMono, fontSans } from "@/lib/fonts";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -33,8 +35,11 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className="dark">
-      <body className="min-h-dvh bg-background text-foreground antialiased">
+    <html
+      lang={locale}
+      className={cn("dark", fontSans.variable, fontMono.variable)}
+    >
+      <body className="min-h-dvh bg-background font-sans text-body text-foreground antialiased">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
