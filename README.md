@@ -2,7 +2,7 @@
 
 Production-grade Next.js application foundation for a public portfolio and later private engineering tools.
 
-This repository currently has project setup, the design system, UI primitives, the global shell, and public Home, About, Experience, Skills, Projects, Resume, Blog, and Contact pages. Certifications and badges appear on About and Resume when published. Other application pages are not implemented yet.
+This repository currently has project setup, the design system, UI primitives, the global shell, public Home, About, Experience, Skills, Projects, Resume, Blog, and Contact pages, and a Phase 1 public terminal. Certifications and badges appear on About and Resume when published. Other application pages are not implemented yet.
 
 ## Scripts
 
@@ -31,12 +31,13 @@ This repository currently has project setup, the design system, UI primitives, t
 | Types              | `src/types`                     |
 | Translations       | `messages`, `src/i18n`          |
 | Analytics          | `src/analytics`                 |
+| Terminal commands  | `src/terminal`                  |
 | Tests              | `tests`                         |
 | Public assets      | `public`                        |
 | Design tokens      | `src/app/globals.css`           |
 | Motion conventions | `src/lib/motion.ts`             |
 
-The global shell (`src/components/layout`) provides header, footer, skip link, and page container. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data` — unpublished fields render as placeholders instead of invented content. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. Blog posts use `/blog/[slug]` with Markdown rendered by `react-markdown`. Resume supports multiple versions, preview, download, and typed `resume_*` events. Contact accepts a validated form; delivery uses optional `CONTACT_WEBHOOK_URL`. Analytics is a typed, fail-open pipeline (`src/analytics`) that validates events server-side, stores them through a replaceable sink, and ranks featured projects from `project_view` counts with catalog fallback. Reusable Recharts visualizations live in `src/components/charts` and consume `--chart-*` tokens. Charts render only when they have useful published data. There is no admin dashboard in this phase. Events do not store raw IP addresses or form PII.
+The global shell (`src/components/layout`) provides header, footer, skip link, page container, and the public terminal launcher. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data` — unpublished fields render as placeholders instead of invented content. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. Blog posts use `/blog/[slug]` with Markdown rendered by `react-markdown`. Resume supports multiple versions, preview, download, and typed `resume_*` events. Contact accepts a validated form; delivery uses optional `CONTACT_WEBHOOK_URL`. Analytics is a typed, fail-open pipeline (`src/analytics`) that validates events server-side, stores them through a replaceable sink, and ranks featured projects from `project_view` counts with catalog fallback. Reusable Recharts visualizations live in `src/components/charts` and consume `--chart-*` tokens. Charts render only when they have useful published data. The public terminal UI (`src/features/terminal`) talks to a command registry (`src/terminal`) so new commands can be registered without changing the panel. There is no admin dashboard in this phase. Events do not store raw IP addresses or form PII.
 
 Locale-aware routing uses `src/app/[locale]` and `next-intl`. English is the only locale. Message namespaces live in `messages/{locale}/`. UI copy should use `useTranslations` / `getTranslations` from next-intl — do not wrap those APIs. Page-level `generateMetadata` should pass `{ locale, namespace }` into `getTranslations` so metadata can be localized later.
 

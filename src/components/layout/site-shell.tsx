@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { PublicTerminal } from "@/features/terminal/public-terminal";
 import { PageViewTracker } from "@/analytics/page-view-tracker";
 import { PageContainer } from "@/components/layout/page-container";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -19,6 +20,7 @@ export function SiteShell({ children }: SiteShellProps) {
         <PageContainer className="py-6">{children}</PageContainer>
       </main>
       <SiteFooter />
+      <PublicTerminal />
     </div>
   );
 }

@@ -1,5 +1,14 @@
 {
   "title": "Terminal",
   "inputLabel": "Command",
-  "clear": "Clear"
+  "run": "Run command",
+  "open": "Open terminal",
+  "close": "Close terminal",
+  "welcome": "Public terminal. Type help.",
+  "unknown": "Command not found: '{name}'. Type help.",
+  "helpIntro": "Available commands:",
+  "commands": {
+    "help": "List available commands",
+    "clear": "Clear the terminal output"
+  }
 }

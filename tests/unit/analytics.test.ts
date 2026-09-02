@@ -10,6 +10,8 @@ import {
   trackPageView,
   trackProjectView,
   trackResumeEvent,
+  trackTerminalCommand,
+  trackTerminalOpen,
 } from "@/analytics/events";
 import { ingestAnalyticsEvent } from "@/analytics/ingest";
 import {
@@ -234,6 +236,8 @@ describe("tracking behavior", () => {
     trackBlogView("public-note");
     trackResumeEvent(analyticsEvents.resumeDownload, "general");
     trackContactSubmit("unavailable");
+    trackTerminalOpen("/about");
+    trackTerminalCommand("help", "/about");
 
     expect(trackMock).toHaveBeenCalledWith({
       name: "page_view",
@@ -249,7 +253,16 @@ describe("tracking behavior", () => {
       path: "/blog/public-note",
       blogSlug: "public-note",
     });
-    expect(trackMock.mock.calls.length).toBe(5);
+    expect(trackMock.mock.calls.length).toBe(7);
+    expect(trackMock).toHaveBeenCalledWith({
+      name: "terminal_open",
+      path: "/about",
+    });
+    expect(trackMock).toHaveBeenCalledWith({
+      name: "terminal_command",
+      path: "/about",
+      metadata: { command: "help" },
+    });
   });
 
   it("swallows transport failures", async () => {
