@@ -1,6 +1,7 @@
 import about from "../../messages/en/about.json";
 import accessibility from "../../messages/en/accessibility.json";
 import blog from "../../messages/en/blog.json";
+import charts from "../../messages/en/charts.json";
 import common from "../../messages/en/common.json";
 import contact from "../../messages/en/contact.json";
 import credentials from "../../messages/en/credentials.json";
@@ -26,6 +27,7 @@ export const enMessages = {
   blog,
   contact,
   credentials,
+  charts,
   terminal,
   accessibility,
   errors,

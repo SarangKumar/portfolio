@@ -1,0 +1,13 @@
+{
+  "popularity": {
+    "title": "Project interest",
+    "description": "Relative project_view counts. Catalog order fills any remaining featured slots when analytics are sparse.",
+    "valueLabel": "Views"
+  },
+  "radar": {
+    "title": "Evidence by category",
+    "description": "Linked public roles and projects per skill category. These are evidence counts, not proficiency scores.",
+    "projects": "Linked projects",
+    "roles": "Linked roles"
+  }
+}

@@ -1,3 +1,7 @@
+import {
+  FEATURED_PROJECT_LIMIT,
+  featuredProjectItems,
+} from "@/analytics/ranking";
 import type { ProjectItem } from "@/data/projects";
 import { isPublicSlug } from "@/lib/slug";
 import { projectPath } from "@/lib/url";
@@ -20,22 +24,9 @@ export function getProjectBySlug(
 export function featuredProjects(
   items: readonly ProjectItem[],
   viewCounts: Readonly<Record<string, number>> = {},
-  limit = 3,
+  limit = FEATURED_PROJECT_LIMIT,
 ): readonly ProjectItem[] {
-  // Ranking is replaceable: pass a different view-count source.
-  if (items.length === 0 || limit <= 0) {
-    return [];
-  }
-
-  const hasPopularity = Object.values(viewCounts).some((count) => count > 0);
-
-  const ranked = hasPopularity
-    ? [...items].sort(
-        (a, b) => (viewCounts[b.slug] ?? 0) - (viewCounts[a.slug] ?? 0),
-      )
-    : items;
-
-  return ranked.slice(0, limit);
+  return featuredProjectItems(items, viewCounts, limit);
 }
 
 export function projectHref(slug: string): `/projects/${string}` {

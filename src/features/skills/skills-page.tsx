@@ -1,4 +1,9 @@
 import { getTranslations } from "next-intl/server";
+import {
+  skillCategoryRadarPoints,
+  hasUsefulRadarData,
+} from "@/analytics/visualizations";
+import { RadarChart } from "@/components/charts";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { PageHeader } from "@/components/content/page-header";
 import { PageSection } from "@/components/content/page-section";
@@ -9,6 +14,7 @@ import { projects } from "@/data/projects";
 import { skillCategories, skills } from "@/data/skills";
 import {
   experienceForSkill,
+  getSkillCategoryEvidence,
   getSkillEvidence,
   isEmptyList,
   projectsForSkill,
@@ -17,11 +23,33 @@ import {
 
 export async function SkillsPage() {
   const t = await getTranslations("skills");
+  const tCharts = await getTranslations("charts");
   const unpublished = isEmptyList(skills) && isEmptyList(skillCategories);
+  const radarPoints = skillCategoryRadarPoints(
+    getSkillCategoryEvidence({
+      skillCategories,
+      skills,
+      experience,
+      projects,
+    }),
+  );
+  const showRadar = hasUsefulRadarData(radarPoints);
 
   return (
     <div className="stack-section">
       <PageHeader title={t("title")} description={t("intro")} />
+
+      {showRadar ? (
+        <RadarChart
+          title={tCharts("radar.title")}
+          description={tCharts("radar.description")}
+          data={radarPoints}
+          series={[
+            { key: "projects", label: tCharts("radar.projects") },
+            { key: "roles", label: tCharts("radar.roles") },
+          ]}
+        />
+      ) : null}
 
       {unpublished ? (
         <ContentPlaceholder>{t("placeholder")}</ContentPlaceholder>

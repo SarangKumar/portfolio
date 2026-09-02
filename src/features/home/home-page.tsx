@@ -1,5 +1,12 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { getProjectViewCounts } from "@/analytics/popularity";
+import {
+  FEATURED_PROJECT_LIMIT,
+  popularityChartPoints,
+  rankProjectsByPopularity,
+} from "@/analytics/ranking";
+import { hasUsefulPopularityData } from "@/analytics/visualizations";
+import { HorizontalBarChart } from "@/components/charts";
 import { ArticleGrid } from "@/components/content/article-grid";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { CtaBanner } from "@/components/content/cta-banner";
@@ -19,20 +26,23 @@ import {
   isEmptyList,
 } from "@/lib/content";
 import { formatExperiencePeriod, formatIsoDate } from "@/lib/dates";
-import { featuredProjects } from "@/lib/projects";
 
 export async function HomePage() {
   const t = await getTranslations("home");
   const tExperience = await getTranslations("experience");
   const tProjects = await getTranslations("projects");
   const tBlog = await getTranslations("blog");
+  const tCharts = await getTranslations("charts");
   const locale = await getLocale();
   const showProfile = hasProfileContent(profile);
   const skillPreviews = groupedSkillPreviews(skillCategories, skills);
-  const highlightedProjects = featuredProjects(
+  const projectRanking = rankProjectsByPopularity(
     projects,
     getProjectViewCounts(),
+    FEATURED_PROJECT_LIMIT,
   );
+  const highlightedProjects = projectRanking.map((entry) => entry.item);
+  const popularityPoints = popularityChartPoints(projectRanking);
 
   return (
     <div className="stack-section">
@@ -147,15 +157,25 @@ export async function HomePage() {
         {isEmptyList(projects) ? (
           <ContentPlaceholder>{t("projects.placeholder")}</ContentPlaceholder>
         ) : (
-          <ProjectGrid
-            projects={highlightedProjects}
-            tagsLabel={tProjects("technologies")}
-            empty={
-              <ContentPlaceholder>
-                {t("projects.placeholder")}
-              </ContentPlaceholder>
-            }
-          />
+          <div className="stack-default">
+            {hasUsefulPopularityData(popularityPoints) ? (
+              <HorizontalBarChart
+                title={tCharts("popularity.title")}
+                description={tCharts("popularity.description")}
+                data={popularityPoints}
+                valueLabel={tCharts("popularity.valueLabel")}
+              />
+            ) : null}
+            <ProjectGrid
+              projects={highlightedProjects}
+              tagsLabel={tProjects("technologies")}
+              empty={
+                <ContentPlaceholder>
+                  {t("projects.placeholder")}
+                </ContentPlaceholder>
+              }
+            />
+          </div>
         )}
       </PageSection>
 

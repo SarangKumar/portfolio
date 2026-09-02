@@ -76,6 +76,18 @@ describe("featuredProjects", () => {
       ),
     ).toEqual(["delta", "beta", "alpha"]);
   });
+
+  it("fills remaining featured slots from catalog order", () => {
+    expect(
+      featuredProjects(items, { delta: 9 }, 3).map((item) => item.slug),
+    ).toEqual(["delta", "alpha", "beta"]);
+  });
+
+  it("does not hardcode the featured limit", () => {
+    expect(
+      featuredProjects(items, { gamma: 2 }, 2).map((item) => item.slug),
+    ).toEqual(["gamma", "alpha"]);
+  });
 });
 
 describe("projectCaseStudyEntries", () => {
