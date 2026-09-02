@@ -85,7 +85,7 @@ export async function SkillsPage() {
                                   items={relatedProjects.map((item) => ({
                                     id: item.id,
                                     label: item.title,
-                                    href: item.href ?? undefined,
+                                    projectSlug: item.slug,
                                   }))}
                                   emptyLabel={t("noProjects")}
                                 />

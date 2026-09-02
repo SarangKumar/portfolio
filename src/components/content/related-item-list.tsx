@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { projectPath } from "@/lib/url";
 import type { AppHref } from "@/types/routes";
 
 export type RelatedItem = {
@@ -7,6 +8,7 @@ export type RelatedItem = {
   href?: AppHref;
   query?: string;
   fragment?: string;
+  projectSlug?: string;
 };
 
 type RelatedItemListProps = {
@@ -15,6 +17,10 @@ type RelatedItemListProps = {
 };
 
 function itemHref(item: RelatedItem): string | undefined {
+  if (item.projectSlug) {
+    return projectPath(item.projectSlug);
+  }
+
   if (!item.href) {
     return undefined;
   }

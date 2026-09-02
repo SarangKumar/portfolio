@@ -1,6 +1,28 @@
 {
   "title": "Projects",
+  "metadata": {
+    "title": "Projects",
+    "description": "Selected public projects and case studies."
+  },
+  "intro": "Public projects listed by slug. Case studies appear when those fields are published.",
+  "placeholder": "Projects will be listed here when they are published.",
+  "technologies": "Technologies",
+  "skills": "Skills",
+  "media": "Project media",
   "viewProject": "View project",
   "sourceCode": "Source code",
-  "liveDemo": "Live demo"
+  "liveDemo": "Live demo",
+  "noSkills": "No linked skills yet.",
+  "sections": {
+    "description": "Overview",
+    "architecture": "Architecture",
+    "problem": "Problem",
+    "solution": "Solution",
+    "challenges": "Challenges",
+    "decisions": "Decisions",
+    "tradeoffs": "Trade-offs",
+    "testing": "Testing",
+    "performance": "Performance",
+    "futureImprovements": "Future improvements"
+  }
 }

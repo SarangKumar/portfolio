@@ -3,10 +3,12 @@ import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { CtaBanner } from "@/components/content/cta-banner";
 import { PageSection } from "@/components/content/page-section";
 import { PreviewCard } from "@/components/content/preview-card";
+import { ProjectGrid } from "@/components/content/project-grid";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Link } from "@/components/ui/link";
 import { experience } from "@/data/experience";
 import { profile } from "@/data/profile";
+import { projectViewCounts } from "@/data/project-popularity";
 import { projects } from "@/data/projects";
 import { skillCategories, skills } from "@/data/skills";
 import { writing } from "@/data/writing";
@@ -16,13 +18,16 @@ import {
   isEmptyList,
 } from "@/lib/content";
 import { formatExperiencePeriod } from "@/lib/dates";
+import { featuredProjects } from "@/lib/projects";
 
 export async function HomePage() {
   const t = await getTranslations("home");
   const tExperience = await getTranslations("experience");
+  const tProjects = await getTranslations("projects");
   const locale = await getLocale();
   const showProfile = hasProfileContent(profile);
   const skillPreviews = groupedSkillPreviews(skillCategories, skills);
+  const highlightedProjects = featuredProjects(projects, projectViewCounts);
 
   return (
     <div className="stack-section">
@@ -137,22 +142,15 @@ export async function HomePage() {
         {isEmptyList(projects) ? (
           <ContentPlaceholder>{t("projects.placeholder")}</ContentPlaceholder>
         ) : (
-          <div className="grid gap-2 md:grid-cols-2">
-            {projects.map((item) => (
-              <PreviewCard
-                key={item.id}
-                title={item.title}
-                description={item.summary}
-                action={
-                  item.href ? (
-                    <Link href={item.href} className="type-small">
-                      {t("projects.more")}
-                    </Link>
-                  ) : null
-                }
-              />
-            ))}
-          </div>
+          <ProjectGrid
+            projects={highlightedProjects}
+            tagsLabel={tProjects("technologies")}
+            empty={
+              <ContentPlaceholder>
+                {t("projects.placeholder")}
+              </ContentPlaceholder>
+            }
+          />
         )}
       </PageSection>
 

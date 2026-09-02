@@ -35,7 +35,7 @@ export async function ExperiencePage({ selectedId }: { selectedId?: string }) {
       (project) => ({
         id: project.id,
         label: project.title,
-        href: project.href ?? undefined,
+        projectSlug: project.slug,
       }),
     ),
     achievements: item.achievements,

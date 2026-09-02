@@ -9,7 +9,8 @@ export type LocalePageProps = {
   searchParams?: Promise<{ role?: string }>;
 };
 
-export type MetadataNamespace = "home" | "about" | "experience" | "skills";
+export type MetadataNamespace =
+  "home" | "about" | "experience" | "skills" | "projects";
 
 export function resolvePageLocale(locale: string) {
   return hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
