@@ -1,4 +1,5 @@
 import { ExternalLink, GitBranch } from "lucide-react";
+import { TrackedExternalLink } from "@/analytics/tracked-external-link";
 import {
   buttonClassName,
   buttonSizes,
@@ -27,7 +28,7 @@ export function ProjectLinks({
   return (
     <div className="flex flex-wrap gap-2">
       {githubUrl ? (
-        <a
+        <TrackedExternalLink
           href={githubUrl}
           className={cn(
             buttonClassName.base,
@@ -38,7 +39,7 @@ export function ProjectLinks({
         >
           <GitBranch />
           {sourceLabel}
-        </a>
+        </TrackedExternalLink>
       ) : null}
       {demoUrl ? (
         <a

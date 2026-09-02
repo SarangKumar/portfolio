@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { TrackedExternalLink } from "@/analytics/tracked-external-link";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { PageHeader } from "@/components/content/page-header";
 import { PageSection } from "@/components/content/page-section";
@@ -22,7 +23,7 @@ export async function ContactPage() {
 
       <PageSection id="email" title={t("email")}>
         {contactProfile.email ? (
-          <a
+          <TrackedExternalLink
             href={`mailto:${contactProfile.email}`}
             className={cn(
               buttonClassName.base,
@@ -33,7 +34,7 @@ export async function ContactPage() {
             {...getExternalAnchorProps(`mailto:${contactProfile.email}`)}
           >
             {t("emailAction")}
-          </a>
+          </TrackedExternalLink>
         ) : (
           <ContentPlaceholder>{t("emailUnavailable")}</ContentPlaceholder>
         )}
@@ -46,13 +47,13 @@ export async function ContactPage() {
           <ul className="flex flex-wrap gap-2">
             {contactProfile.socialLinks.map((item) => (
               <li key={item.id}>
-                <a
+                <TrackedExternalLink
                   href={item.href}
                   className="type-small text-foreground hover:text-primary"
                   {...getExternalAnchorProps(item.href)}
                 >
                   {item.label}
-                </a>
+                </TrackedExternalLink>
               </li>
             ))}
           </ul>

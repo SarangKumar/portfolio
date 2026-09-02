@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { trackArticleView } from "@/analytics/events";
+import { trackBlogView } from "@/analytics/events";
 
 type ArticleViewTrackerProps = {
   slug: string;
@@ -9,7 +9,7 @@ type ArticleViewTrackerProps = {
 
 export function ArticleViewTracker({ slug }: ArticleViewTrackerProps) {
   useEffect(() => {
-    trackArticleView(slug);
+    trackBlogView(slug);
   }, [slug]);
 
   return null;

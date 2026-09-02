@@ -22,6 +22,7 @@ export function featuredProjects(
   viewCounts: Readonly<Record<string, number>> = {},
   limit = 3,
 ): readonly ProjectItem[] {
+  // Ranking is replaceable: pass a different view-count source.
   if (items.length === 0 || limit <= 0) {
     return [];
   }

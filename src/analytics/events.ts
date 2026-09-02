@@ -1,83 +1,157 @@
-export const analyticsEvents = {
-  projectView: "project_view",
-  articleView: "article_view",
-  resumeView: "resume_view",
-  resumePreview: "resume_preview",
-  resumeDownload: "resume_download",
-  contactSubmit: "contact_submit",
-} as const;
-
-export type ProjectViewEvent = {
-  name: typeof analyticsEvents.projectView;
-  projectSlug: string;
-};
-
-export type ArticleViewEvent = {
-  name: typeof analyticsEvents.articleView;
-  articleSlug: string;
-};
-
-export type ResumeAnalyticsEvent = {
-  name:
-    | typeof analyticsEvents.resumeView
-    | typeof analyticsEvents.resumePreview
-    | typeof analyticsEvents.resumeDownload;
-  resumeId: string;
-};
-
-export type ContactSubmitEvent = {
-  name: typeof analyticsEvents.contactSubmit;
-  result: "success" | "error" | "unavailable" | "ignored";
-};
-
-export type AnalyticsEvent =
-  | ProjectViewEvent
-  | ArticleViewEvent
-  | ResumeAnalyticsEvent
-  | ContactSubmitEvent;
+import {
+  analyticsEvents,
+  type AnalyticsClientPayload,
+  type AnalyticsEventName,
+  type ContactSubmitResult,
+} from "@/analytics/schema";
 
 export type AnalyticsClient = {
-  track: (event: AnalyticsEvent) => void;
+  track: (payload: AnalyticsClientPayload) => void;
 };
 
 export const noopAnalytics: AnalyticsClient = {
   track() {},
 };
 
-let analyticsClient: AnalyticsClient = noopAnalytics;
+let analyticsClient: AnalyticsClient | null = null;
 
-export function getAnalyticsClient(): AnalyticsClient {
+export function getAnalyticsClient(): AnalyticsClient | null {
   return analyticsClient;
 }
 
-export function setAnalyticsClient(client: AnalyticsClient) {
+export function setAnalyticsClient(client: AnalyticsClient | null) {
   analyticsClient = client;
 }
 
+function sendAnalytics(payload: AnalyticsClientPayload) {
+  const body = JSON.stringify(payload);
+
+  void fetch("/api/analytics", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
+export function track(payload: AnalyticsClientPayload) {
+  try {
+    if (analyticsClient) {
+      analyticsClient.track(payload);
+      return;
+    }
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    sendAnalytics(payload);
+  } catch {
+    // Tracking must never throw into page code.
+  }
+}
+
+function currentPath(fallback: string): string {
+  if (typeof window === "undefined") {
+    return fallback;
+  }
+
+  return window.location.pathname || fallback;
+}
+
+export function trackPageView(path: string) {
+  track({ name: analyticsEvents.pageView, path });
+}
+
 export function trackProjectView(projectSlug: string) {
-  getAnalyticsClient().track({
+  track({
     name: analyticsEvents.projectView,
+    path: `/projects/${projectSlug}`,
     projectSlug,
   });
 }
 
-export function trackArticleView(articleSlug: string) {
-  getAnalyticsClient().track({
-    name: analyticsEvents.articleView,
-    articleSlug,
+export function trackBlogView(blogSlug: string) {
+  track({
+    name: analyticsEvents.blogView,
+    path: `/blog/${blogSlug}`,
+    blogSlug,
   });
 }
 
 export function trackResumeEvent(
-  name: ResumeAnalyticsEvent["name"],
+  name:
+    | typeof analyticsEvents.resumeView
+    | typeof analyticsEvents.resumePreview
+    | typeof analyticsEvents.resumeDownload,
   resumeId: string,
 ) {
-  getAnalyticsClient().track({ name, resumeId });
-}
-
-export function trackContactSubmit(result: ContactSubmitEvent["result"]) {
-  getAnalyticsClient().track({
-    name: analyticsEvents.contactSubmit,
-    result,
+  track({
+    name,
+    path: "/resume",
+    metadata: { resumeId },
   });
 }
+
+export function trackGithubClick(path = currentPath("/")) {
+  track({ name: analyticsEvents.githubClick, path });
+}
+
+export function trackLinkedinClick(path = currentPath("/")) {
+  track({ name: analyticsEvents.linkedinClick, path });
+}
+
+export function trackEmailClick(path = currentPath("/contact")) {
+  track({ name: analyticsEvents.emailClick, path });
+}
+
+export function trackTerminalOpen(path = currentPath("/")) {
+  track({ name: analyticsEvents.terminalOpen, path });
+}
+
+export function trackTerminalCommand(command: string, path = currentPath("/")) {
+  track({
+    name: analyticsEvents.terminalCommand,
+    path,
+    metadata: { command },
+  });
+}
+
+export function trackContactSubmit(result: ContactSubmitResult) {
+  track({
+    name: analyticsEvents.contactSubmit,
+    path: "/contact",
+    metadata: { result },
+  });
+}
+
+export function outboundAnalyticsEvent(
+  href: string,
+): Extract<
+  AnalyticsEventName,
+  "github_click" | "linkedin_click" | "email_click"
+> | null {
+  if (/^mailto:/i.test(href)) {
+    return analyticsEvents.emailClick;
+  }
+
+  try {
+    const url = new URL(href);
+    const host = url.hostname.toLowerCase();
+
+    if (host === "github.com" || host.endsWith(".github.com")) {
+      return analyticsEvents.githubClick;
+    }
+
+    if (host === "linkedin.com" || host.endsWith(".linkedin.com")) {
+      return analyticsEvents.linkedinClick;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+export { analyticsEvents };
+export type { AnalyticsClientPayload, AnalyticsEventName, ContactSubmitResult };

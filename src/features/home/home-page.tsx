@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import { getProjectViewCounts } from "@/analytics/popularity";
 import { ArticleGrid } from "@/components/content/article-grid";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { CtaBanner } from "@/components/content/cta-banner";
@@ -9,7 +10,6 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { posts } from "@/data/blog";
 import { experience } from "@/data/experience";
 import { profile } from "@/data/profile";
-import { projectViewCounts } from "@/data/project-popularity";
 import { projects } from "@/data/projects";
 import { skillCategories, skills } from "@/data/skills";
 import { readingTimeMinutes, sortPostsByDate } from "@/lib/blog";
@@ -29,7 +29,10 @@ export async function HomePage() {
   const locale = await getLocale();
   const showProfile = hasProfileContent(profile);
   const skillPreviews = groupedSkillPreviews(skillCategories, skills);
-  const highlightedProjects = featuredProjects(projects, projectViewCounts);
+  const highlightedProjects = featuredProjects(
+    projects,
+    getProjectViewCounts(),
+  );
 
   return (
     <div className="stack-section">

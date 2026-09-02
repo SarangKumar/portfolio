@@ -1,6 +1,7 @@
 "use server";
 
-import { trackContactSubmit } from "@/analytics/events";
+import { analyticsEvents } from "@/analytics/schema";
+import { ingestFromRequestContext } from "@/analytics/request-context";
 import { readContactForm, validateContactInput } from "@/lib/contact";
 import type { ContactFormState } from "@/lib/contact-state";
 import { serverEnv } from "@/lib/env/server";
@@ -37,12 +38,20 @@ export async function submitContact(
   const validation = validateContactInput(input);
 
   if (validation.ok && validation.ignored) {
-    trackContactSubmit("ignored");
+    void ingestFromRequestContext({
+      name: analyticsEvents.contactSubmit,
+      path: "/contact",
+      metadata: { result: "ignored" },
+    });
     return { status: "success" };
   }
 
   if (!validation.ok) {
-    trackContactSubmit("error");
+    void ingestFromRequestContext({
+      name: analyticsEvents.contactSubmit,
+      path: "/contact",
+      metadata: { result: "error" },
+    });
     return {
       status: "error",
       fieldErrors: validation.fieldErrors,
@@ -50,7 +59,11 @@ export async function submitContact(
   }
 
   const result = await deliverContactMessage(validation.value);
-  trackContactSubmit(result);
+  void ingestFromRequestContext({
+    name: analyticsEvents.contactSubmit,
+    path: "/contact",
+    metadata: { result },
+  });
 
   if (result === "unavailable") {
     return { status: "unavailable" };
