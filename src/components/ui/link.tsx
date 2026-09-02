@@ -28,10 +28,6 @@ export function Link({
   className,
   variant = "default",
   href,
-  locale,
-  replace,
-  scroll,
-  prefetch,
   ...props
 }: TextLinkProps) {
   const classes = cn(linkClassName, linkVariants[variant], className);
@@ -47,15 +43,5 @@ export function Link({
     );
   }
 
-  return (
-    <I18nLink
-      href={href}
-      className={classes}
-      locale={locale}
-      replace={replace}
-      scroll={scroll}
-      prefetch={prefetch}
-      {...props}
-    />
-  );
+  return <I18nLink href={href} className={classes} {...props} />;
 }

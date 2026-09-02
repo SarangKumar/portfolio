@@ -9,6 +9,7 @@ export {
   type ButtonSize,
   type ButtonVariant,
 } from "@/components/ui/button";
+export { ButtonLink, type ButtonLinkProps } from "@/components/ui/button-link";
 export {
   Card,
   CardContent,

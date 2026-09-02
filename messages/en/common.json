@@ -1,0 +1,9 @@
+{
+  "appName": "Portfolio",
+  "metadata": {
+    "title": "Portfolio",
+    "description": "Personal engineering portfolio"
+  },
+  "loading": "Loading",
+  "copyright": "© {year} {name}"
+}

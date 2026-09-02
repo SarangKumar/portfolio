@@ -1,0 +1,14 @@
+{
+  "title": "Skills",
+  "metadata": {
+    "title": "Skills",
+    "description": "Skills grouped by category, with linked public work as evidence."
+  },
+  "intro": "Skills are grouped by category and shown with linked roles and projects, not proficiency scores.",
+  "placeholder": "Skills will be listed here when they are published.",
+  "emptyCategory": "No skills in this category yet.",
+  "evidence": "{roles, plural, =0 {No linked roles} one {# linked role} other {# linked roles}} · {projects, plural, =0 {no linked projects} one {# linked project} other {# linked projects}}",
+  "noExperience": "No linked public roles.",
+  "noProjects": "No linked public projects.",
+  "noEvidence": "No public roles or projects are linked yet."
+}

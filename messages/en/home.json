@@ -1,0 +1,45 @@
+{
+  "title": "Home",
+  "metadata": {
+    "title": "Home",
+    "description": "Overview of identity, work, writing, and contact."
+  },
+  "hero": {
+    "kicker": "Portfolio",
+    "placeholderName": "Name to be added",
+    "placeholderHeadline": "Role and focus will be published here.",
+    "placeholderSummary": "A short introduction will appear in this space.",
+    "viewWork": "View work",
+    "contact": "Contact"
+  },
+  "about": {
+    "title": "Identity",
+    "placeholder": "An about preview will be published here.",
+    "more": "About"
+  },
+  "skills": {
+    "title": "Focus",
+    "placeholder": "Technical focus areas will be listed here.",
+    "more": "Skills"
+  },
+  "experience": {
+    "title": "Experience",
+    "placeholder": "Experience will be listed here.",
+    "more": "All experience"
+  },
+  "projects": {
+    "title": "Projects",
+    "placeholder": "Selected projects will be listed here.",
+    "more": "All projects"
+  },
+  "writing": {
+    "title": "Writing",
+    "placeholder": "Notes and articles will be listed here.",
+    "more": "All writing"
+  },
+  "contact": {
+    "title": "Contact",
+    "body": "For work and questions, use the contact page.",
+    "action": "Get in touch"
+  }
+}

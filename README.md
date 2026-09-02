@@ -2,7 +2,7 @@
 
 Production-grade Next.js application foundation for a public portfolio and later private engineering tools.
 
-This repository currently has project setup, the design system, and reusable UI primitives. Application pages are not implemented yet.
+This repository currently has project setup, the design system, UI primitives, the global shell, and public Home, About, Experience, and Skills pages. Other application pages are not implemented yet.
 
 ## Scripts
 
@@ -36,7 +36,9 @@ This repository currently has project setup, the design system, and reusable UI 
 | Design tokens      | `src/app/globals.css`           |
 | Motion conventions | `src/lib/motion.ts`             |
 
-Locale-aware routing is ready (`src/app/[locale]`). English is the only locale. Page copy is not translated yet.
+The global shell (`src/components/layout`) provides header, footer, skip link, and page container. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data` — unpublished fields render as placeholders instead of invented content. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars.
+
+Locale-aware routing uses `src/app/[locale]` and `next-intl`. English is the only locale. Message namespaces live in `messages/{locale}/`. UI copy should use `useTranslations` / `getTranslations` from next-intl — do not wrap those APIs. Page-level `generateMetadata` should pass `{ locale, namespace }` into `getTranslations` so metadata can be localized later.
 
 ## Design system
 

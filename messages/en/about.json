@@ -1,0 +1,29 @@
+{
+  "title": "About",
+  "metadata": {
+    "title": "About",
+    "description": "Engineering background, working approach, and current focus."
+  },
+  "intro": "Background, working approach, and current focus. Personal details appear here when they are published.",
+  "unpublished": "About content has not been published yet.",
+  "background": {
+    "title": "Background",
+    "placeholder": "Engineering background will be published here."
+  },
+  "philosophy": {
+    "title": "Approach",
+    "placeholder": "Engineering philosophy will be published here."
+  },
+  "focus": {
+    "title": "Current focus",
+    "placeholder": "Current technical focus will be listed here."
+  },
+  "expertise": {
+    "title": "Expertise",
+    "placeholder": "Areas of expertise will be listed here."
+  },
+  "interests": {
+    "title": "Learning",
+    "placeholder": "Learning interests will be listed here."
+  }
+}

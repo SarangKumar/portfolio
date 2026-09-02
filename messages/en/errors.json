@@ -1,0 +1,10 @@
+{
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you requested could not be found."
+  },
+  "unexpected": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred."
+  }
+}

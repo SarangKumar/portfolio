@@ -1,4 +1,4 @@
-import { HomePage } from "@/features/home/home-page";
+import { SkillsPage } from "@/features/skills/skills-page";
 import {
   activateLocale,
   pageMetadata,
@@ -7,12 +7,12 @@ import {
 
 export async function generateMetadata({ params }: LocalePageProps) {
   const { locale } = await params;
-  return pageMetadata(locale, "home");
+  return pageMetadata(locale, "skills");
 }
 
 export default async function Page({ params }: LocalePageProps) {
   const { locale } = await params;
   await activateLocale(locale);
 
-  return <HomePage />;
+  return <SkillsPage />;
 }
