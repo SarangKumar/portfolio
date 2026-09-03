@@ -2,16 +2,16 @@ import { describe, expect, it } from "@jest/globals";
 import { createAdminRecord } from "@/admin/directory";
 import {
   archiveJobApplication,
+  changeJobApplicationStatus,
   createJobApplication,
   getJobApplication,
   listJobApplications,
   updateJobApplication,
 } from "@/career/applications/access";
+import { createMemoryJobApplicationStore } from "@/career/applications/memory-store";
 import { createJobApplicationService } from "@/career/applications/service";
 import { jobApplicationStatuses } from "@/career/applications/status";
-import type { JobApplicationStore } from "@/career/applications/store";
 import type {
-  JobApplicationListQuery,
   JobApplicationRecord,
   JobApplicationWriteInput,
 } from "@/career/applications/types";
@@ -19,7 +19,6 @@ import {
   validateJobApplicationWriteInput,
   type JobApplicationWriteFields,
 } from "@/career/applications/validation";
-import { ContentNotFoundError } from "@/cms/errors";
 import type { PublicContentSource } from "@/content/source";
 
 const owner = createAdminRecord("owner@example.com", "active");
@@ -61,96 +60,9 @@ function requireWrite(
   return parsed.value;
 }
 
-function memoryStore(seed: JobApplicationRecord[] = []): JobApplicationStore {
-  const records = new Map(seed.map((item) => [item.key, { ...item }]));
-
-  function visible(
-    ownerIdentityId: string,
-    query: JobApplicationListQuery,
-  ): JobApplicationRecord[] {
-    return [...records.values()].filter((item) => {
-      if (item.ownerIdentityId !== ownerIdentityId) {
-        return false;
-      }
-
-      if (!query.includeArchived && item.archivedAt) {
-        return false;
-      }
-
-      if (query.status && item.status !== query.status) {
-        return false;
-      }
-
-      if (query.priority && item.priority !== query.priority) {
-        return false;
-      }
-
-      return true;
-    });
-  }
-
-  return {
-    async list(ownerIdentityId, query) {
-      return visible(ownerIdentityId, query)
-        .sort((left, right) => {
-          const leftApplied = left.appliedAt ?? "";
-          const rightApplied = right.appliedAt ?? "";
-          return rightApplied.localeCompare(leftApplied);
-        })
-        .map((item) => ({
-          key: item.key,
-          company: item.company,
-          role: item.role,
-          status: item.status,
-          priority: item.priority,
-          appliedAt: item.appliedAt,
-          nextActionAt: item.nextActionAt,
-          archivedAt: item.archivedAt,
-          updatedAt: item.updatedAt,
-        }));
-    },
-    async getByKey(ownerIdentityId, key) {
-      const record = records.get(key);
-
-      if (!record || record.ownerIdentityId !== ownerIdentityId) {
-        return null;
-      }
-
-      return {
-        ...record,
-        interviewRounds: [...record.interviewRounds],
-      };
-    },
-    async create(next) {
-      records.set(next.key, {
-        ...next,
-        interviewRounds: [...next.interviewRounds],
-      });
-      return {
-        ...next,
-        interviewRounds: [...next.interviewRounds],
-      };
-    },
-    async update(ownerIdentityId, key, patch) {
-      const current = records.get(key);
-
-      if (!current || current.ownerIdentityId !== ownerIdentityId) {
-        throw new ContentNotFoundError();
-      }
-
-      const next = { ...current, ...patch };
-      records.set(key, next);
-      return {
-        ...next,
-        interviewRounds: [...next.interviewRounds],
-      };
-    },
-  };
-}
-
 function serviceWith(seed: JobApplicationRecord[] = []) {
   return createJobApplicationService({
-    store: memoryStore(seed),
+    store: createMemoryJobApplicationStore(seed),
     now: () => new Date("2026-04-01T00:00:00.000Z"),
   });
 }
@@ -325,6 +237,14 @@ describe("job application authorization and ownership", () => {
     expect(
       await archiveJobApplication({ status: "denied" }, service, "app-missing"),
     ).toEqual({ ok: false, code: "unauthorized" });
+    expect(
+      await changeJobApplicationStatus(
+        { status: "unauthenticated" },
+        service,
+        "app-missing",
+        "oa",
+      ),
+    ).toEqual({ ok: false, code: "unauthorized" });
   });
 
   it("scopes reads and writes to the owning admin identity", async () => {
@@ -347,7 +267,10 @@ describe("job application authorization and ownership", () => {
       { status: "allowed", admin: peer },
       service,
     );
-    expect(peerList).toEqual({ ok: true, value: [] });
+    expect(peerList).toEqual({
+      ok: true,
+      value: { items: [], total: 0, page: 1, pageSize: 25 },
+    });
 
     const peerGet = await getJobApplication(
       { status: "allowed", admin: peer },
@@ -409,7 +332,7 @@ describe("job application service", () => {
     if (!listed.ok) {
       return;
     }
-    expect(listed.value.map((item) => item.company)).toEqual([
+    expect(listed.value.items.map((item) => item.company)).toEqual([
       "Acme",
       "Globex",
     ]);
@@ -421,7 +344,7 @@ describe("job application service", () => {
     if (!applied.ok) {
       return;
     }
-    expect(applied.value.map((item) => item.company)).toEqual(["Acme"]);
+    expect(applied.value.items.map((item) => item.company)).toEqual(["Acme"]);
 
     const updated = await updateJobApplication(
       access,
@@ -460,7 +383,7 @@ describe("job application service", () => {
     if (!active.ok) {
       return;
     }
-    expect(active.value.map((item) => item.company)).toEqual(["Globex"]);
+    expect(active.value.items.map((item) => item.company)).toEqual(["Globex"]);
 
     const withArchived = await listJobApplications(access, service, {
       includeArchived: true,
@@ -470,7 +393,7 @@ describe("job application service", () => {
     if (!withArchived.ok) {
       return;
     }
-    expect(withArchived.value.map((item) => item.key)).toEqual([
+    expect(withArchived.value.items.map((item) => item.key)).toEqual([
       created.value.key,
     ]);
 
@@ -480,6 +403,124 @@ describe("job application service", () => {
       created.value.key,
     );
     expect(stillReadable.ok).toBe(true);
+  });
+
+  it("searches, sorts, paginates, and changes status on the server", async () => {
+    const service = serviceWith();
+    const access = { status: "allowed" as const, admin: owner };
+
+    await createJobApplication(
+      access,
+      service,
+      requireWrite({
+        ...validFields,
+        company: "Acme",
+        role: "Staff Engineer",
+        recruiter: "Jordan",
+        appliedAt: "2026-04-02",
+        nextAction: "",
+        nextActionAt: "",
+      }),
+    );
+    await createJobApplication(
+      access,
+      service,
+      requireWrite({
+        ...validFields,
+        company: "Globex",
+        role: "Platform Engineer",
+        recruiter: "Sam",
+        location: "Remote",
+        status: "oa",
+        priority: "low",
+        appliedAt: "2026-03-01",
+        nextAction: "",
+        nextActionAt: "",
+      }),
+    );
+    await createJobApplication(
+      access,
+      service,
+      requireWrite({
+        ...validFields,
+        company: "Initech",
+        role: "Frontend Engineer",
+        recruiter: "Jordan",
+        location: "Bengaluru",
+        appliedAt: "2026-02-01",
+        nextAction: "",
+        nextActionAt: "",
+      }),
+    );
+
+    const searched = await listJobApplications(access, service, {
+      search: "jordan",
+    });
+    expect(searched.ok).toBe(true);
+    if (!searched.ok) {
+      return;
+    }
+    expect(searched.value.items.map((item) => item.company).sort()).toEqual([
+      "Acme",
+      "Initech",
+    ]);
+
+    const located = await listJobApplications(access, service, {
+      location: "remote",
+    });
+    expect(
+      located.ok && located.value.items.map((item) => item.company),
+    ).toEqual(["Globex"]);
+
+    const dated = await listJobApplications(access, service, {
+      appliedFrom: "2026-03-01",
+      appliedTo: "2026-04-01",
+    });
+    expect(dated.ok && dated.value.items.map((item) => item.company)).toEqual([
+      "Globex",
+    ]);
+
+    const sorted = await listJobApplications(access, service, {
+      sort: "company",
+      dir: "asc",
+    });
+    expect(sorted.ok && sorted.value.items.map((item) => item.company)).toEqual(
+      ["Acme", "Globex", "Initech"],
+    );
+
+    const page = await listJobApplications(access, service, {
+      sort: "company",
+      dir: "asc",
+      page: 2,
+      pageSize: 2,
+    });
+    expect(page.ok).toBe(true);
+    if (!page.ok) {
+      return;
+    }
+    expect(page.value).toMatchObject({
+      total: 3,
+      page: 2,
+      pageSize: 2,
+    });
+    expect(page.value.items.map((item) => item.company)).toEqual(["Initech"]);
+
+    const first = sorted.ok ? sorted.value.items[0] : undefined;
+    expect(first).toBeDefined();
+    if (!first) {
+      return;
+    }
+
+    const status = await changeJobApplicationStatus(
+      access,
+      service,
+      first.key,
+      "oa",
+    );
+    expect(status).toMatchObject({
+      ok: true,
+      value: { key: first.key, status: "oa" },
+    });
   });
 });
 

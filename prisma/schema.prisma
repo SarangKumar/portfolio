@@ -274,6 +274,7 @@ model JobApplication {
   rejectionReason    String?
   archivedAt         DateTime?
   interviewRounds    InterviewRound[]
+  statusHistory      JobApplicationStatusHistory[]
   createdAt          DateTime                @default(now())
   updatedAt          DateTime                @updatedAt
 
@@ -283,6 +284,32 @@ model JobApplication {
   @@index([ownerIdentityId, nextActionAt])
   @@index([ownerIdentityId, priority])
   @@map("job_applications")
+}
+
+/// Append-only status transition log. Current status stays on
+/// `JobApplication` for querying; this collection is the audit trail.
+/// Do not update or delete rows from application code. Prisma interactive
+/// transactions on MongoDB require a replica set (see README).
+model JobApplicationStatusHistory {
+  id                  String                 @id @default(auto()) @map("_id") @db.ObjectId
+  key                 String                 @unique
+  applicationId       String                 @db.ObjectId
+  application         JobApplication         @relation(fields: [applicationId], references: [id])
+  applicationKey      String
+  ownerIdentityId     String
+  sequence            Int
+  previousStatus      JobApplicationStatus?
+  newStatus           JobApplicationStatus
+  changedAt           DateTime
+  changedByIdentityId String
+  reason              String?
+  note                String?
+  createdAt           DateTime               @default(now())
+
+  @@unique([applicationKey, sequence])
+  @@index([applicationId, sequence])
+  @@index([ownerIdentityId, applicationKey])
+  @@map("job_application_status_history")
 }
 
 model InterviewRound {

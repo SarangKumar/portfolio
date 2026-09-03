@@ -3,13 +3,22 @@ import { ignoreContentMutation, type RecordContentMutation } from "@/cms/audit";
 import { ContentNotFoundError } from "@/cms/errors";
 import type { MutationResult } from "@/cms/result";
 import { createJobApplicationKey } from "@/career/applications/key";
+import { toJobApplicationSummary } from "@/career/applications/query";
 import type { JobApplicationStore } from "@/career/applications/store";
+import {
+  isJobApplicationStatus,
+  type JobApplicationStatus,
+} from "@/career/applications/status";
 import type {
+  JobApplicationListPage,
   JobApplicationListQuery,
   JobApplicationRecord,
+  JobApplicationStatusChangeExtras,
+  JobApplicationStatusHistoryRecord,
   JobApplicationSummary,
   JobApplicationWriteInput,
 } from "@/career/applications/types";
+import { validateJobApplicationStatusChange } from "@/career/applications/validation";
 import { DatabaseError } from "@/db/errors";
 
 export type JobApplicationServiceClock = () => Date;
@@ -32,20 +41,6 @@ function asUnavailable(error: unknown): MutationResult<never> {
   throw error;
 }
 
-function toSummary(record: JobApplicationRecord): JobApplicationSummary {
-  return {
-    key: record.key,
-    company: record.company,
-    role: record.role,
-    status: record.status,
-    priority: record.priority,
-    appliedAt: record.appliedAt,
-    nextActionAt: record.nextActionAt,
-    archivedAt: record.archivedAt,
-    updatedAt: record.updatedAt,
-  };
-}
-
 function applyWrite(
   current: JobApplicationRecord,
   input: JobApplicationWriteInput,
@@ -63,7 +58,7 @@ function applyWrite(
     salaryAmount: input.salaryAmount,
     salaryCurrency: input.salaryCurrency,
     appliedAt: input.appliedAt,
-    status: input.status,
+    status: current.status,
     source: input.source,
     referral: input.referral,
     recruiter: input.recruiter,
@@ -90,11 +85,65 @@ export function createJobApplicationService(
     return `${createJobApplicationKey(now())}-${admin.id.slice(0, 8)}-${keySequence.toString(36)}`;
   }
 
+  async function transitionStatus(
+    admin: Admin,
+    key: string,
+    status: JobApplicationStatus,
+    extras: JobApplicationStatusChangeExtras = {},
+  ): Promise<MutationResult<JobApplicationRecord>> {
+    const parsed = validateJobApplicationStatusChange({
+      status,
+      reason: extras.reason ?? "",
+      note: extras.note ?? "",
+      rejectionReason: extras.rejectionReason ?? "",
+    });
+
+    if (!parsed.ok) {
+      return {
+        ok: false,
+        code: "validation",
+        fieldErrors: parsed.fieldErrors,
+      };
+    }
+
+    try {
+      const at = now().toISOString();
+      const reason =
+        parsed.value.reason ||
+        (parsed.value.status === "rejected"
+          ? parsed.value.rejectionReason
+          : null);
+      const updated = await deps.store.applyStatusChange(admin.id, key, {
+        newStatus: parsed.value.status,
+        changedAt: at,
+        changedByIdentityId: admin.id,
+        reason,
+        note: parsed.value.note,
+        rejectionReason:
+          parsed.value.status === "rejected"
+            ? parsed.value.rejectionReason
+            : undefined,
+      });
+
+      recordMutation({
+        actorId: admin.id,
+        entityType: "jobApplication",
+        entityKey: key,
+        action: "update",
+        at,
+      });
+
+      return { ok: true, value: updated };
+    } catch (error) {
+      return asUnavailable(error);
+    }
+  }
+
   return {
     async list(
       admin: Admin,
       query: JobApplicationListQuery = {},
-    ): Promise<MutationResult<readonly JobApplicationSummary[]>> {
+    ): Promise<MutationResult<JobApplicationListPage>> {
       try {
         return {
           ok: true,
@@ -117,6 +166,23 @@ export function createJobApplicationService(
         }
 
         return { ok: true, value: record };
+      } catch (error) {
+        return asUnavailable(error);
+      }
+    },
+
+    async listStatusHistory(
+      admin: Admin,
+      key: string,
+    ): Promise<MutationResult<readonly JobApplicationStatusHistoryRecord[]>> {
+      try {
+        const history = await deps.store.listStatusHistory(admin.id, key);
+
+        if (!history) {
+          return { ok: false, code: "notFound" };
+        }
+
+        return { ok: true, value: history };
       } catch (error) {
         return asUnavailable(error);
       }
@@ -165,11 +231,32 @@ export function createJobApplicationService(
           return { ok: false, code: "notFound" };
         }
 
+        let latest = current;
+
+        if (input.status !== current.status) {
+          const transitioned = await transitionStatus(
+            admin,
+            key,
+            input.status,
+            {
+              rejectionReason: input.rejectionReason,
+              reason:
+                input.status === "rejected" ? input.rejectionReason : null,
+            },
+          );
+
+          if (!transitioned.ok) {
+            return transitioned;
+          }
+
+          latest = transitioned.value;
+        }
+
         const at = now().toISOString();
         const updated = await deps.store.update(
           admin.id,
           key,
-          applyWrite(current, input, at),
+          applyWrite(latest, input, at),
         );
 
         recordMutation({
@@ -211,10 +298,33 @@ export function createJobApplicationService(
           at,
         });
 
-        return { ok: true, value: toSummary(updated) };
+        return { ok: true, value: toJobApplicationSummary(updated) };
       } catch (error) {
         return asUnavailable(error);
       }
+    },
+
+    async changeStatus(
+      admin: Admin,
+      key: string,
+      status: JobApplicationStatus,
+      extras: JobApplicationStatusChangeExtras = {},
+    ): Promise<MutationResult<JobApplicationSummary>> {
+      if (!isJobApplicationStatus(status)) {
+        return {
+          ok: false,
+          code: "validation",
+          fieldErrors: { status: "invalid" },
+        };
+      }
+
+      const result = await transitionStatus(admin, key, status, extras);
+
+      if (!result.ok) {
+        return result;
+      }
+
+      return { ok: true, value: toJobApplicationSummary(result.value) };
     },
   };
 }

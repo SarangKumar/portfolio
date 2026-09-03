@@ -1,12 +1,17 @@
 import type { MutationFieldErrors } from "@/cms/result";
+import { toDateInputValue } from "@/career/applications/query";
 import {
   defaultJobApplicationPriority,
   defaultWorkMode,
   isJobApplicationPriority,
   isJobApplicationStatus,
   isWorkMode,
+  type JobApplicationStatus,
 } from "@/career/applications/status";
-import type { JobApplicationWriteInput } from "@/career/applications/types";
+import type {
+  JobApplicationRecord,
+  JobApplicationWriteInput,
+} from "@/career/applications/types";
 
 export const JOB_APPLICATION_LIMITS = {
   company: 160,
@@ -23,6 +28,8 @@ export const JOB_APPLICATION_LIMITS = {
   notes: 8000,
   nextAction: 280,
   rejectionReason: 2000,
+  historyReason: 2000,
+  historyNote: 2000,
 } as const;
 
 export type JobApplicationField =
@@ -46,7 +53,9 @@ export type JobApplicationField =
   | "priority"
   | "nextAction"
   | "nextActionAt"
-  | "rejectionReason";
+  | "rejectionReason"
+  | "reason"
+  | "note";
 
 export type JobApplicationWriteFields = {
   company: string;
@@ -357,5 +366,137 @@ export function validateJobApplicationWriteInput(
       nextActionAt,
       rejectionReason,
     },
+  };
+}
+
+function readFormString(formData: FormData, name: string): string {
+  const value = formData.get(name);
+  return typeof value === "string" ? value : "";
+}
+
+export function readJobApplicationWriteForm(
+  formData: FormData,
+): JobApplicationWriteFields {
+  return {
+    company: readFormString(formData, "company"),
+    role: readFormString(formData, "role"),
+    jobUrl: readFormString(formData, "jobUrl"),
+    location: readFormString(formData, "location"),
+    workMode: readFormString(formData, "workMode"),
+    jobDescription: readFormString(formData, "jobDescription"),
+    salaryAmount: readFormString(formData, "salaryAmount"),
+    salaryCurrency: readFormString(formData, "salaryCurrency"),
+    appliedAt: readFormString(formData, "appliedAt"),
+    status: readFormString(formData, "status"),
+    source: readFormString(formData, "source"),
+    referral: readFormString(formData, "referral"),
+    recruiter: readFormString(formData, "recruiter"),
+    resumeVersionKey: readFormString(formData, "resumeVersionKey"),
+    coverLetterKey: readFormString(formData, "coverLetterKey"),
+    notes: readFormString(formData, "notes"),
+    priority: readFormString(formData, "priority"),
+    nextAction: readFormString(formData, "nextAction"),
+    nextActionAt: readFormString(formData, "nextActionAt"),
+    rejectionReason: readFormString(formData, "rejectionReason"),
+  };
+}
+
+export type JobApplicationStatusChangeFields = {
+  status: string;
+  reason?: string | null;
+  note?: string | null;
+  rejectionReason?: string | null;
+};
+
+export function validateJobApplicationStatusChange(
+  fields: JobApplicationStatusChangeFields,
+):
+  | {
+      ok: true;
+      value: {
+        status: JobApplicationStatus;
+        reason: string | null;
+        note: string | null;
+        rejectionReason: string | null;
+      };
+    }
+  | { ok: false; fieldErrors: MutationFieldErrors } {
+  const fieldErrors: MutationFieldErrors = {};
+  const statusRaw = trim(fields.status);
+
+  if (!statusRaw) {
+    fieldErrors.status = "required";
+  } else if (!isJobApplicationStatus(statusRaw)) {
+    fieldErrors.status = "invalid";
+  }
+
+  const reason = validateOptionalText(
+    fields.reason ?? "",
+    "reason",
+    JOB_APPLICATION_LIMITS.historyReason,
+    fieldErrors,
+  );
+  const note = validateOptionalText(
+    fields.note ?? "",
+    "note",
+    JOB_APPLICATION_LIMITS.historyNote,
+    fieldErrors,
+  );
+  const rejectionReason = validateOptionalText(
+    fields.rejectionReason ?? "",
+    "rejectionReason",
+    JOB_APPLICATION_LIMITS.rejectionReason,
+    fieldErrors,
+  );
+
+  if (
+    Object.keys(fieldErrors).length > 0 ||
+    !isJobApplicationStatus(statusRaw)
+  ) {
+    return {
+      ok: false,
+      fieldErrors:
+        Object.keys(fieldErrors).length > 0
+          ? fieldErrors
+          : { status: "invalid" },
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      status: statusRaw,
+      reason,
+      note,
+      rejectionReason,
+    },
+  };
+}
+
+export function jobApplicationToFormFields(
+  application?: JobApplicationRecord,
+): JobApplicationWriteFields {
+  return {
+    company: application?.company ?? "",
+    role: application?.role ?? "",
+    jobUrl: application?.jobUrl ?? "",
+    location: application?.location ?? "",
+    workMode: application?.workMode ?? defaultWorkMode(),
+    jobDescription: application?.jobDescription ?? "",
+    salaryAmount:
+      application?.salaryAmount == null ? "" : String(application.salaryAmount),
+    salaryCurrency: application?.salaryCurrency ?? "",
+    appliedAt: toDateInputValue(application?.appliedAt),
+    status: application?.status ?? "wishlist",
+    source: application?.source ?? "",
+    referral: application?.referral ?? "",
+    recruiter: application?.recruiter ?? "",
+    resumeVersionKey: application?.resumeVersionKey ?? "",
+    coverLetterKey: application?.coverLetterKey ?? "",
+    notes: application?.notes ?? "",
+    priority: application?.priority ?? defaultJobApplicationPriority(),
+    nextAction: application?.nextAction ?? "",
+    nextActionAt: toDateInputValue(application?.nextActionAt),
+    rejectionReason: application?.rejectionReason ?? "",
   };
 }

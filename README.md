@@ -69,6 +69,23 @@ Copy `.env.example` to `.env.local`.
 - `ANALYTICS_VAULT_PASSWORD` — server-only password for the hidden CMD folder `analytics/`. When unset, unlock always fails.
 - `DATABASE_URL` — server-only MongoDB connection string for Prisma. Never use `NEXT_PUBLIC_*`. Production fails clearly if this is missing or not a MongoDB URL with a database name when the database client is created. Sync schema with `npm run prisma:push` (MongoDB does not use SQL migrations). Generate the client with `npm run prisma:generate`.
 
+### Local MongoDB replica set
+
+Prisma interactive transactions on MongoDB require a replica set (`P2031` without one). Atlas provides a replica set. Job application status history writes current status and an append-only history row together; a replica set keeps those two documents atomic.
+
+For local development, run a single-node replica set and point `DATABASE_URL` at it:
+
+```bash
+mongod --replSet rs0 --port 27017 --dbpath /data/db
+mongosh --eval 'rs.initiate({_id:"rs0", members:[{_id:0, host:"127.0.0.1:27017"}]})'
+```
+
+```
+DATABASE_URL="mongodb://127.0.0.1:27017/portfolio?replicaSet=rs0"
+```
+
+Without a replica set, the app falls back to ordered writes: append history first, then update `JobApplication.status`. A crash between those writes can leave a pending history row; retrying the same transition completes the status update without duplicating the row. Replica-set transactions are still required for true multi-document atomicity.
+
 Public portfolio pages should read persisted catalogs through `src/content` (`getPublishedProjects`, and similar). That layer maps Prisma documents onto the existing `src/data` types and falls back to the static samples when `DATABASE_URL` is unset. Do not query Prisma from UI components.
 
 Server-only database helpers live in `src/db`. Import `getPrismaClient` only from Server Components, Route Handlers, and server actions. Wrap queries with `executeDatabaseOperation` so driver errors are not returned to visitors. This app uses Prisma ORM 6.19 because that release supports MongoDB with `prisma/schema.prisma`.

@@ -11,7 +11,7 @@ import { activateLocale, resolvePageLocale } from "@/lib/locale-page";
 export const dynamic = "force-dynamic";
 export const dynamicParams = false;
 
-const dedicatedAdminSections = new Set(["projects"]);
+const dedicatedAdminSections = new Set(["projects", "applications"]);
 
 const sectionItems = adminNavItems.filter(
   (item) =>
