@@ -1,4 +1,7 @@
+import { jest } from "@jest/globals";
 import "@testing-library/jest-dom/jest-globals";
+
+jest.mock("server-only", () => ({}));
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,

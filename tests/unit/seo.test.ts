@@ -124,6 +124,8 @@ describe("sitemap and structured data", () => {
       ]),
     );
     expect(urls).toContain("http://localhost:3000/blog");
+    expect(urls).not.toContain("http://localhost:3000/admin");
+    expect(urls).not.toContain("http://localhost:3000/login");
   });
 
   it("emits WebSite JSON-LD and Person data from the sample profile", () => {

@@ -14,6 +14,7 @@ export const messageNamespaces = [
   "terminal",
   "accessibility",
   "errors",
+  "auth",
 ] as const;
 
 export type MessageNamespace = (typeof messageNamespaces)[number];

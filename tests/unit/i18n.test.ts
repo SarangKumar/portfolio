@@ -24,4 +24,11 @@ describe("i18n foundation", () => {
     expect(enMessages.terminal.open).toBeTruthy();
     expect(enMessages.terminal.vault.usageUnlock).toContain("unlock analytics");
   });
+
+  it("keeps authentication copy in the translation catalog", () => {
+    expect(enMessages.auth.login.submit).toBeTruthy();
+    expect(enMessages.auth.login.error).toBeTruthy();
+    expect(enMessages.auth.logout.action).toBeTruthy();
+    expect(enMessages.auth.admin.title).toBeTruthy();
+  });
 });

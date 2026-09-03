@@ -22,4 +22,13 @@ export const serverEnv = {
   get analyticsVaultPassword() {
     return readEnv("ANALYTICS_VAULT_PASSWORD");
   },
+  get authSecret() {
+    return readEnv("AUTH_SECRET");
+  },
+  get adminEmail() {
+    return readEnv("ADMIN_EMAIL");
+  },
+  get adminPasswordHash() {
+    return readEnv("ADMIN_PASSWORD_HASH");
+  },
 };
