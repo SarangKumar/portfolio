@@ -3,9 +3,8 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import { SiteShell } from "@/components/layout/site-shell";
-import { siteConfig } from "@/config/site";
 import { JsonLd } from "@/components/seo/json-ld";
+import { siteConfig } from "@/config/site";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { fontMono, fontSans } from "@/lib/fonts";
@@ -86,9 +85,7 @@ export default async function LocaleLayout({
       <body className="min-h-dvh bg-background font-sans text-body text-foreground antialiased">
         <JsonLd data={websiteJsonLd(t("metadata.description"))} />
         <JsonLd data={personJsonLd()} />
-        <NextIntlClientProvider>
-          <SiteShell>{children}</SiteShell>
-        </NextIntlClientProvider>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

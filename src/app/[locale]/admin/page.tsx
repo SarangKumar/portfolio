@@ -1,13 +1,34 @@
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import { readAuthorizedAdminContext } from "@/admin/actions";
 import { getCurrentAdmin } from "@/admin/access";
+import { AdminSectionPlaceholder } from "@/features/admin/admin-section-placeholder";
 import { AccessDenied } from "@/features/auth/access-denied";
-import { AdminPlaceholder } from "@/features/auth/admin-placeholder";
-import { activateLocale, type LocalePageProps } from "@/lib/locale-page";
+import {
+  activateLocale,
+  resolvePageLocale,
+  type LocalePageProps,
+} from "@/lib/locale-page";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPage({ params }: LocalePageProps) {
+export async function generateMetadata({
+  params,
+}: LocalePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale: resolvePageLocale(locale),
+    namespace: "admin",
+  });
+
+  return {
+    title: t("dashboard.title"),
+    description: t("dashboard.intro"),
+    robots: { index: false, follow: false },
+  };
+}
+
+export default async function AdminDashboardPage({ params }: LocalePageProps) {
   const { locale } = await params;
   await activateLocale(locale);
 
@@ -18,16 +39,12 @@ export default async function AdminPage({ params }: LocalePageProps) {
     return <AccessDenied />;
   }
 
-  const t = await getTranslations("auth");
+  const t = await getTranslations("admin");
 
   return (
-    <AdminPlaceholder
-      copy={{
-        title: t("admin.title"),
-        intro: t("admin.intro"),
-        signedInAs: t("admin.signedInAs", { email: admin.email }),
-        logout: t("logout.action"),
-      }}
+    <AdminSectionPlaceholder
+      title={t("dashboard.title")}
+      description={t("dashboard.intro")}
     />
   );
 }

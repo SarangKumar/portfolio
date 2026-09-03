@@ -31,5 +31,7 @@ describe("i18n foundation", () => {
     expect(enMessages.auth.logout.action).toBeTruthy();
     expect(enMessages.auth.admin.title).toBeTruthy();
     expect(enMessages.auth.denied.title).toBeTruthy();
+    expect(enMessages.admin.nav.dashboard).toBeTruthy();
+    expect(enMessages.admin.openMenu).toBeTruthy();
   });
 });

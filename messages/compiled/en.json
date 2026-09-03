@@ -325,5 +325,37 @@
       "description": "You do not have access to this area.",
       "home": "Back to home"
     }
+  },
+  "admin": {
+    "metadata": {
+      "title": "Workspace",
+      "description": "Private career workspace."
+    },
+    "appName": "Workspace",
+    "session": "Session",
+    "logout": "Sign out",
+    "openMenu": "Open workspace menu",
+    "closeMenu": "Close workspace menu",
+    "navigation": "Workspace",
+    "sidebar": "Workspace sidebar",
+    "nav": {
+      "dashboard": "Dashboard",
+      "applications": "Applications",
+      "jobs": "Job Search",
+      "interviews": "Interviews",
+      "companies": "Companies",
+      "resumes": "Resumes",
+      "letters": "Cover Letters",
+      "notes": "Notes",
+      "analytics": "Analytics",
+      "settings": "Settings"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "intro": "This workspace will hold career operations. Sections are listed in the sidebar; their tools are not available yet."
+    },
+    "section": {
+      "unavailable": "This section is not available yet."
+    }
   }
 }
