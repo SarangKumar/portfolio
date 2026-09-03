@@ -20,39 +20,53 @@ import { motionTransitions } from "@/lib/motion";
 import { useMotionTransition } from "@/lib/use-motion-transition";
 import {
   createPublicCommandRegistry,
+  displayCommandLine,
   executeCommand,
   formatCommandResult,
+  historyCommandLine,
   historyValue,
   parseCommand,
   pushHistory,
+  splitUnlockDraft,
   stepHistory,
 } from "@/terminal";
+import { createHttpVaultClient } from "@/terminal/vault-client";
+import type { VaultCopy } from "@/terminal/types";
+import type { VaultCwd } from "@/terminal/vault-path";
+import {
+  readTerminalSession,
+  writeTerminalSession,
+  type TerminalOutputLine,
+} from "@/features/terminal/terminal-session";
 
-type OutputLine = {
-  id: number;
-  text: string;
-  tone: "input" | "output" | "error" | "system";
-};
+type OutputLine = TerminalOutputLine;
 
 export function PublicTerminal() {
   const t = useTranslations("terminal");
   const panelId = useId();
   const titleId = useId();
   const inputId = useId();
+  const passwordId = useId();
   const launcherRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
-  const lineId = useRef(0);
-  const draftRef = useRef("");
   const transition = useMotionTransition(motionTransitions.expansion);
   const registry = useMemo(() => createPublicCommandRegistry(), []);
+  const vault = useMemo(() => createHttpVaultClient(), []);
+  const stored = readTerminalSession();
+  const lineId = useRef(stored.lineId);
+  const draftRef = useRef(stored.draft);
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [history, setHistory] = useState<readonly string[]>([]);
-  const [cursor, setCursor] = useState<number | null>(null);
-  const [lines, setLines] = useState<readonly OutputLine[]>([]);
+  const [open, setOpen] = useState(stored.open);
+  const [cwd, setCwd] = useState<VaultCwd>(stored.cwd);
+  const [value, setValue] = useState(stored.value);
+  const [history, setHistory] = useState<readonly string[]>(stored.history);
+  const [cursor, setCursor] = useState<number | null>(stored.cursor);
+  const [lines, setLines] = useState<readonly OutputLine[]>(stored.lines);
+  const unlockDraft = splitUnlockDraft(value);
+  const passwordMode = unlockDraft !== null;
 
   const copy = useMemo(
     () => ({
@@ -62,6 +76,23 @@ export function PublicTerminal() {
         help: t("commands.help"),
         clear: t("commands.clear"),
       },
+    }),
+    [t],
+  );
+
+  const vaultCopy = useMemo(
+    (): VaultCopy => ({
+      notConfigured: t("vault.notConfigured"),
+      locked: t("vault.locked"),
+      unlocked: t("vault.unlocked"),
+      invalidPassword: t("vault.invalidPassword"),
+      rateLimited: t("vault.rateLimited"),
+      usageUnlock: t("vault.usageUnlock"),
+      listingRoot: t("vault.listingRoot"),
+      listingOpen: t("vault.listingOpen"),
+      noEntry: t("vault.noEntry"),
+      nowHere: t("vault.nowHere"),
+      lockedAgain: t("vault.lockedAgain"),
     }),
     [t],
   );
@@ -112,7 +143,11 @@ export function PublicTerminal() {
       return;
     }
 
-    inputRef.current?.focus();
+    if (passwordMode) {
+      passwordRef.current?.focus();
+    } else {
+      inputRef.current?.focus();
+    }
 
     setLines((current) => {
       if (current.length > 0) {
@@ -132,13 +167,26 @@ export function PublicTerminal() {
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [close, open, t]);
+  }, [close, open, passwordMode, t]);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
   }, [lines]);
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    writeTerminalSession({
+      open,
+      cwd,
+      value,
+      history,
+      cursor,
+      lines,
+      lineId: lineId.current,
+      draft: draftRef.current,
+    });
+  }, [open, cwd, value, history, cursor, lines]);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const raw = value;
     const parsed = parseCommand(raw);
@@ -146,15 +194,24 @@ export function PublicTerminal() {
     setValue("");
     setCursor(null);
     draftRef.current = "";
-    setHistory((current) => pushHistory(current, raw));
 
     if (!parsed) {
       return;
     }
 
+    setHistory((current) =>
+      pushHistory(current, historyCommandLine(raw, parsed.name)),
+    );
     trackTerminalCommand(parsed.name);
 
-    const formatted = formatCommandResult(executeCommand(raw, registry), copy);
+    const formatted = formatCommandResult(
+      await executeCommand(raw, registry, { cwd, vault, vaultCopy }),
+      copy,
+    );
+
+    if (formatted.cwd) {
+      setCwd(formatted.cwd);
+    }
 
     if (formatted.clear) {
       setLines([]);
@@ -162,7 +219,7 @@ export function PublicTerminal() {
     }
 
     addLines([
-      { text: `$ ${parsed.raw}`, tone: "input" },
+      { text: `$ ${displayCommandLine(raw, parsed.name)}`, tone: "input" },
       ...formatted.lines.map((text) => ({
         text,
         tone:
@@ -204,7 +261,7 @@ export function PublicTerminal() {
   return (
     <div
       className={cn(
-        "flex flex-col border-t border-border bg-card",
+        "sticky bottom-0 z-40 flex flex-col border-t border-border bg-card",
         open
           ? "h-[var(--terminal-open)] min-h-64"
           : "h-[var(--terminal-ribbon)]",
@@ -291,30 +348,74 @@ export function PublicTerminal() {
                 aria-hidden="true"
                 className="font-mono type-small text-primary"
               >
-                $
+                {cwd === "/analytics" ? "analytics $" : "$"}
               </span>
-              <label htmlFor={inputId} className="sr-only">
-                {t("inputLabel")}
-              </label>
-              <input
-                ref={inputRef}
-                id={inputId}
-                value={value}
-                onChange={(event) => {
-                  setValue(event.target.value);
-                  setCursor(null);
-                }}
-                onKeyDown={onInputKeyDown}
-                autoComplete="off"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                enterKeyHint="send"
-                className={cn(
-                  "min-w-0 flex-1 bg-transparent font-mono type-small text-foreground outline-none",
-                  "placeholder:text-muted-foreground",
-                )}
-              />
+              {unlockDraft ? (
+                <>
+                  <span className="shrink-0 font-mono type-small text-foreground">
+                    {unlockDraft.visible.trimEnd()}
+                  </span>
+                  <label htmlFor={passwordId} className="sr-only">
+                    {t("vault.passwordLabel")}
+                  </label>
+                  <input
+                    ref={passwordRef}
+                    id={passwordId}
+                    type="password"
+                    value={unlockDraft.secret}
+                    onChange={(event) => {
+                      setValue(`${unlockDraft.visible}${event.target.value}`);
+                      setCursor(null);
+                    }}
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === "Backspace" &&
+                        unlockDraft.secret.length === 0
+                      ) {
+                        event.preventDefault();
+                        setValue(unlockDraft.visible.trimEnd());
+                        return;
+                      }
+                      onInputKeyDown(event);
+                    }}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    enterKeyHint="send"
+                    className={cn(
+                      "min-w-0 flex-1 bg-transparent font-mono type-small text-foreground outline-none",
+                      "placeholder:text-muted-foreground",
+                    )}
+                  />
+                </>
+              ) : (
+                <>
+                  <label htmlFor={inputId} className="sr-only">
+                    {t("inputLabel")}
+                  </label>
+                  <input
+                    ref={inputRef}
+                    id={inputId}
+                    value={value}
+                    onChange={(event) => {
+                      setValue(event.target.value);
+                      setCursor(null);
+                    }}
+                    onKeyDown={onInputKeyDown}
+                    type="text"
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    enterKeyHint="send"
+                    className={cn(
+                      "min-w-0 flex-1 bg-transparent font-mono type-small text-foreground outline-none",
+                      "placeholder:text-muted-foreground",
+                    )}
+                  />
+                </>
+              )}
               <button type="submit" tabIndex={-1} className="sr-only">
                 {t("run")}
               </button>

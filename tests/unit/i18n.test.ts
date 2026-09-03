@@ -22,5 +22,6 @@ describe("i18n foundation", () => {
   it("keeps CMD ribbon copy in the translation catalog", () => {
     expect(enMessages.terminal.ribbonLabel).toBe("CMD");
     expect(enMessages.terminal.open).toBeTruthy();
+    expect(enMessages.terminal.vault.usageUnlock).toContain("unlock analytics");
   });
 });

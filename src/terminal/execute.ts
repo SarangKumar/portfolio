@@ -1,10 +1,15 @@
+import type {
+  CommandContext,
+  CommandLookup,
+  CommandResult,
+} from "@/terminal/types";
 import { parseCommand } from "@/terminal/parse";
-import type { CommandLookup, CommandResult } from "@/terminal/types";
 
-export function executeCommand(
+export async function executeCommand(
   input: string,
   registry: CommandLookup,
-): CommandResult {
+  context: CommandContext,
+): Promise<CommandResult> {
   const parsed = parseCommand(input);
 
   if (!parsed) {
@@ -17,5 +22,5 @@ export function executeCommand(
     return { kind: "unknown", name: parsed.name };
   }
 
-  return command.run(parsed, registry);
+  return command.run(parsed, registry, context);
 }

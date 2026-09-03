@@ -1,15 +1,20 @@
 import { describe, expect, it } from "@jest/globals";
 import {
   createPublicCommandRegistry,
+  displayCommandLine,
   executeCommand,
   formatCommandResult,
+  historyCommandLine,
   historyValue,
   parseCommand,
   pushHistory,
+  splitUnlockDraft,
   stepHistory,
   TERMINAL_HISTORY_LIMIT,
 } from "@/terminal";
-import type { CommandDefinition } from "@/terminal";
+import type { CommandContext, CommandDefinition, VaultCopy } from "@/terminal";
+import type { VaultClient } from "@/terminal/vault-client";
+import { unlockPassword } from "@/terminal/vault-path";
 
 const copy = {
   unknown: "Command not found: {name}. Type help.",
@@ -19,6 +24,41 @@ const copy = {
     clear: "Clear the terminal output",
   },
 };
+
+const vaultCopy: VaultCopy = {
+  notConfigured: "not configured",
+  locked: "locked",
+  unlocked: "unlocked",
+  invalidPassword: "bad password",
+  rateLimited: "slow down",
+  usageUnlock: "usage",
+  listingRoot: "[locked]",
+  listingOpen: "[unlocked]",
+  noEntry: "missing",
+  nowHere: "{path}",
+  lockedAgain: "locked again",
+};
+
+function context(
+  vault: Partial<VaultClient> = {},
+  cwd: CommandContext["cwd"] = "/",
+): CommandContext {
+  const client: VaultClient = {
+    async status() {
+      return { configured: true, unlocked: false };
+    },
+    async unlock() {
+      return { ok: false, error: "invalid" };
+    },
+    async lock() {},
+    async read() {
+      return { ok: false, error: "locked" };
+    },
+    ...vault,
+  };
+
+  return { cwd, vault: client, vaultCopy };
+}
 
 const ping: CommandDefinition = {
   name: "ping",
@@ -46,23 +86,35 @@ describe("parseCommand", () => {
 describe("executeCommand", () => {
   const registry = createPublicCommandRegistry();
 
-  it("no-ops on empty input", () => {
-    expect(executeCommand("   ", registry)).toEqual({ kind: "noop" });
+  it("no-ops on empty input", async () => {
+    expect(await executeCommand("   ", registry, context())).toEqual({
+      kind: "noop",
+    });
   });
 
-  it("runs help and its alias", () => {
-    expect(executeCommand("help", registry)).toMatchObject({ kind: "help" });
-    expect(executeCommand("?", registry)).toMatchObject({ kind: "help" });
+  it("runs help and its alias", async () => {
+    expect(await executeCommand("help", registry, context())).toMatchObject({
+      kind: "help",
+    });
+    expect(await executeCommand("?", registry, context())).toMatchObject({
+      kind: "help",
+    });
   });
 
-  it("runs clear aliases", () => {
-    expect(executeCommand("clear", registry)).toEqual({ kind: "clear" });
-    expect(executeCommand("cls", registry)).toEqual({ kind: "clear" });
-    expect(executeCommand("reset", registry)).toEqual({ kind: "clear" });
+  it("runs clear aliases", async () => {
+    expect(await executeCommand("clear", registry, context())).toEqual({
+      kind: "clear",
+    });
+    expect(await executeCommand("cls", registry, context())).toEqual({
+      kind: "clear",
+    });
+    expect(await executeCommand("reset", registry, context())).toEqual({
+      kind: "clear",
+    });
   });
 
-  it("returns unknown for unregistered commands", () => {
-    expect(executeCommand("sudo", registry)).toEqual({
+  it("returns unknown for unregistered commands", async () => {
+    expect(await executeCommand("sudo", registry, context())).toEqual({
       kind: "unknown",
       name: "sudo",
     });
@@ -70,7 +122,7 @@ describe("executeCommand", () => {
 });
 
 describe("command registry", () => {
-  it("lists unique public commands without requiring UI changes", () => {
+  it("lists unique public commands without requiring UI changes", async () => {
     const registry = createPublicCommandRegistry([ping]);
 
     expect(registry.list().map((command) => command.name)).toEqual([
@@ -78,29 +130,44 @@ describe("command registry", () => {
       "help",
       "ping",
     ]);
-    expect(executeCommand("ping", registry)).toEqual({
+    expect(await executeCommand("ping", registry, context())).toEqual({
       kind: "lines",
       lines: ["pong"],
     });
+  });
+
+  it("keeps analytics folder commands executable but hidden from help", async () => {
+    const registry = createPublicCommandRegistry();
+    const formatted = formatCommandResult(
+      await executeCommand("help", registry, context()),
+      copy,
+    );
+
+    expect(registry.get("unlock")).toBeDefined();
+    expect(formatted.lines.join("\n")).not.toContain("unlock");
+    expect(formatted.lines.join("\n")).not.toContain("cat");
   });
 });
 
 describe("formatCommandResult", () => {
   const registry = createPublicCommandRegistry();
 
-  it("formats unknown commands", () => {
-    expect(formatCommandResult(executeCommand("nope", registry), copy)).toEqual(
-      {
-        clear: false,
-        tone: "error",
-        lines: ["Command not found: nope. Type help."],
-      },
-    );
+  it("formats unknown commands", async () => {
+    expect(
+      formatCommandResult(
+        await executeCommand("nope", registry, context()),
+        copy,
+      ),
+    ).toEqual({
+      clear: false,
+      tone: "error",
+      lines: ["Command not found: nope. Type help."],
+    });
   });
 
-  it("formats help listings", () => {
+  it("formats help listings", async () => {
     const formatted = formatCommandResult(
-      executeCommand("help", registry),
+      await executeCommand("help", registry, context()),
       copy,
     );
 
@@ -114,15 +181,113 @@ describe("formatCommandResult", () => {
     );
   });
 
-  it("falls back to summaryKey for unregistered copy", () => {
+  it("falls back to summaryKey for unregistered copy", async () => {
     const formatted = formatCommandResult(
-      executeCommand("help", createPublicCommandRegistry([ping])),
+      await executeCommand(
+        "help",
+        createPublicCommandRegistry([ping]),
+        context(),
+      ),
       copy,
     );
 
     expect(formatted.lines).toEqual(
       expect.arrayContaining(["ping — commands.ping"]),
     );
+  });
+});
+
+describe("hidden analytics folder", () => {
+  const registry = createPublicCommandRegistry();
+
+  it("redacts unlock passwords from display and history", () => {
+    expect(displayCommandLine("unlock analytics hunter2", "unlock")).toBe(
+      "unlock analytics ****",
+    );
+    expect(historyCommandLine("unlock analytics hunter2", "unlock")).toBe(
+      "unlock analytics",
+    );
+    expect(unlockPassword(["analytics", "hunter2"])).toBe("hunter2");
+    expect(splitUnlockDraft("unlock")).toBeNull();
+    expect(splitUnlockDraft("unlock analytics")).toBeNull();
+    expect(splitUnlockDraft("unlock analytics ")).toEqual({
+      visible: "unlock analytics ",
+      secret: "",
+    });
+    expect(splitUnlockDraft("unlock analytics hunter2")).toEqual({
+      visible: "unlock analytics ",
+      secret: "hunter2",
+    });
+  });
+
+  it("lists the locked folder without opening it", async () => {
+    const result = await executeCommand("ls", registry, context());
+
+    expect(result).toEqual({
+      kind: "lines",
+      lines: ["analytics/  [locked]"],
+    });
+  });
+
+  it("unlocks with the password and reads summary plus json", async () => {
+    let unlocked = false;
+    const vault: Partial<VaultClient> = {
+      async status() {
+        return { configured: true, unlocked };
+      },
+      async unlock() {
+        unlocked = true;
+        return { ok: true };
+      },
+      async read(view) {
+        return {
+          ok: true,
+          lines: view === "json" ? ['{"count":1}'] : ["events: 1"],
+        };
+      },
+    };
+
+    const opened = await executeCommand(
+      "unlock analytics secret",
+      registry,
+      context(vault),
+    );
+
+    expect(opened).toMatchObject({
+      kind: "chdir",
+      path: "/analytics",
+    });
+
+    const listing = await executeCommand(
+      "ls",
+      registry,
+      context(vault, "/analytics"),
+    );
+    expect(listing).toEqual({ kind: "lines", lines: ["json", "summary"] });
+
+    const summary = await executeCommand(
+      "cat summary",
+      registry,
+      context(vault, "/analytics"),
+    );
+    expect(summary).toEqual({ kind: "lines", lines: ["events: 1"] });
+
+    const jsonView = await executeCommand(
+      "cat json",
+      registry,
+      context(vault, "/analytics"),
+    );
+    expect(jsonView).toEqual({ kind: "lines", lines: ['{"count":1}'] });
+  });
+
+  it("refuses cd analytics while locked", async () => {
+    const result = await executeCommand("cd analytics", registry, context());
+
+    expect(result).toEqual({
+      kind: "lines",
+      tone: "error",
+      lines: ["locked"],
+    });
   });
 });
 

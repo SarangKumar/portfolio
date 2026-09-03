@@ -2,7 +2,7 @@
 
 Public command ribbon for the portfolio. It sits in the page flow **above the footer**: a thin bar when closed, and about **40% of the viewport height** when open.
 
-This is not a shell, admin console, or private career tool. Phase 1 ships two commands. New commands belong in the registry, not in the panel UI.
+This is not a full admin dashboard. Phase 1 ships public commands plus a hidden, password-gated analytics folder in CMD.
 
 ## Layout
 
@@ -13,12 +13,13 @@ CMD ribbon  ← closed: ~2.5rem; open: 40dvh
 footer
 ```
 
-- Closed: full-width ribbon with the `CMD` label. Click or `Ctrl/Cmd + \`` opens it.
-- Open: the same ribbon stays as the header; the log and prompt fill the remaining height.
+- Closed: full-width ribbon with the `CMD` label, sticky to the bottom of the viewport (sits on top of the footer). Click or `Ctrl/Cmd + \`` opens it.
+- Open: the same ribbon stays as the header; the log and prompt fill the remaining height. The panel stays sticky while you scroll or move between pages.
+- Session (open state, log, history, cwd) is kept in memory for the tab so client navigations do not reset CMD.
 - `Escape` closes the panel. Output history is kept until `clear`.
 - The panel is an in-page region, not a modal overlay, so Tab continues into the footer.
 
-UI: `src/features/terminal/public-terminal.tsx` (loaded with `next/dynamic`, `ssr: false`).
+UI: `src/features/terminal/public-terminal.tsx`, mounted client-side from `public-terminal-lazy.tsx` after a matching ribbon placeholder.
 
 ## Architecture
 
@@ -49,6 +50,29 @@ Do not import next-intl routing from unit tests. Command handlers return structu
 
 Unknown input prints the translated `unknown` message. Empty submit is a no-op.
 
+## Hidden analytics folder
+
+Not listed by `help`. Password is `ANALYTICS_VAULT_PASSWORD` (server-only). The client never reads that env var; unlock POSTs to `/api/analytics/vault` and stores an httpOnly cookie.
+
+```
+ls
+unlock analytics <password>
+ls
+cat summary
+cat json
+lock
+```
+
+| Command                       | Behavior                                |
+| ----------------------------- | --------------------------------------- |
+| `ls`                          | Show `analytics/` as locked or unlocked |
+| `unlock analytics <password>` | Unlock, then `cd` into `/analytics`     |
+| `cd analytics` / `cd ..`      | Enter folder only while unlocked        |
+| `cat summary` / `cat json`    | Normal view or JSON of in-memory events |
+| `lock` / `pwd`                | Relock; print cwd                       |
+
+Unlock attempts are rate limited. The command stays visible while typing; only the password after `unlock analytics ` is masked. Submitted passwords are not written to the log or command history. If the env var is unset, the folder stays unavailable.
+
 ## Adding a command
 
 1. Add a `CommandDefinition` in `src/terminal/commands/`.
@@ -57,4 +81,4 @@ Unknown input prints the translated `unknown` message. Empty submit is a no-op.
 4. Run `npm run i18n:build`.
 5. Cover parse/execute in `tests/unit/terminal.test.ts`.
 
-Keep handlers free of React. Do not read secrets, analytics dumps, or unpublished private career data from this surface.
+Keep handlers free of React. Do not put the vault password in client code. Analytics dumps require an unlocked server session.

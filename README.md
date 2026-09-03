@@ -62,3 +62,4 @@ Copy `.env.example` to `.env.local`.
 - All other variables — server-only; import from `src/lib/env/server.ts` (`server-only`)
 - `CONTACT_WEBHOOK_URL` — optional server endpoint for contact form delivery. When unset, the form still validates and reports that delivery is not configured.
 - `ANALYTICS_HASH_SALT` — optional salt for hashing IPs used only as an in-memory rate-limit fallback. Event records never include IP addresses.
+- `ANALYTICS_VAULT_PASSWORD` — server-only password for the hidden CMD folder `analytics/`. When unset, unlock always fails.

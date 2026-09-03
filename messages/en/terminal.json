@@ -12,5 +12,19 @@
   "commands": {
     "help": "List available commands",
     "clear": "Clear the terminal output"
+  },
+  "vault": {
+    "notConfigured": "analytics/ is not configured on this server.",
+    "locked": "Permission denied. analytics/ is locked. Use: unlock analytics <password>",
+    "unlocked": "Unlocked analytics/. Try ls, then cat summary or cat json.",
+    "invalidPassword": "Unlock failed.",
+    "rateLimited": "Too many unlock attempts. Try again later.",
+    "usageUnlock": "Usage: unlock analytics <password>",
+    "listingRoot": "[locked]",
+    "listingOpen": "[unlocked]",
+    "noEntry": "No such file or directory.",
+    "nowHere": "{path}",
+    "lockedAgain": "Locked analytics/.",
+    "passwordLabel": "Password"
   }
 }

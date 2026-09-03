@@ -10,6 +10,7 @@ export type FormattedOutput = {
   clear: boolean;
   lines: readonly string[];
   tone: "default" | "error";
+  cwd?: "/analytics" | "/";
 };
 
 function interpolate(template: string, values: Record<string, string>): string {
@@ -52,5 +53,18 @@ export function formatCommandResult(
     };
   }
 
-  return { clear: false, lines: result.lines, tone: "default" };
+  if (result.kind === "chdir") {
+    return {
+      clear: false,
+      lines: result.lines,
+      tone: result.tone ?? "default",
+      cwd: result.path,
+    };
+  }
+
+  return {
+    clear: false,
+    lines: result.lines,
+    tone: result.tone ?? "default",
+  };
 }

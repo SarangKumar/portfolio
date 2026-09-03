@@ -18,9 +18,9 @@ export class CommandRegistry implements CommandLookup {
   }
 
   list(): readonly CommandDefinition[] {
-    return [...this.names.values()].sort((a, b) =>
-      a.name.localeCompare(b.name),
-    );
+    return [...this.names.values()]
+      .filter((command) => !command.hidden)
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 }
 
