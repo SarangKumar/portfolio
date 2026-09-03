@@ -32,9 +32,9 @@ const publishedProfile = {
 };
 
 describe("content helpers", () => {
-  it("treats the current profile as unpublished", () => {
-    expect(hasProfileContent(profile)).toBe(false);
-    expect(hasAboutContent(profile)).toBe(false);
+  it("treats the sample profile as published content", () => {
+    expect(hasProfileContent(profile)).toBe(true);
+    expect(hasAboutContent(profile)).toBe(true);
     expect(hasProfileContent(publishedProfile)).toBe(true);
     expect(
       hasAboutContent({
@@ -44,14 +44,15 @@ describe("content helpers", () => {
     ).toBe(true);
   });
 
-  it("treats unpublished collections as empty", () => {
-    expect(isEmptyList(projects)).toBe(true);
-    expect(isEmptyList(experience)).toBe(true);
-    expect(isEmptyList(skills)).toBe(true);
-    expect(isEmptyList(posts)).toBe(true);
-    expect(isEmptyList(resumes)).toBe(true);
-    expect(isEmptyList(certifications)).toBe(true);
-    expect(isEmptyList(badges)).toBe(true);
+  it("treats empty collections as unpublished and sample catalogs as populated", () => {
+    expect(isEmptyList([])).toBe(true);
+    expect(isEmptyList(projects)).toBe(false);
+    expect(isEmptyList(experience)).toBe(false);
+    expect(isEmptyList(skills)).toBe(false);
+    expect(isEmptyList(posts)).toBe(false);
+    expect(isEmptyList(resumes)).toBe(false);
+    expect(isEmptyList(certifications)).toBe(false);
+    expect(isEmptyList(badges)).toBe(false);
     expect(isEmptyList([{ id: "1" }])).toBe(false);
   });
 });

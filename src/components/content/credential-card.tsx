@@ -1,7 +1,6 @@
 import { MediaImage } from "@/components/content/media-image";
 import { RelatedItemList } from "@/components/content/related-item-list";
 import type { Skill } from "@/data/skills";
-import { cn } from "@/lib/cn";
 import { getExternalAnchorProps } from "@/lib/href";
 
 type CredentialCardProps = {
@@ -30,13 +29,7 @@ export function CredentialCard({
   skillsEmptyLabel,
 }: CredentialCardProps) {
   return (
-    <article
-      className={cn(
-        "stack-compact surface-card pad-card",
-        "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
-        "hover:border-primary/40",
-      )}
-    >
+    <article className="stack-compact surface-card pad-card surface-interactive">
       <div className="flex gap-3">
         {imageSrc ? (
           <MediaImage

@@ -13,6 +13,8 @@ type ArticlePageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }

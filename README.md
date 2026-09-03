@@ -2,21 +2,23 @@
 
 Production-grade Next.js application foundation for a public portfolio and later private engineering tools.
 
-This repository currently has project setup, the design system, UI primitives, the global shell, public Home, About, Experience, Skills, Projects, Resume, Blog, and Contact pages, and a Phase 1 public terminal. Certifications and badges appear on About and Resume when published. Other application pages are not implemented yet.
+This repository currently has project setup, the design system, UI primitives, the global shell, public content pages with lorem ipsum sample catalogs, and a Phase 1 CMD ribbon. Certifications and badges appear on About and Resume. Replace the sample records before publishing a real identity.
 
 ## Scripts
 
-| Script                                          | Purpose                                |
-| ----------------------------------------------- | -------------------------------------- |
-| `npm run dev`                                   | Development server                     |
-| `npm run build`                                 | Production build                       |
-| `npm run start`                                 | Start production server                |
-| `npm run lint` / `lint:fix`                     | ESLint                                 |
-| `npm run format` / `format:check`               | Prettier                               |
-| `npm run typecheck`                             | Strict TypeScript                      |
-| `npm run test` / `test:watch` / `test:coverage` | Jest                                   |
-| `npm run check`                                 | typecheck + lint + format:check + test |
-| `npm run prepare`                               | Husky git hooks                        |
+| Script                                          | Purpose                                               |
+| ----------------------------------------------- | ----------------------------------------------------- |
+| `npm run dev`                                   | Build translations, then start the development server |
+| `npm run build`                                 | Production build                                      |
+| `npm run start`                                 | Start production server                               |
+| `npm run i18n:build`                            | Merge message namespaces into compiled catalogs       |
+| `npm run i18n:check`                            | Verify namespaces and that compiled output is current |
+| `npm run lint` / `lint:fix`                     | ESLint                                                |
+| `npm run format` / `format:check`               | Prettier                                              |
+| `npm run typecheck`                             | Strict TypeScript                                     |
+| `npm run test` / `test:watch` / `test:coverage` | Jest                                                  |
+| `npm run check`                                 | i18n:check + typecheck + lint + format:check + test   |
+| `npm run prepare`                               | Husky git hooks                                       |
 
 ## Architecture
 
@@ -38,9 +40,9 @@ This repository currently has project setup, the design system, UI primitives, t
 | Design tokens      | `src/app/globals.css`           |
 | Motion conventions | `src/lib/motion.ts`             |
 
-The global shell (`src/components/layout`) provides header, footer, skip link, page container, and the public terminal launcher. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data` — unpublished fields render as placeholders instead of invented content. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. Blog posts use `/blog/[slug]` with Markdown rendered by `react-markdown`. Resume supports multiple versions, preview, download, and typed `resume_*` events. Contact accepts a validated form; delivery uses optional `CONTACT_WEBHOOK_URL`. Analytics is a typed, fail-open pipeline (`src/analytics`) that validates events server-side, stores them through a replaceable sink, and ranks featured projects from `project_view` counts with catalog fallback. Reusable Recharts visualizations live in `src/components/charts` and consume `--chart-*` tokens. Charts render only when they have useful published data. The public terminal UI (`src/features/terminal`) talks to a command registry (`src/terminal`) so new commands can be registered without changing the panel. SEO helpers live in `src/lib/seo.ts` (`sitemap.ts`, `robots.ts`, page metadata, and JSON-LD). There is no admin dashboard in this phase. Events do not store raw IP addresses or form PII.
+The global shell (`src/components/layout`) provides header, footer, skip link, page container, and the CMD ribbon above the footer. CMD architecture is documented in `src/terminal/README.md`. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data`. Catalogs currently contain lorem ipsum sample records for layout and integration; replace them before publishing a real identity. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. Blog posts use `/blog/[slug]` with Markdown rendered by `react-markdown`. Resume supports multiple versions, preview, download, and typed `resume_*` events. Contact accepts a validated form; delivery uses optional `CONTACT_WEBHOOK_URL`. Analytics is a typed, fail-open pipeline (`src/analytics`) that validates events server-side, stores them through a replaceable sink, and ranks featured projects from `project_view` counts with catalog fallback. Reusable Recharts visualizations live in `src/components/charts` and consume `--chart-*` tokens. Charts render only when they have useful published data. The public terminal UI (`src/features/terminal`) talks to a command registry (`src/terminal`) so new commands can be registered without changing the panel. SEO helpers live in `src/lib/seo.ts` (`sitemap.ts`, `robots.ts`, page metadata, and JSON-LD). There is no admin dashboard in this phase. Events do not store raw IP addresses or form PII.
 
-Locale-aware routing uses `src/app/[locale]` and `next-intl`. English is the only locale. Message namespaces live in `messages/{locale}/`. UI copy should use `useTranslations` / `getTranslations` from next-intl — do not wrap those APIs. Page-level `generateMetadata` should pass `{ locale, namespace }` into `getTranslations` so metadata can be localized later.
+Locale-aware routing uses `src/app/[locale]` and `next-intl`. English is the only locale. Edit copy in `messages/{locale}/*.json`, then run `npm run i18n:build` to write `messages/compiled/{locale}.json`. Runtime loads the compiled catalogs. UI copy should use `useTranslations` / `getTranslations` from next-intl — do not wrap those APIs. Page-level `generateMetadata` should pass `{ locale, namespace }` into `getTranslations` so metadata can be localized later.
 
 ## Design system
 

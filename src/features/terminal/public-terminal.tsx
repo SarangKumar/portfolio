@@ -1,6 +1,6 @@
 "use client";
 
-import { SquareTerminal, X } from "lucide-react";
+import { ChevronsUpDown, SquareTerminal, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import {
@@ -36,7 +36,7 @@ type OutputLine = {
 
 export function PublicTerminal() {
   const t = useTranslations("terminal");
-  const dialogId = useId();
+  const panelId = useId();
   const titleId = useId();
   const inputId = useId();
   const launcherRef = useRef<HTMLButtonElement>(null);
@@ -171,30 +171,6 @@ export function PublicTerminal() {
     ]);
   }
 
-  function onDialogKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key !== "Tab") {
-      return;
-    }
-
-    const first = closeRef.current;
-    const last = inputRef.current;
-
-    if (!first || !last) {
-      return;
-    }
-
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-      return;
-    }
-
-    if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
   function onInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "ArrowUp") {
       event.preventDefault();
@@ -226,42 +202,69 @@ export function PublicTerminal() {
   }
 
   return (
-    <div className="pointer-events-none fixed inset-x-3 bottom-3 z-50 flex flex-col items-end gap-2 md:inset-x-auto md:right-3">
-      <AnimatePresence>
+    <div
+      className={cn(
+        "flex flex-col border-t border-border bg-card",
+        open
+          ? "h-[var(--terminal-open)] min-h-64"
+          : "h-[var(--terminal-ribbon)]",
+      )}
+    >
+      <div
+        className={cn(
+          "flex h-[var(--terminal-ribbon)] shrink-0 items-center gap-2 px-3",
+          open && "border-b border-border",
+        )}
+      >
+        <button
+          ref={launcherRef}
+          type="button"
+          aria-expanded={open}
+          aria-controls={open ? panelId : undefined}
+          aria-label={open ? t("close") : t("open")}
+          onClick={toggle}
+          className="flex min-w-0 flex-1 items-center gap-2 rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <SquareTerminal className="size-3.5 shrink-0 text-primary" />
+          <span id={titleId} className="type-label text-foreground">
+            {t("ribbonLabel")}
+          </span>
+          <span className="hidden truncate type-metadata sm:inline">
+            {t("ribbonHint")}
+          </span>
+          <ChevronsUpDown className="ml-auto size-3.5 shrink-0 text-muted-foreground" />
+        </button>
+        {open ? (
+          <IconButton
+            ref={closeRef}
+            size="sm"
+            variant="ghost"
+            aria-label={t("close")}
+            onClick={close}
+          >
+            <X />
+          </IconButton>
+        ) : null}
+      </div>
+      <AnimatePresence initial={false}>
         {open ? (
           <motion.div
             key="terminal-panel"
-            role="dialog"
-            aria-modal="true"
+            id={panelId}
+            role="region"
             aria-labelledby={titleId}
-            id={dialogId}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={transition}
-            onKeyDown={onDialogKeyDown}
-            className="pointer-events-auto flex h-72 w-full max-w-md flex-col overflow-hidden rounded-md border border-border bg-card shadow-card"
+            className="flex min-h-0 flex-1 flex-col"
           >
-            <header className="flex items-center justify-between gap-2 border-b border-border px-2 py-1">
-              <p id={titleId} className="type-label text-muted-foreground">
-                {t("title")}
-              </p>
-              <IconButton
-                ref={closeRef}
-                size="sm"
-                variant="ghost"
-                aria-label={t("close")}
-                onClick={close}
-              >
-                <X />
-              </IconButton>
-            </header>
             <div
               ref={logRef}
               role="log"
               aria-live="polite"
               aria-relevant="additions"
-              className="min-h-0 flex-1 overflow-y-auto px-2 py-2 font-mono type-small"
+              className="min-h-0 flex-1 overflow-y-auto px-3 py-2 font-mono type-small"
             >
               <ul className="stack-compact">
                 {lines.map((line) => (
@@ -282,7 +285,7 @@ export function PublicTerminal() {
             </div>
             <form
               onSubmit={submit}
-              className="flex items-center gap-1 border-t border-border px-2 py-1.5"
+              className="flex items-center gap-1 border-t border-border px-3 py-1.5"
             >
               <span
                 aria-hidden="true"
@@ -319,19 +322,6 @@ export function PublicTerminal() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-      <IconButton
-        ref={launcherRef}
-        size="sm"
-        variant="outline"
-        aria-label={open ? t("close") : t("open")}
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        aria-controls={open ? dialogId : undefined}
-        onClick={toggle}
-        className="pointer-events-auto"
-      >
-        <SquareTerminal />
-      </IconButton>
     </div>
   );
 }

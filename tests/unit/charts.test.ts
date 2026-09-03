@@ -1,4 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
+import { render, screen } from "@testing-library/react";
+import { createElement } from "react";
 import {
   FEATURED_PROJECT_LIMIT,
   popularityChartPoints,
@@ -9,6 +11,7 @@ import {
   hasUsefulRadarData,
   skillCategoryRadarPoints,
 } from "@/analytics/visualizations";
+import { HeatmapChart } from "@/components/charts/heatmap-chart";
 import { chartColorVars, chartSeriesColor } from "@/components/charts/theme";
 
 describe("rankProjectsByPopularity", () => {
@@ -128,5 +131,23 @@ describe("chart tokens", () => {
     ]);
     expect(chartSeriesColor(0)).toBe("var(--chart-1)");
     expect(chartSeriesColor(5)).toBe("var(--chart-1)");
+  });
+});
+
+describe("HeatmapChart", () => {
+  it("renders a labeled grid from valid cells", () => {
+    render(
+      createElement(HeatmapChart, {
+        title: "Activity",
+        cells: [
+          { x: "Mon", y: "AM", value: 2 },
+          { x: "Tue", y: "AM", value: 0 },
+        ],
+      }),
+    );
+
+    expect(screen.getByRole("img", { name: "Activity" })).toBeInTheDocument();
+    expect(screen.getByText("Mon")).toBeInTheDocument();
+    expect(screen.getByText("AM")).toBeInTheDocument();
   });
 });

@@ -1,10 +1,12 @@
 {
-  "title": "Terminal",
+  "title": "CMD",
+  "ribbonLabel": "CMD",
+  "ribbonHint": "Public commands. Ctrl or Cmd + `",
   "inputLabel": "Command",
   "run": "Run command",
-  "open": "Open terminal",
-  "close": "Close terminal",
-  "welcome": "Public terminal. Type help.",
+  "open": "Open CMD",
+  "close": "Close CMD",
+  "welcome": "Public CMD. Type help.",
   "unknown": "Command not found: '{name}'. Type help.",
   "helpIntro": "Available commands:",
   "commands": {

@@ -1,37 +1,7 @@
-import about from "../../messages/en/about.json";
-import accessibility from "../../messages/en/accessibility.json";
-import blog from "../../messages/en/blog.json";
-import charts from "../../messages/en/charts.json";
-import common from "../../messages/en/common.json";
-import contact from "../../messages/en/contact.json";
-import credentials from "../../messages/en/credentials.json";
-import errors from "../../messages/en/errors.json";
-import experience from "../../messages/en/experience.json";
-import home from "../../messages/en/home.json";
-import navigation from "../../messages/en/navigation.json";
-import projects from "../../messages/en/projects.json";
-import resume from "../../messages/en/resume.json";
-import skills from "../../messages/en/skills.json";
-import terminal from "../../messages/en/terminal.json";
+import compiledEn from "../../messages/compiled/en.json";
 import { type AppLocale } from "./locales";
 
-export const enMessages = {
-  navigation,
-  common,
-  home,
-  about,
-  experience,
-  skills,
-  projects,
-  resume,
-  blog,
-  contact,
-  credentials,
-  charts,
-  terminal,
-  accessibility,
-  errors,
-};
+export const enMessages = compiledEn;
 
 export const messagesByLocale = {
   en: enMessages,

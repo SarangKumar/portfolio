@@ -179,10 +179,9 @@ export function ExperienceTimeline({
                       aria-current={isSelected ? "true" : undefined}
                       className={cn(
                         "w-full rounded-md border pad-card text-left stack-compact",
-                        "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
                         isSelected
                           ? "border-primary bg-card"
-                          : "border-border bg-card hover:border-primary/40",
+                          : "border-border bg-card surface-interactive",
                       )}
                       onClick={() => setSelectedId(item.id)}
                     >

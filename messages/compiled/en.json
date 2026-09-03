@@ -1,0 +1,279 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "skills": "Skills",
+    "projects": "Projects",
+    "resume": "Resume",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "common": {
+    "appName": "Portfolio",
+    "metadata": {
+      "title": "Portfolio",
+      "description": "Personal engineering portfolio"
+    },
+    "loading": "Loading",
+    "copyright": "© {year} {name}"
+  },
+  "home": {
+    "title": "Home",
+    "metadata": {
+      "title": "Home",
+      "description": "Overview of identity, work, writing, and contact."
+    },
+    "hero": {
+      "kicker": "Portfolio",
+      "placeholderName": "Name to be added",
+      "placeholderHeadline": "Role and focus will be published here.",
+      "placeholderSummary": "A short introduction will appear in this space.",
+      "viewWork": "View work",
+      "contact": "Contact"
+    },
+    "about": {
+      "title": "Identity",
+      "placeholder": "An about preview will be published here.",
+      "more": "About"
+    },
+    "skills": {
+      "title": "Focus",
+      "placeholder": "Technical focus areas will be listed here.",
+      "more": "Skills"
+    },
+    "experience": {
+      "title": "Experience",
+      "placeholder": "Experience will be listed here.",
+      "more": "All experience"
+    },
+    "projects": {
+      "title": "Projects",
+      "placeholder": "Selected projects will be listed here.",
+      "more": "All projects"
+    },
+    "writing": {
+      "title": "Writing",
+      "placeholder": "Notes and articles will be listed here.",
+      "more": "All writing"
+    },
+    "contact": {
+      "title": "Contact",
+      "body": "For work and questions, use the contact page.",
+      "action": "Get in touch"
+    }
+  },
+  "about": {
+    "title": "About",
+    "metadata": {
+      "title": "About",
+      "description": "Engineering background, working approach, and current focus."
+    },
+    "intro": "Background, working approach, and current focus. Personal details appear here when they are published.",
+    "unpublished": "About content has not been published yet.",
+    "background": {
+      "title": "Background",
+      "placeholder": "Engineering background will be published here."
+    },
+    "philosophy": {
+      "title": "Approach",
+      "placeholder": "Engineering philosophy will be published here."
+    },
+    "focus": {
+      "title": "Current focus",
+      "placeholder": "Current technical focus will be listed here."
+    },
+    "expertise": {
+      "title": "Expertise",
+      "placeholder": "Areas of expertise will be listed here."
+    },
+    "interests": {
+      "title": "Learning",
+      "placeholder": "Learning interests will be listed here."
+    }
+  },
+  "experience": {
+    "title": "Experience",
+    "metadata": {
+      "title": "Experience",
+      "description": "Public roles by company, title, and time period."
+    },
+    "intro": "Public roles, grouped by time, company, or title. This is not a private career record.",
+    "placeholder": "Public experience will be listed here.",
+    "present": "Present",
+    "groupBy": "Arrange experience by",
+    "byTime": "Time",
+    "byCompany": "Company",
+    "byRole": "Role",
+    "timeline": "Experience timeline",
+    "details": "Role details",
+    "technologies": "Technologies",
+    "projects": "Projects",
+    "achievements": "Impact",
+    "noRelated": "None linked yet.",
+    "noDescription": "A role description will be published here.",
+    "noAchievements": "Impact notes will be published here when they exist."
+  },
+  "skills": {
+    "title": "Skills",
+    "metadata": {
+      "title": "Skills",
+      "description": "Skills grouped by category, with linked public work as evidence."
+    },
+    "intro": "Skills are grouped by category and shown with linked roles and projects, not proficiency scores.",
+    "placeholder": "Skills will be listed here when they are published.",
+    "emptyCategory": "No skills in this category yet.",
+    "evidence": "{roles, plural, =0 {No linked roles} one {# linked role} other {# linked roles}} · {projects, plural, =0 {no linked projects} one {# linked project} other {# linked projects}}",
+    "noExperience": "No linked public roles.",
+    "noProjects": "No linked public projects.",
+    "noEvidence": "No public roles or projects are linked yet."
+  },
+  "projects": {
+    "title": "Projects",
+    "metadata": {
+      "title": "Projects",
+      "description": "Selected public projects and case studies."
+    },
+    "intro": "Public projects listed by slug. Case studies appear when those fields are published.",
+    "placeholder": "Projects will be listed here when they are published.",
+    "technologies": "Technologies",
+    "skills": "Skills",
+    "media": "Project media",
+    "viewProject": "View project",
+    "sourceCode": "Source code",
+    "liveDemo": "Live demo",
+    "noSkills": "No linked skills yet.",
+    "sections": {
+      "description": "Overview",
+      "architecture": "Architecture",
+      "problem": "Problem",
+      "solution": "Solution",
+      "challenges": "Challenges",
+      "decisions": "Decisions",
+      "tradeoffs": "Trade-offs",
+      "testing": "Testing",
+      "performance": "Performance",
+      "futureImprovements": "Future improvements"
+    }
+  },
+  "resume": {
+    "title": "Resume",
+    "metadata": {
+      "title": "Resume",
+      "description": "Resume overview, preview, and download for recruiting conversations."
+    },
+    "intro": "A recruiter-oriented resume view. Multiple versions can be published later.",
+    "placeholder": "A resume will be published here.",
+    "versions": "Resume versions",
+    "preview": "Resume preview",
+    "previewUnavailable": "A resume preview will appear here when a file is published.",
+    "download": "Download resume",
+    "downloadUnavailable": "A downloadable resume file is not published yet.",
+    "recruiterTitle": "Hiring conversation",
+    "recruiterBody": "For roles and interviews, use the contact page.",
+    "recruiterAction": "Contact"
+  },
+  "blog": {
+    "title": "Writing",
+    "metadata": {
+      "title": "Writing",
+      "description": "Public notes and articles."
+    },
+    "intro": "Public writing only. Notes appear here when they are published.",
+    "placeholder": "Articles will be listed here when they are published.",
+    "readMore": "Read more",
+    "tags": "Tags",
+    "categories": "Categories",
+    "published": "Published {date}",
+    "updated": "Updated {date}",
+    "readingTime": "{minutes} min read"
+  },
+  "contact": {
+    "title": "Contact",
+    "metadata": {
+      "title": "Contact",
+      "description": "Email, profiles, and a short contact form for hiring conversations."
+    },
+    "intro": "A compact path for recruiting and work conversations.",
+    "email": "Email",
+    "emailUnavailable": "A public email address will be published here.",
+    "emailAction": "Send email",
+    "social": "Profiles",
+    "socialPlaceholder": "Public profiles will be listed here.",
+    "formTitle": "Message",
+    "name": "Name",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending",
+    "success": "Message accepted for delivery.",
+    "error": "The message could not be sent.",
+    "unavailable": "Form delivery is not configured yet. Use email if it is available.",
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "tooLong": "This field is too long.",
+    "honeypot": "Leave this field empty."
+  },
+  "credentials": {
+    "certifications": {
+      "title": "Certifications",
+      "placeholder": "Certifications will be listed here when they are published.",
+      "verify": "Verify",
+      "credentialId": "Credential ID",
+      "noSkills": "No linked skills."
+    },
+    "badges": {
+      "title": "Badges",
+      "placeholder": "Badges will be listed here when they are published.",
+      "verify": "Verify",
+      "noSkills": "No linked skills."
+    }
+  },
+  "charts": {
+    "popularity": {
+      "title": "Project interest",
+      "description": "Relative project_view counts. Catalog order fills any remaining featured slots when analytics are sparse.",
+      "valueLabel": "Views"
+    },
+    "radar": {
+      "title": "Evidence by category",
+      "description": "Linked public roles and projects per skill category. These are evidence counts, not proficiency scores.",
+      "projects": "Linked projects",
+      "roles": "Linked roles"
+    }
+  },
+  "terminal": {
+    "title": "CMD",
+    "ribbonLabel": "CMD",
+    "ribbonHint": "Public commands. Ctrl or Cmd + `",
+    "inputLabel": "Command",
+    "run": "Run command",
+    "open": "Open CMD",
+    "close": "Close CMD",
+    "welcome": "Public CMD. Type help.",
+    "unknown": "Command not found: '{name}'. Type help.",
+    "helpIntro": "Available commands:",
+    "commands": {
+      "help": "List available commands",
+      "clear": "Clear the terminal output"
+    }
+  },
+  "accessibility": {
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "main": "Main",
+    "footer": "Footer"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you requested could not be found.",
+      "action": "Back to home"
+    },
+    "unexpected": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred.",
+      "action": "Try again"
+    }
+  }
+}

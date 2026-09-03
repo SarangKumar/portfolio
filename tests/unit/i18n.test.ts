@@ -13,4 +13,14 @@ describe("i18n foundation", () => {
   it("loads every required message namespace", () => {
     expect(Object.keys(enMessages)).toEqual([...messageNamespaces]);
   });
+
+  it("keeps error copy in the translation catalog", () => {
+    expect(enMessages.errors.notFound.action).toBeTruthy();
+    expect(enMessages.errors.unexpected.action).toBeTruthy();
+  });
+
+  it("keeps CMD ribbon copy in the translation catalog", () => {
+    expect(enMessages.terminal.ribbonLabel).toBe("CMD");
+    expect(enMessages.terminal.open).toBeTruthy();
+  });
 });

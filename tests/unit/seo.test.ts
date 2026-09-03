@@ -111,7 +111,7 @@ describe("dynamic page metadata", () => {
 });
 
 describe("sitemap and structured data", () => {
-  it("lists public routes without inventing unpublished URLs", () => {
+  it("lists public routes and published sample detail URLs", () => {
     const urls = publicSitemapEntries().map((entry) => entry.url);
 
     expect(urls).toEqual(
@@ -119,18 +119,21 @@ describe("sitemap and structured data", () => {
         pageUrl("/"),
         "http://localhost:3000/about",
         "http://localhost:3000/contact",
+        "http://localhost:3000/projects/lorem-gateway",
+        "http://localhost:3000/blog/notes-on-lorem",
       ]),
     );
     expect(urls).toContain("http://localhost:3000/blog");
-    expect(urls.some((url) => url.includes("/projects/"))).toBe(false);
-    expect(urls.some((url) => url.includes("/blog/"))).toBe(false);
   });
 
-  it("emits WebSite JSON-LD and skips unpublished Person data", () => {
+  it("emits WebSite JSON-LD and Person data from the sample profile", () => {
     expect(websiteJsonLd("Personal engineering portfolio")["@type"]).toBe(
       "WebSite",
     );
-    expect(personJsonLd()).toBeNull();
+    expect(personJsonLd()).toMatchObject({
+      "@type": "Person",
+      name: "Lorem Ipsum",
+    });
   });
 
   it("emits Article and CreativeWork JSON-LD for detail pages", () => {

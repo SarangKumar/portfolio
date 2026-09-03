@@ -19,9 +19,7 @@ export function ProjectCard({
       <a
         href={projectHref(project.slug)}
         className={cn(
-          "stack-compact surface-card pad-card rounded-md",
-          "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
-          "hover:border-primary/40 focus-visible:outline-2",
+          "stack-compact surface-card pad-card surface-interactive",
           className,
         )}
       >

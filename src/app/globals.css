@@ -53,6 +53,8 @@
   /* Compact layout */
   --container-app: 72rem;
   --container-narrow: 40rem;
+  --terminal-ribbon: 2.5rem;
+  --terminal-open: 40dvh;
   --space-page: 1rem;
   --space-section: 1.25rem;
   --space-card: 0.75rem;
@@ -224,6 +226,16 @@
     padding: 0.25rem 0.5rem;
     font-size: var(--fs-small);
     line-height: 1.4;
+  }
+}
+
+@utility surface-interactive {
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+
+  &:hover {
+    border-color: color-mix(in oklch, var(--primary) 40%, var(--border));
   }
 }
 

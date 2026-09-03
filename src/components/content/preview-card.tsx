@@ -18,12 +18,7 @@ export function PreviewCard({
   className,
 }: PreviewCardProps) {
   return (
-    <Card
-      className={cn(
-        "stack-compact transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:border-primary/40",
-        className,
-      )}
-    >
+    <Card className={cn("stack-compact surface-interactive", className)}>
       {eyebrow ? (
         <p className="type-label text-muted-foreground">{eyebrow}</p>
       ) : null}
