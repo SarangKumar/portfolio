@@ -7,6 +7,7 @@ import {
   Building2,
   CalendarClock,
   FileText,
+  Layers,
   LayoutDashboard,
   Mail,
   NotebookPen,
@@ -22,6 +23,7 @@ import { cn } from "@/lib/cn";
 
 const navIcons = {
   dashboard: LayoutDashboard,
+  projects: Layers,
   applications: Briefcase,
   jobs: Search,
   interviews: CalendarClock,

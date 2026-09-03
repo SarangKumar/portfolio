@@ -11,7 +11,13 @@ import { activateLocale, resolvePageLocale } from "@/lib/locale-page";
 export const dynamic = "force-dynamic";
 export const dynamicParams = false;
 
-const sectionItems = adminNavItems.filter((item) => item.href !== "/admin");
+const dedicatedAdminSections = new Set(["projects"]);
+
+const sectionItems = adminNavItems.filter(
+  (item) =>
+    item.href !== "/admin" &&
+    !dedicatedAdminSections.has(item.href.slice("/admin/".length)),
+);
 
 type AdminSectionPageProps = {
   params: Promise<{ locale: string; section: string }>;

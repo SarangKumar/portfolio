@@ -1,5 +1,6 @@
 export const adminNavItems = [
   { href: "/admin", labelKey: "dashboard" },
+  { href: "/admin/projects", labelKey: "projects" },
   { href: "/admin/applications", labelKey: "applications" },
   { href: "/admin/jobs", labelKey: "jobs" },
   { href: "/admin/interviews", labelKey: "interviews" },

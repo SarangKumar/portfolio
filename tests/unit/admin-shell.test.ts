@@ -28,6 +28,7 @@ describe("admin navigation", () => {
     expect(hrefs[0]).toBe("/admin");
     expect(hrefs).toEqual([
       "/admin",
+      "/admin/projects",
       "/admin/applications",
       "/admin/jobs",
       "/admin/interviews",

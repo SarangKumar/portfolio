@@ -11,6 +11,7 @@ jest.mock("../../src/features/auth/actions", () => ({
 
 const labels: AdminNavCopy = {
   dashboard: "Dashboard",
+  projects: "Projects",
   applications: "Applications",
   jobs: "Job Search",
   interviews: "Interviews",

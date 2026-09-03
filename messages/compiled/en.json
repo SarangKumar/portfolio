@@ -340,6 +340,7 @@
     "sidebar": "Workspace sidebar",
     "nav": {
       "dashboard": "Dashboard",
+      "projects": "Projects",
       "applications": "Applications",
       "jobs": "Job Search",
       "interviews": "Interviews",
@@ -356,6 +357,60 @@
     },
     "section": {
       "unavailable": "This section is not available yet."
+    },
+    "cms": {
+      "unavailable": "The content database is unavailable.",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "archived": "Archived"
+      },
+      "errors": {
+        "required": "This field is required.",
+        "tooLong": "This value is too long.",
+        "tooMany": "Too many items.",
+        "invalidSlug": "Use a lowercase slug with letters, numbers, and hyphens.",
+        "invalidUrl": "Enter a valid http or https URL.",
+        "duplicateSlug": "This slug is already in use.",
+        "unauthorized": "You do not have permission to change this content.",
+        "notFound": "That record could not be found."
+      },
+      "projects": {
+        "title": "Projects",
+        "intro": "Create and publish portfolio case studies. Archiving hides a project from the public site without deleting its record.",
+        "create": "New project",
+        "createTitle": "New project",
+        "createIntro": "New projects start as drafts and stay off the public site until they are published.",
+        "editTitle": "Edit project",
+        "editIntro": "Save draft changes, then publish when the public page should update.",
+        "edit": "Edit",
+        "back": "Back to projects",
+        "empty": "No projects yet.",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "publish": "Publish",
+        "unpublish": "Unpublish",
+        "archive": "Archive",
+        "archiveConfirm": "Archive project",
+        "archiveHint": "Archiving removes the project from public pages. The record is kept for history and analytics.",
+        "cancel": "Cancel",
+        "fields": {
+          "title": "Title",
+          "slug": "Slug",
+          "slugHint": "Used in /projects/[slug]. Changing it does not overwrite another project.",
+          "summary": "Short description",
+          "description": "Detailed description",
+          "technologies": "Technologies",
+          "technologiesHint": "Comma-separated labels.",
+          "skillKeys": "Skill keys",
+          "skillKeysHint": "Comma-separated public skill ids such as skill-lorem.",
+          "githubUrl": "GitHub URL",
+          "demoUrl": "Demo URL",
+          "internalNotes": "Internal notes",
+          "internalNotesHint": "Never shown on the public site."
+        }
+      }
     }
   }
 }
