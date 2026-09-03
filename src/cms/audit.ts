@@ -6,7 +6,8 @@ export type ContentEntityType =
   | "certification"
   | "badge"
   | "blogPost"
-  | "resumeVersion";
+  | "resumeVersion"
+  | "jobApplication";
 
 export type ContentMutationAction =
   "create" | "update" | "publish" | "unpublish" | "archive";

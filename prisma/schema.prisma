@@ -18,6 +18,35 @@ enum PublicationStatus {
   archived
 }
 
+enum JobApplicationStatus {
+  wishlist
+  applied
+  recruiter_contacted
+  oa
+  technical_1
+  technical_2
+  system_design
+  managerial
+  hr
+  offer
+  rejected
+  withdrawn
+  ghosted
+}
+
+enum JobApplicationPriority {
+  low
+  medium
+  high
+}
+
+enum WorkMode {
+  unspecified
+  onsite
+  remote
+  hybrid
+}
+
 /// Persistence shape for the Story 2 administrator identity.
 /// Authorization still reads the env directory; this collection is the
 /// MongoDB representation of that model. `identityId` matches the Auth.js
@@ -211,4 +240,62 @@ model Badge {
 
   @@index([status])
   @@map("badges")
+}
+
+/// Private career-tracker application. Owned by an admin identity id
+/// (`Admin.identityId` / session user id). `companyKey` is reserved for a
+/// later Company entity; `resumeVersionKey` and `coverLetterKey` are nullable
+/// references until those managers exist. Archive is `archivedAt`, not a
+/// hard delete. Interview rounds are a stub relation for a later tracker.
+model JobApplication {
+  id                 String                  @id @default(auto()) @map("_id") @db.ObjectId
+  key                String                  @unique
+  ownerIdentityId    String
+  company            String
+  companyKey         String?
+  role               String
+  jobUrl             String?
+  location           String?
+  workMode           WorkMode                @default(unspecified)
+  jobDescription     String?
+  salaryAmount       Float?
+  salaryCurrency     String?
+  appliedAt          DateTime?
+  status             JobApplicationStatus
+  source             String?
+  referral           String?
+  recruiter          String?
+  resumeVersionKey   String?
+  coverLetterKey     String?
+  notes              String?
+  priority           JobApplicationPriority  @default(medium)
+  nextAction         String?
+  nextActionAt       DateTime?
+  rejectionReason    String?
+  archivedAt         DateTime?
+  interviewRounds    InterviewRound[]
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  @@index([ownerIdentityId, status])
+  @@index([ownerIdentityId, company])
+  @@index([ownerIdentityId, appliedAt])
+  @@index([ownerIdentityId, nextActionAt])
+  @@index([ownerIdentityId, priority])
+  @@map("job_applications")
+}
+
+model InterviewRound {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  key            String          @unique
+  applicationId  String          @db.ObjectId
+  application    JobApplication  @relation(fields: [applicationId], references: [id])
+  title          String
+  sortOrder      Int             @default(0)
+  scheduledAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([applicationId])
+  @@map("interview_rounds")
 }
