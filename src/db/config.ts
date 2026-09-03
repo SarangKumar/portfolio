@@ -46,6 +46,15 @@ export function parseDatabaseUrl(value: string): DatabaseUrlConfig {
   return { url };
 }
 
+export function isDatabaseConfigured(value: string): boolean {
+  try {
+    parseDatabaseUrl(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function requireDatabaseUrl(
   value: string,
   nodeEnv: string,

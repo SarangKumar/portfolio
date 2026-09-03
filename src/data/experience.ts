@@ -8,6 +8,7 @@ export type PublicExperience = {
   startDate: string;
   endDate: string | null;
   description: string | null;
+  technologies: readonly string[];
   skillIds: readonly string[];
   projectIds: readonly string[];
   achievements: readonly string[];
@@ -22,6 +23,7 @@ export const experience: readonly PublicExperience[] = [
     endDate: null,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id ligula porta felis euismod semper.",
+    technologies: ["Lorem", "TypeScript", "Next.js"],
     skillIds: ["skill-lorem", "skill-dolor", "skill-consectetur"],
     projectIds: ["proj-lorem-gateway", "proj-dolor-canvas"],
     achievements: [
@@ -37,6 +39,7 @@ export const experience: readonly PublicExperience[] = [
     endDate: "2022-02",
     description:
       "Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod.",
+    technologies: ["Ipsum", "React"],
     skillIds: ["skill-ipsum", "skill-sit", "skill-adipiscing"],
     projectIds: ["proj-ipsum-ledger"],
     achievements: [

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "@jest/globals";
 import { toAdminRecord } from "@/db/admin";
-import { parseDatabaseUrl, requireDatabaseUrl } from "@/db/config";
+import {
+  parseDatabaseUrl,
+  requireDatabaseUrl,
+  isDatabaseConfigured,
+} from "@/db/config";
 import {
   DATABASE_INVALID_MESSAGE,
   DATABASE_MISSING_MESSAGE,
@@ -62,6 +66,14 @@ describe("database URL configuration", () => {
     expect(
       requireDatabaseUrl("mongodb://127.0.0.1:27017/portfolio", "production"),
     ).toEqual({ url: "mongodb://127.0.0.1:27017/portfolio" });
+  });
+
+  it("reports whether a MongoDB URL is configured without throwing", () => {
+    expect(isDatabaseConfigured("")).toBe(false);
+    expect(isDatabaseConfigured("postgres://localhost/db")).toBe(false);
+    expect(isDatabaseConfigured("mongodb://127.0.0.1:27017/portfolio")).toBe(
+      true,
+    );
   });
 });
 

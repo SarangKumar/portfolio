@@ -2,7 +2,11 @@ import "server-only";
 
 export { toAdminRecord, type AdminDocument } from "@/db/admin";
 export { getPrismaClient } from "@/db/client";
-export { parseDatabaseUrl, requireDatabaseUrl } from "@/db/config";
+export {
+  parseDatabaseUrl,
+  requireDatabaseUrl,
+  isDatabaseConfigured,
+} from "@/db/config";
 export {
   DatabaseConfigurationError,
   DatabaseError,

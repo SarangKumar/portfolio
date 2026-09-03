@@ -105,7 +105,10 @@ export function shareMetadata({
   };
 }
 
-export function publicSitemapEntries(): MetadataRoute.Sitemap {
+export function publicSitemapEntries(
+  publishedProjects: readonly ProjectItem[] = projects,
+  publishedPosts: readonly BlogPost[] = posts,
+): MetadataRoute.Sitemap {
   const staticEntries: MetadataRoute.Sitemap = navItems.map((item) => ({
     url: pageUrl(item.href),
     changeFrequency:
@@ -113,13 +116,15 @@ export function publicSitemapEntries(): MetadataRoute.Sitemap {
     priority: item.href === "/" ? 1 : 0.7,
   }));
 
-  const projectEntries: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: pageUrl(projectHref(project.slug)),
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
+  const projectEntries: MetadataRoute.Sitemap = publishedProjects.map(
+    (project) => ({
+      url: pageUrl(projectHref(project.slug)),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    }),
+  );
 
-  const articleEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+  const articleEntries: MetadataRoute.Sitemap = publishedPosts.map((post) => ({
     url: pageUrl(articleHref(post.slug)),
     lastModified: post.updatedAt ?? post.publishedAt,
     changeFrequency: "monthly",

@@ -32,6 +32,7 @@ This repository currently has project setup, the design system, UI primitives, t
 | Utilities          | `src/lib`                        |
 | Configuration      | `src/config`, root config files  |
 | Data               | `src/data`                       |
+| Public content API | `src/content`                    |
 | Database (Prisma)  | `src/db`, `prisma/schema.prisma` |
 | Types              | `src/types`                      |
 | Translations       | `messages`, `src/i18n`           |
@@ -67,5 +68,7 @@ Copy `.env.example` to `.env.local`.
 - `ANALYTICS_HASH_SALT` — optional salt for hashing IPs used only as an in-memory rate-limit fallback. Event records never include IP addresses.
 - `ANALYTICS_VAULT_PASSWORD` — server-only password for the hidden CMD folder `analytics/`. When unset, unlock always fails.
 - `DATABASE_URL` — server-only MongoDB connection string for Prisma. Never use `NEXT_PUBLIC_*`. Production fails clearly if this is missing or not a MongoDB URL with a database name when the database client is created. Sync schema with `npm run prisma:push` (MongoDB does not use SQL migrations). Generate the client with `npm run prisma:generate`.
+
+Public portfolio pages should read persisted catalogs through `src/content` (`getPublishedProjects`, and similar). That layer maps Prisma documents onto the existing `src/data` types and falls back to the static samples when `DATABASE_URL` is unset. Do not query Prisma from UI components.
 
 Server-only database helpers live in `src/db`. Import `getPrismaClient` only from Server Components, Route Handlers, and server actions. Wrap queries with `executeDatabaseOperation` so driver errors are not returned to visitors. This app uses Prisma ORM 6.19 because that release supports MongoDB with `prisma/schema.prisma`.

@@ -71,6 +71,7 @@ describe("content relationships", () => {
         description: null,
         skillIds: ["ts"],
         projectIds: ["proj-1"],
+        technologies: ["TypeScript"],
         achievements: [],
       },
     ],

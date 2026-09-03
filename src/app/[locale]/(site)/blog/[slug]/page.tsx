@@ -3,9 +3,12 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArticleDetail } from "@/components/content/article-detail";
 import { ArticleJsonLd } from "@/components/content/article-json-ld";
-import { posts } from "@/data/blog";
+import {
+  getPublishedBlogPostBySlug,
+  getPublishedBlogPosts,
+} from "@/content/public";
 import { articleCanonicalUrl, articleMetadata } from "@/lib/article-metadata";
-import { getPostBySlug, readingTimeMinutes } from "@/lib/blog";
+import { readingTimeMinutes } from "@/lib/blog";
 import { formatIsoDate } from "@/lib/dates";
 import { activateLocale } from "@/lib/locale-page";
 
@@ -15,7 +18,8 @@ type ArticlePageProps = {
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const posts = await getPublishedBlogPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
 
@@ -25,7 +29,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   await activateLocale(locale);
 
-  const post = getPostBySlug(slug, posts);
+  const post = await getPublishedBlogPostBySlug(slug);
 
   if (!post) {
     notFound();
@@ -38,7 +42,7 @@ export default async function Page({ params }: ArticlePageProps) {
   const { locale, slug } = await params;
   await activateLocale(locale);
 
-  const post = getPostBySlug(slug, posts);
+  const post = await getPublishedBlogPostBySlug(slug);
 
   if (!post) {
     notFound();

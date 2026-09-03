@@ -3,11 +3,13 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ProjectDetail } from "@/components/content/project-detail";
 import { ProjectJsonLd } from "@/components/content/project-json-ld";
-import { projects } from "@/data/projects";
-import { skills } from "@/data/skills";
+import {
+  getPublishedProjectBySlug,
+  getPublishedProjects,
+  getPublishedSkills,
+} from "@/content/public";
 import { activateLocale } from "@/lib/locale-page";
-import { projectMetadata, projectCanonicalUrl } from "@/lib/project-metadata";
-import { getProjectBySlug } from "@/lib/projects";
+import { projectCanonicalUrl, projectMetadata } from "@/lib/project-metadata";
 
 type ProjectPageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -15,7 +17,8 @@ type ProjectPageProps = {
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getPublishedProjects();
   return projects.map((project) => ({ slug: project.slug }));
 }
 
@@ -25,7 +28,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   await activateLocale(locale);
 
-  const project = getProjectBySlug(slug, projects);
+  const project = await getPublishedProjectBySlug(slug);
 
   if (!project) {
     notFound();
@@ -38,13 +41,14 @@ export default async function Page({ params }: ProjectPageProps) {
   const { locale, slug } = await params;
   await activateLocale(locale);
 
-  const project = getProjectBySlug(slug, projects);
+  const project = await getPublishedProjectBySlug(slug);
 
   if (!project) {
     notFound();
   }
 
   const t = await getTranslations("projects");
+  const { skills } = await getPublishedSkills();
 
   return (
     <>
