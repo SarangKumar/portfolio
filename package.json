@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "npm run i18n:build && next dev",
-    "build": "npm run i18n:build && next build",
+    "build": "npm run i18n:build && prisma generate && next build",
     "start": "next start",
     "i18n:build": "node scripts/i18n/build-messages.mjs",
     "i18n:check": "node scripts/i18n/check-messages.mjs",
     "auth:hash-password": "node scripts/auth/hash-password.mjs",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "postinstall": "prisma generate",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -17,7 +20,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "check": "npm run i18n:check && npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "check": "npm run i18n:check && npm run prisma:generate && npm run typecheck && npm run lint && npm run format:check && npm run test",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -30,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "@prisma/client": "^6.19.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "lucide-react": "^1.39.0",
@@ -61,6 +65,7 @@
     "jest-environment-jsdom": "^30.5.1",
     "lint-staged": "^17.4.1",
     "prettier": "^3.9.6",
+    "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

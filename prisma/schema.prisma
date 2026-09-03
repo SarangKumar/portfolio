@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminStatus {
+  active
+  inactive
+}
+
+/// Persistence shape for the Story 2 administrator identity.
+/// Authorization still reads the env directory; this collection is the
+/// MongoDB representation of that model. `identityId` matches the Auth.js
+/// user id (`stableIdentityId`). MongoDB `_id` stays a native ObjectId.
+model Admin {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  identityId String      @unique
+  email      String      @unique
+  status     AdminStatus
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("admins")
+}

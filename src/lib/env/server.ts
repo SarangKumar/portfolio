@@ -37,4 +37,7 @@ export const serverEnv = {
   get adminInactiveEmails() {
     return readEnv("ADMIN_INACTIVE_EMAILS");
   },
+  get databaseUrl() {
+    return readEnv("DATABASE_URL");
+  },
 };
