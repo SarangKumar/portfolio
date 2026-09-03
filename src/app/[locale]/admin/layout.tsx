@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
-import { requireAuthentication } from "@/auth/session";
+import { redirect } from "next/navigation";
+import { resolveCurrentAdminAccess } from "@/admin/access";
+import { AccessDenied } from "@/features/auth/access-denied";
 import { activateLocale, resolvePageLocale } from "@/lib/locale-page";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +38,16 @@ export default async function AdminLayout({
 }: AdminLayoutProps) {
   const { locale } = await params;
   await activateLocale(locale);
-  await requireAuthentication();
+
+  const access = await resolveCurrentAdminAccess();
+
+  if (access.status === "unauthenticated") {
+    redirect("/login");
+  }
+
+  if (access.status === "denied") {
+    return <AccessDenied />;
+  }
 
   return children;
 }

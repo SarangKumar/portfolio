@@ -9,6 +9,7 @@ import {
   shouldRedirectToLogin,
 } from "@/auth/paths";
 import { postLogoutPath, safeInternalPath } from "@/auth/redirect";
+import { stableIdentityId } from "@/auth/identity";
 import { toAuthUser } from "@/auth/user";
 import { verifyAdminCredentials } from "@/auth/credentials";
 import { LOGIN_LIMITS, validateLoginInput } from "@/auth/validation";
@@ -127,7 +128,10 @@ describe("verifyAdminCredentials", () => {
 
     await expect(
       verifyAdminCredentials({ email: "Admin@example.com", password }, config),
-    ).resolves.toEqual({ id: "admin", email: "admin@example.com" });
+    ).resolves.toEqual({
+      id: stableIdentityId("admin@example.com"),
+      email: "admin@example.com",
+    });
   });
 
   it("rejects unknown identifiers and wrong passwords without leaking which failed", async () => {

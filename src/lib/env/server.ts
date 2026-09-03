@@ -31,4 +31,10 @@ export const serverEnv = {
   get adminPasswordHash() {
     return readEnv("ADMIN_PASSWORD_HASH");
   },
+  get adminEmails() {
+    return readEnv("ADMIN_EMAILS");
+  },
+  get adminInactiveEmails() {
+    return readEnv("ADMIN_INACTIVE_EMAILS");
+  },
 };

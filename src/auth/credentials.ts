@@ -2,8 +2,9 @@ import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { compare } from "bcryptjs";
-import { serverEnv } from "@/lib/env/server";
+import { stableIdentityId, normalizeEmail } from "@/auth/identity";
 import type { AuthUser } from "@/auth/user";
+import { serverEnv } from "@/lib/env/server";
 
 export type AdminCredentialConfig = {
   email: string;
@@ -27,7 +28,7 @@ function emailsMatch(left: string, right: string): boolean {
 
 export function adminCredentialConfigFromEnv(): AdminCredentialConfig {
   return {
-    email: serverEnv.adminEmail.trim().toLowerCase(),
+    email: normalizeEmail(serverEnv.adminEmail),
     passwordHash: serverEnv.adminPasswordHash,
   };
 }
@@ -36,7 +37,7 @@ export async function verifyAdminCredentials(
   input: { email: string; password: string },
   config: AdminCredentialConfig = adminCredentialConfigFromEnv(),
 ): Promise<AuthUser | null> {
-  const email = input.email.trim().toLowerCase();
+  const email = normalizeEmail(input.email);
   const password = input.password;
   const configured = Boolean(config.email && config.passwordHash);
   const identifierMatches = configured && emailsMatch(email, config.email);
@@ -48,7 +49,7 @@ export async function verifyAdminCredentials(
   }
 
   return {
-    id: "admin",
+    id: stableIdentityId(config.email),
     email: config.email,
   };
 }

@@ -1,0 +1,11 @@
+export type AdminStatus = "active" | "inactive";
+
+export type Admin = {
+  id: string;
+  email: string;
+  status: AdminStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export const BOOTSTRAP_ADMIN_TIMESTAMP = "2026-01-01T00:00:00.000Z";
