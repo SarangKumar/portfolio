@@ -5,6 +5,7 @@ import type { ProjectStore } from "@/cms/projects/store";
 import type { AdminProjectRecord } from "@/cms/projects/types";
 import {
   parseStringList,
+  projectRecordToFormFields,
   validateProjectWriteInput,
 } from "@/cms/projects/validation";
 import { publishedProjects } from "@/content/published";
@@ -137,6 +138,32 @@ describe("project write validation", () => {
         demoUrl: null,
         internalNotes: null,
       },
+    });
+  });
+
+  it("round-trips a project record into form field strings", () => {
+    expect(
+      projectRecordToFormFields({
+        title: "Public app",
+        slug: "public-app",
+        summary: "A compact case study.",
+        description: "Longer copy.",
+        technologies: ["TypeScript", "Next.js"],
+        skillKeys: ["skill-lorem"],
+        githubUrl: "https://github.com/example/app",
+        demoUrl: null,
+        internalNotes: "private",
+      }),
+    ).toEqual({
+      title: "Public app",
+      slug: "public-app",
+      summary: "A compact case study.",
+      description: "Longer copy.",
+      technologies: "TypeScript, Next.js",
+      skillKeys: "skill-lorem",
+      githubUrl: "https://github.com/example/app",
+      demoUrl: "",
+      internalNotes: "private",
     });
   });
 

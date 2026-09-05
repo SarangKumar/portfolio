@@ -4,6 +4,7 @@ import { useActionState, type ReactNode } from "react";
 import { initialLoginFormState, type LoginFormState } from "@/auth/login-state";
 import { LOGIN_LIMITS } from "@/auth/validation";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Input } from "@/components/ui/input";
 import { submitLogin } from "@/features/auth/actions";
 import { cn } from "@/lib/cn";
@@ -18,6 +19,7 @@ type LoginFormCopy = {
   required: string;
   invalidEmail: string;
   tooLong: string;
+  signup: string;
 };
 
 type LoginFormProps = {
@@ -95,9 +97,14 @@ export function LoginForm({ copy, callbackUrl }: LoginFormProps) {
         />
       </Field>
 
-      <Button type="submit" size="sm" disabled={pending} aria-busy={pending}>
-        {pending ? copy.submitting : copy.submit}
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="submit" size="sm" disabled={pending} aria-busy={pending}>
+          {pending ? copy.submitting : copy.submit}
+        </Button>
+        <ButtonLink href="/signup" variant="outline" size="sm">
+          {copy.signup}
+        </ButtonLink>
+      </div>
 
       <LoginStatus state={state} copy={copy} />
     </form>

@@ -24,7 +24,7 @@ export function ArticleDetail({
   return (
     <article className="stack-section">
       <ArticleViewTracker slug={post.slug} />
-      <header className="stack-compact border-b border-border pb-5">
+      <header className="stack-compact border-b border-border pb-8">
         <h1 className="type-display">{post.title}</h1>
         <p className="max-w-prose type-body text-muted-foreground">
           {post.description}

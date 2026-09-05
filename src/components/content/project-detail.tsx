@@ -54,7 +54,7 @@ export function ProjectDetail({ project, skills, copy }: ProjectDetailProps) {
   return (
     <article className="stack-section">
       <ProjectViewTracker slug={project.slug} />
-      <header className="stack-compact border-b border-border pb-5">
+      <header className="stack-compact border-b border-border pb-8">
         <h1 className="type-display">{project.title}</h1>
         <p className="max-w-prose type-body text-muted-foreground">
           {project.summary}

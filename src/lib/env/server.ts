@@ -38,6 +38,6 @@ export const serverEnv = {
     return readEnv("ADMIN_INACTIVE_EMAILS");
   },
   get databaseUrl() {
-    return readEnv("DATABASE_URL");
+    return readEnv("DATABASE_URL") || readEnv("MONGODB_URI");
   },
 };

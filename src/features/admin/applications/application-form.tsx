@@ -34,7 +34,10 @@ export function ApplicationForm({
     action,
     initialJobApplicationFormState,
   );
-  const values = jobApplicationToFormFields(application);
+  const values = {
+    ...jobApplicationToFormFields(application),
+    ...state.values,
+  };
 
   return (
     <form
@@ -42,6 +45,7 @@ export function ApplicationForm({
       className="stack-section max-w-3xl"
       noValidate
       aria-busy={pending}
+      key={state.values ? "submitted" : "pristine"}
     >
       {mode === "edit" && application ? (
         <input type="hidden" name="key" value={application.key} />

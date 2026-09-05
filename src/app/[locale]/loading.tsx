@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <div className="stack-section" aria-busy="true">
-      <div className="stack-compact border-b border-border pb-5">
+      <div className="stack-compact border-b border-border pb-8">
         <Skeleton className="h-7 w-40" />
         <Skeleton className="h-4 max-w-prose" />
       </div>

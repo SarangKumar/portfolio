@@ -17,7 +17,7 @@ export function SiteShell({ children }: SiteShellProps) {
       <PageViewTracker />
       <SiteHeader />
       <main id="content" tabIndex={-1} className="flex-1 outline-none">
-        <PageContainer className="py-6">{children}</PageContainer>
+        <PageContainer className="py-10">{children}</PageContainer>
       </main>
       <PublicTerminal />
       <SiteFooter />

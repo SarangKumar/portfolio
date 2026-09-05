@@ -49,10 +49,10 @@ describe("content helpers", () => {
     expect(isEmptyList(projects)).toBe(false);
     expect(isEmptyList(experience)).toBe(false);
     expect(isEmptyList(skills)).toBe(false);
-    expect(isEmptyList(posts)).toBe(false);
+    expect(isEmptyList(posts)).toBe(true);
     expect(isEmptyList(resumes)).toBe(false);
-    expect(isEmptyList(certifications)).toBe(false);
-    expect(isEmptyList(badges)).toBe(false);
+    expect(isEmptyList(certifications)).toBe(true);
+    expect(isEmptyList(badges)).toBe(true);
     expect(isEmptyList([{ id: "1" }])).toBe(false);
   });
 });

@@ -8,7 +8,11 @@ export type LoginAttemptResult =
 export type LoginAttemptDependencies = {
   consume: (key: string) => { allowed: boolean };
   rateLimitKey: string;
-  authenticate: (email: string, password: string) => Promise<boolean>;
+  authenticate: (
+    email: string,
+    password: string,
+    redirectTo: string,
+  ) => Promise<boolean>;
 };
 
 export async function attemptLogin(
@@ -29,9 +33,11 @@ export async function attemptLogin(
     return { status: "rateLimited" };
   }
 
+  const redirectTo = safeInternalPath(input.callbackUrl);
   const accepted = await deps.authenticate(
     validation.value.email,
     validation.value.password,
+    redirectTo,
   );
 
   if (!accepted) {
@@ -40,6 +46,6 @@ export async function attemptLogin(
 
   return {
     status: "authenticated",
-    redirectTo: safeInternalPath(input.callbackUrl),
+    redirectTo,
   };
 }

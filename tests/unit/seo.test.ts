@@ -119,13 +119,13 @@ describe("sitemap and structured data", () => {
         pageUrl("/"),
         "http://localhost:3000/about",
         "http://localhost:3000/contact",
-        "http://localhost:3000/projects/lorem-gateway",
-        "http://localhost:3000/blog/notes-on-lorem",
+        "http://localhost:3000/projects/notevault",
       ]),
     );
     expect(urls).toContain("http://localhost:3000/blog");
     expect(urls).not.toContain("http://localhost:3000/admin");
     expect(urls).not.toContain("http://localhost:3000/login");
+    expect(urls).not.toContain("http://localhost:3000/signup");
   });
 
   it("emits WebSite JSON-LD and Person data from the sample profile", () => {
@@ -134,7 +134,9 @@ describe("sitemap and structured data", () => {
     );
     expect(personJsonLd()).toMatchObject({
       "@type": "Person",
-      name: "Lorem Ipsum",
+      name: "Sarang Kumar",
+      jobTitle: "Software Engineer at Komprise",
+      email: "sarangkumar1578@gmail.com",
     });
   });
 

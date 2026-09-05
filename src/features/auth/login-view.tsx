@@ -24,6 +24,7 @@ export async function LoginView({ callbackUrl }: LoginViewProps) {
           required: t("login.required"),
           invalidEmail: t("login.invalidEmail"),
           tooLong: t("login.tooLong"),
+          signup: t("login.signup"),
         }}
       />
     </div>

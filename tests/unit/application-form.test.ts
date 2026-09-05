@@ -178,7 +178,7 @@ describe("job application form persistence", () => {
       mode: "create",
     });
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       ok: false,
       state: {
         status: "error",
@@ -204,7 +204,7 @@ describe("job application form persistence", () => {
       mode: "create",
     });
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       ok: false,
       state: { status: "error", code: "unauthorized" },
     });
@@ -237,7 +237,7 @@ describe("job application form persistence", () => {
       mode: "create",
     });
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       ok: false,
       state: { status: "error", code: "unavailable" },
     });

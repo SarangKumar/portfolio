@@ -254,5 +254,6 @@ describe("logout and callback safety", () => {
     expect(safeInternalPath("/admin")).toBe("/admin");
     expect(safeInternalPath("//evil.example")).toBe("/admin");
     expect(safeInternalPath("/login")).toBe("/admin");
+    expect(safeInternalPath("/signup")).toBe("/admin");
   });
 });

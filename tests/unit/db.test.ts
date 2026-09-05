@@ -5,6 +5,7 @@ import {
   requireDatabaseUrl,
   isDatabaseConfigured,
 } from "@/db/config";
+import { assessDatabaseHealth } from "@/db/health";
 import {
   DATABASE_INVALID_MESSAGE,
   DATABASE_MISSING_MESSAGE,
@@ -74,6 +75,30 @@ describe("database URL configuration", () => {
     expect(isDatabaseConfigured("mongodb://127.0.0.1:27017/portfolio")).toBe(
       true,
     );
+  });
+});
+
+describe("database health", () => {
+  it("reports unconfigured when the URL is missing", async () => {
+    await expect(
+      assessDatabaseHealth("", async () => undefined),
+    ).resolves.toEqual({
+      ok: false,
+      status: "unconfigured",
+    });
+  });
+
+  it("reports healthy only after a successful ping", async () => {
+    const url = "mongodb+srv://cluster.example.net/portfolio";
+
+    await expect(
+      assessDatabaseHealth(url, async () => undefined),
+    ).resolves.toEqual({ ok: true, status: "healthy" });
+    await expect(
+      assessDatabaseHealth(url, async () => {
+        throw new Error("ECONNREFUSED");
+      }),
+    ).resolves.toEqual({ ok: false, status: "unreachable" });
   });
 });
 

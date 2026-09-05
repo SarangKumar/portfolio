@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { readAuthorizedAdminContext } from "@/admin/actions";
 import { getCurrentAdmin } from "@/admin/access";
 import { AdminSectionPlaceholder } from "@/features/admin/admin-section-placeholder";
+import { DatabaseHealthNotice } from "@/features/admin/database-health";
 import { AccessDenied } from "@/features/auth/access-denied";
 import {
   activateLocale,
@@ -42,9 +43,12 @@ export default async function AdminDashboardPage({ params }: LocalePageProps) {
   const t = await getTranslations("admin");
 
   return (
-    <AdminSectionPlaceholder
-      title={t("dashboard.title")}
-      description={t("dashboard.intro")}
-    />
+    <div className="stack-section">
+      <AdminSectionPlaceholder
+        title={t("dashboard.title")}
+        description={t("dashboard.intro")}
+      />
+      <DatabaseHealthNotice />
+    </div>
   );
 }

@@ -56,10 +56,10 @@
   --terminal-ribbon: 2.5rem;
   --terminal-open: 40dvh;
   --space-page: 1rem;
-  --space-section: 1.25rem;
+  --space-section: 2.75rem;
   --space-card: 0.75rem;
   --gap-compact: 0.5rem;
-  --gap-default: 0.75rem;
+  --gap-default: 1rem;
 
   --ds-shadow-card: 0 1px 0 oklch(1 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.35);
 

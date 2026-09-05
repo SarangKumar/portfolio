@@ -82,17 +82,17 @@ export function PublicTerminal() {
 
   const vaultCopy = useMemo(
     (): VaultCopy => ({
-      notConfigured: t("vault.notConfigured"),
-      locked: t("vault.locked"),
-      unlocked: t("vault.unlocked"),
-      invalidPassword: t("vault.invalidPassword"),
-      rateLimited: t("vault.rateLimited"),
-      usageUnlock: t("vault.usageUnlock"),
-      listingRoot: t("vault.listingRoot"),
-      listingOpen: t("vault.listingOpen"),
-      noEntry: t("vault.noEntry"),
-      nowHere: t("vault.nowHere"),
-      lockedAgain: t("vault.lockedAgain"),
+      notConfigured: t.raw("vault.notConfigured"),
+      locked: t.raw("vault.locked"),
+      unlocked: t.raw("vault.unlocked"),
+      invalidPassword: t.raw("vault.invalidPassword"),
+      rateLimited: t.raw("vault.rateLimited"),
+      usageUnlock: t.raw("vault.usageUnlock"),
+      listingRoot: t.raw("vault.listingRoot"),
+      listingOpen: t.raw("vault.listingOpen"),
+      noEntry: t.raw("vault.noEntry"),
+      nowHere: t.raw("vault.nowHere"),
+      lockedAgain: t.raw("vault.lockedAgain"),
     }),
     [t],
   );

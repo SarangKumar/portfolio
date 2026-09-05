@@ -1,9 +1,8 @@
 /**
- * Sample view counts keyed by project slug so Home can rank a top three.
- * Live analytics still merge on top of this snapshot.
+ * Seeded view counts so Home can rank a top three before live analytics exist.
  */
 export const projectViewCounts: Readonly<Record<string, number>> = {
-  "lorem-gateway": 24,
-  "ipsum-ledger": 11,
-  "dolor-canvas": 7,
+  notevault: 26,
+  "fest-platforms": 14,
+  "slack-shift-manager": 12,
 };

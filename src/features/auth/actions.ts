@@ -11,12 +11,13 @@ import { postLogoutPath } from "@/auth/redirect";
 async function authenticateCredentials(
   email: string,
   password: string,
+  redirectTo: string,
 ): Promise<boolean> {
   try {
     await signIn("credentials", {
       email,
       password,
-      redirect: false,
+      redirectTo,
     });
     return true;
   } catch (error) {

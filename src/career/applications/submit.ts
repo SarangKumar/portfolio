@@ -17,15 +17,19 @@ export type { JobApplicationFormState };
 export type PersistJobApplicationResult =
   { ok: true; key: string } | { ok: false; state: JobApplicationFormState };
 
-function toFormState(result: {
-  ok: false;
-  code: MutationFailureCode;
-  fieldErrors?: MutationFieldErrors;
-}): JobApplicationFormState {
+function toFormState(
+  formData: FormData,
+  result: {
+    ok: false;
+    code: MutationFailureCode;
+    fieldErrors?: MutationFieldErrors;
+  },
+): JobApplicationFormState {
   return {
     status: "error",
     code: result.code,
     fieldErrors: result.fieldErrors,
+    values: readJobApplicationWriteForm(formData),
   };
 }
 
@@ -35,15 +39,17 @@ export async function persistJobApplicationWrite(input: {
   formData: FormData;
   mode: "create" | "update";
 }): Promise<PersistJobApplicationResult> {
+  const values = readJobApplicationWriteForm(input.formData);
   const auth = authorizeAdminMutation(input.access);
 
   if (!auth.ok) {
-    return { ok: false, state: { status: "error", code: "unauthorized" } };
+    return {
+      ok: false,
+      state: { status: "error", code: "unauthorized", values },
+    };
   }
 
-  const parsed = validateJobApplicationWriteInput(
-    readJobApplicationWriteForm(input.formData),
-  );
+  const parsed = validateJobApplicationWriteInput(values);
 
   if (!parsed.ok) {
     return {
@@ -52,6 +58,7 @@ export async function persistJobApplicationWrite(input: {
         status: "error",
         code: "validation",
         fieldErrors: parsed.fieldErrors,
+        values,
       },
     };
   }
@@ -65,7 +72,7 @@ export async function persistJobApplicationWrite(input: {
       );
 
       if (!created.ok) {
-        return { ok: false, state: toFormState(created) };
+        return { ok: false, state: toFormState(input.formData, created) };
       }
 
       return { ok: true, key: created.value.key };
@@ -75,7 +82,10 @@ export async function persistJobApplicationWrite(input: {
     const key = typeof keyValue === "string" ? keyValue.trim() : "";
 
     if (!key) {
-      return { ok: false, state: { status: "error", code: "notFound" } };
+      return {
+        ok: false,
+        state: { status: "error", code: "notFound", values },
+      };
     }
 
     const updated = await updateJobApplication(
@@ -86,11 +96,14 @@ export async function persistJobApplicationWrite(input: {
     );
 
     if (!updated.ok) {
-      return { ok: false, state: toFormState(updated) };
+      return { ok: false, state: toFormState(input.formData, updated) };
     }
 
     return { ok: true, key: updated.value.key };
   } catch {
-    return { ok: false, state: { status: "error", code: "unavailable" } };
+    return {
+      ok: false,
+      state: { status: "error", code: "unavailable", values },
+    };
   }
 }

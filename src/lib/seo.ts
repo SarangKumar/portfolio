@@ -3,6 +3,7 @@ import { navItems } from "@/config/navigation";
 import { siteConfig } from "@/config/site";
 import type { BlogPost } from "@/data/blog";
 import { posts } from "@/data/blog";
+import { contactProfile } from "@/data/contact";
 import { profile } from "@/data/profile";
 import type { ProjectItem } from "@/data/projects";
 import { projects } from "@/data/projects";
@@ -150,6 +151,10 @@ export function personJsonLd() {
     return null;
   }
 
+  const sameAs = contactProfile.socialLinks
+    .map((link) => link.href)
+    .filter((href) => href.startsWith("http"));
+
   return {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -157,6 +162,8 @@ export function personJsonLd() {
     url: pageUrl("/"),
     ...(profile.headline ? { jobTitle: profile.headline } : {}),
     ...(profile.summary ? { description: profile.summary } : {}),
+    ...(contactProfile.email ? { email: contactProfile.email } : {}),
+    ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
 

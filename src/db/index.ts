@@ -16,3 +16,9 @@ export {
   toDatabaseError,
 } from "@/db/errors";
 export { executeDatabaseOperation } from "@/db/operation";
+export {
+  assessDatabaseHealth,
+  type DatabaseHealth,
+  type DatabaseHealthStatus,
+} from "@/db/health";
+export { probeDatabaseHealth } from "@/db/probe";

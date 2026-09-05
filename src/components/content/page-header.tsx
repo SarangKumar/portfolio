@@ -9,7 +9,7 @@ type PageHeaderProps = {
 export function PageHeader({ title, description, className }: PageHeaderProps) {
   return (
     <header
-      className={cn("stack-compact border-b border-border pb-5", className)}
+      className={cn("stack-compact border-b border-border pb-8", className)}
     >
       <h1 className="type-display">{title}</h1>
       {description ? (

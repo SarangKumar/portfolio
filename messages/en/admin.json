@@ -27,6 +27,11 @@
     "title": "Dashboard",
     "intro": "This workspace will hold career operations. Sections are listed in the sidebar; their tools are not available yet."
   },
+  "database": {
+    "healthy": "MongoDB is reachable.",
+    "unconfigured": "DATABASE_URL is not set. Add the Atlas mongodb+srv connection string to .env.local, including a database name.",
+    "unreachable": "MongoDB is configured but the ping failed. Check the Atlas URL, network access list, and credentials."
+  },
   "section": {
     "unavailable": "This section is not available yet."
   },

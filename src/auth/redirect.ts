@@ -13,7 +13,11 @@ export function safeInternalPath(value: string | undefined): string {
     return PRIVATE_HOME;
   }
 
-  if (value.startsWith("/login") || value.startsWith("/api/")) {
+  if (
+    value.startsWith("/login") ||
+    value.startsWith("/signup") ||
+    value.startsWith("/api/")
+  ) {
     return PRIVATE_HOME;
   }
 

@@ -1,6 +1,3 @@
-/**
- * Sample contact details. example.com is reserved placeholder space.
- */
 export type SocialLink = {
   id: string;
   label: string;
@@ -13,17 +10,22 @@ export type ContactProfile = {
 };
 
 export const contactProfile: ContactProfile = {
-  email: "lorem@example.com",
+  email: "sarangkumar1578@gmail.com",
   socialLinks: [
     {
-      id: "social-lorem",
-      label: "Lorem profile",
-      href: "https://example.com/lorem",
+      id: "social-linkedin",
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/in/sarangkumar4",
     },
     {
-      id: "social-ipsum",
-      label: "Ipsum notes",
-      href: "https://example.com/ipsum",
+      id: "social-github",
+      label: "GitHub",
+      href: "https://github.com/SarangKumar",
+    },
+    {
+      id: "social-phone",
+      label: "+91 9973694884",
+      href: "tel:+919973694884",
     },
   ],
 };

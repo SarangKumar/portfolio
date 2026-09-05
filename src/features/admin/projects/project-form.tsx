@@ -3,11 +3,16 @@
 import { useActionState } from "react";
 import {
   createProjectAction,
-  initialProjectFormState,
   updateProjectAction,
-  type ProjectFormState,
 } from "@/cms/projects/actions";
-import { PROJECT_LIMITS } from "@/cms/projects/validation";
+import {
+  initialProjectFormState,
+  type ProjectFormState,
+} from "@/cms/projects/form-state";
+import {
+  projectRecordToFormFields,
+  PROJECT_LIMITS,
+} from "@/cms/projects/validation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -97,9 +102,15 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
     action,
     initialProjectFormState,
   );
+  const values = state.values ?? projectRecordToFormFields(project);
 
   return (
-    <form action={formAction} className="stack-section max-w-xl" noValidate>
+    <form
+      action={formAction}
+      className="stack-section max-w-xl"
+      noValidate
+      key={state.values ? "submitted" : "pristine"}
+    >
       {mode === "edit" && project ? (
         <input type="hidden" name="key" value={project.key} />
       ) : null}
@@ -115,7 +126,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           maxLength={PROJECT_LIMITS.title}
           required
           disabled={pending}
-          defaultValue={project?.title}
+          defaultValue={values.title}
           aria-invalid={Boolean(state.fieldErrors?.title)}
           aria-describedby={describedBy(
             "project-title",
@@ -136,7 +147,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           maxLength={PROJECT_LIMITS.slug}
           required
           disabled={pending}
-          defaultValue={project?.slug}
+          defaultValue={values.slug}
           aria-invalid={Boolean(state.fieldErrors?.slug)}
           aria-describedby={describedBy(
             "project-slug",
@@ -157,7 +168,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           maxLength={PROJECT_LIMITS.summary}
           required
           disabled={pending}
-          defaultValue={project?.summary}
+          defaultValue={values.summary}
           aria-invalid={Boolean(state.fieldErrors?.summary)}
           aria-describedby={describedBy(
             "project-summary",
@@ -176,7 +187,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           name="description"
           maxLength={PROJECT_LIMITS.description}
           disabled={pending}
-          defaultValue={project?.description ?? ""}
+          defaultValue={values.description}
           aria-invalid={Boolean(state.fieldErrors?.description)}
           aria-describedby={describedBy(
             "project-description",
@@ -195,7 +206,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           id="project-technologies"
           name="technologies"
           disabled={pending}
-          defaultValue={project?.technologies.join(", ")}
+          defaultValue={values.technologies}
           aria-invalid={Boolean(state.fieldErrors?.technologies)}
           aria-describedby={describedBy(
             "project-technologies",
@@ -215,7 +226,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           id="project-skill-keys"
           name="skillKeys"
           disabled={pending}
-          defaultValue={project?.skillKeys.join(", ")}
+          defaultValue={values.skillKeys}
           aria-invalid={Boolean(state.fieldErrors?.skillKeys)}
           aria-describedby={describedBy(
             "project-skill-keys",
@@ -235,7 +246,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           name="githubUrl"
           type="url"
           disabled={pending}
-          defaultValue={project?.githubUrl ?? ""}
+          defaultValue={values.githubUrl}
           aria-invalid={Boolean(state.fieldErrors?.githubUrl)}
           aria-describedby={describedBy(
             "project-github",
@@ -254,7 +265,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           name="demoUrl"
           type="url"
           disabled={pending}
-          defaultValue={project?.demoUrl ?? ""}
+          defaultValue={values.demoUrl}
           aria-invalid={Boolean(state.fieldErrors?.demoUrl)}
           aria-describedby={describedBy(
             "project-demo",
@@ -274,7 +285,7 @@ export function ProjectForm({ mode, copy, project }: ProjectFormProps) {
           name="internalNotes"
           maxLength={PROJECT_LIMITS.internalNotes}
           disabled={pending}
-          defaultValue={project?.internalNotes ?? ""}
+          defaultValue={values.internalNotes}
           aria-invalid={Boolean(state.fieldErrors?.internalNotes)}
           aria-describedby={describedBy(
             "project-notes",

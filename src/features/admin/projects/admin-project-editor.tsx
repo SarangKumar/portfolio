@@ -4,8 +4,9 @@ import { notFound } from "next/navigation";
 import { readAuthorizedAdminContext } from "@/admin/actions";
 import { getCurrentAdmin } from "@/admin/access";
 import { getProjectService } from "@/cms/projects/runtime";
-import { AccessDenied } from "@/features/auth/access-denied";
+import { DatabaseHealthNotice } from "@/features/admin/database-health";
 import { AdminSectionPlaceholder } from "@/features/admin/admin-section-placeholder";
+import { AccessDenied } from "@/features/auth/access-denied";
 import { ProjectForm } from "@/features/admin/projects/project-form";
 import { ProjectStatusControls } from "@/features/admin/projects/project-status-controls";
 import { PublicationStatusBadge } from "@/features/admin/publication-status-badge";
@@ -65,6 +66,7 @@ export async function AdminProjectCreatePage() {
       >
         {t("cms.projects.back")}
       </NextLink>
+      <DatabaseHealthNotice />
       <ProjectForm mode="create" copy={await projectFormCopy()} />
     </div>
   );

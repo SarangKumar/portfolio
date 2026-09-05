@@ -15,18 +15,18 @@ export type ResumeVersion = {
 
 export const resumes: readonly ResumeVersion[] = [
   {
-    id: "resume-lorem",
-    label: "Lorem resume",
-    targetType: "general",
+    id: "resume-sde-2026",
+    label: "Software Engineer resume",
+    targetType: "sde",
     overview:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. This sample has no downloadable file until a real PDF is published.",
+      "2026 Software Engineer resume covering Komprise production work, internship rotation, PES University, and selected projects.",
     notes: null,
-    previewSrc: null,
-    previewKind: null,
-    fileSrc: null,
-    fileName: "lorem-ipsum-resume.pdf",
+    previewSrc: "/resumes/Sarang_Kumar_SDE.pdf",
+    previewKind: "pdf",
+    fileSrc: "/resumes/Sarang_Kumar_SDE.pdf",
+    fileName: "Sarang_Kumar_SDE.pdf",
     isDefault: true,
     createdAt: "2026-01-01T00:00:00.000Z",
-    updatedAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-09-03T00:00:00.000Z",
   },
 ];

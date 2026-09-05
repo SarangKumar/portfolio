@@ -10,10 +10,10 @@
     "contact": "Contact"
   },
   "common": {
-    "appName": "Portfolio",
+    "appName": "Sarang Kumar",
     "metadata": {
-      "title": "Portfolio",
-      "description": "Personal engineering portfolio"
+      "title": "Sarang Kumar",
+      "description": "Software Engineer in Bangalore. Enterprise frontend, APIs, testing, and production systems."
     },
     "loading": "Loading",
     "copyright": "© {year} {name}"
@@ -22,10 +22,10 @@
     "title": "Home",
     "metadata": {
       "title": "Home",
-      "description": "Overview of identity, work, writing, and contact."
+      "description": "Sarang Kumar — Software Engineer at Komprise. Work, writing, and contact."
     },
     "hero": {
-      "kicker": "Portfolio",
+      "kicker": "Software Engineer",
       "placeholderName": "Sarang Kumar",
       "placeholderHeadline": "Role and focus will be published here.",
       "placeholderSummary": "A short introduction will appear in this space.",
@@ -67,9 +67,9 @@
     "title": "About",
     "metadata": {
       "title": "About",
-      "description": "Engineering background, working approach, and current focus."
+      "description": "Background at Komprise and PES University, working approach, and current focus."
     },
-    "intro": "Background, working approach, and current focus. Personal details appear here when they are published.",
+    "intro": "Background, working approach, and current focus.",
     "unpublished": "About content has not been published yet.",
     "background": {
       "title": "Background",
@@ -96,9 +96,9 @@
     "title": "Experience",
     "metadata": {
       "title": "Experience",
-      "description": "Public roles by company, title, and time period."
+      "description": "Komprise roles and PES University, grouped by time, company, or title."
     },
-    "intro": "Public roles, grouped by time, company, or title. This is not a private career record.",
+    "intro": "Komprise engineering roles and PES University, grouped by time, company, or title.",
     "placeholder": "Public experience will be listed here.",
     "present": "Present",
     "groupBy": "Arrange experience by",
@@ -132,9 +132,9 @@
     "title": "Projects",
     "metadata": {
       "title": "Projects",
-      "description": "Selected public projects and case studies."
+      "description": "Slack Shift Manager, fest platforms, and NoteVault."
     },
-    "intro": "Public projects listed by slug. Case studies appear when those fields are published.",
+    "intro": "Selected work: support automation, campus event platforms, and NoteVault.",
     "placeholder": "Projects will be listed here when they are published.",
     "technologies": "Technologies",
     "skills": "Skills",
@@ -162,7 +162,7 @@
       "title": "Resume",
       "description": "Resume overview, preview, and download for recruiting conversations."
     },
-    "intro": "A recruiter-oriented resume view. Multiple versions can be published later.",
+    "intro": "Current Software Engineer resume, with preview and download.",
     "placeholder": "A resume will be published here.",
     "versions": "Resume versions",
     "preview": "Resume preview",
@@ -194,7 +194,7 @@
       "title": "Contact",
       "description": "Email, profiles, and a short contact form for hiring conversations."
     },
-    "intro": "A compact path for recruiting and work conversations.",
+    "intro": "Bangalore. Email, LinkedIn, GitHub, or the form below.",
     "email": "Email",
     "emailUnavailable": "A public email address will be published here.",
     "emailAction": "Send email",
@@ -306,7 +306,17 @@
       "rateLimited": "Too many attempts. Try again later.",
       "required": "This field is required.",
       "invalidEmail": "Enter a valid email address.",
-      "tooLong": "This field is too long."
+      "tooLong": "This field is too long.",
+      "signup": "Sign up"
+    },
+    "signup": {
+      "title": "Create an account",
+      "metadata": {
+        "title": "Sign up",
+        "description": "Registration for the private area."
+      },
+      "intro": "This workspace does not offer self-serve registration. Sign in with the provisioned admin account.",
+      "signIn": "Sign in"
     },
     "logout": {
       "action": "Sign out"
@@ -354,6 +364,11 @@
     "dashboard": {
       "title": "Dashboard",
       "intro": "This workspace will hold career operations. Sections are listed in the sidebar; their tools are not available yet."
+    },
+    "database": {
+      "healthy": "MongoDB is reachable.",
+      "unconfigured": "DATABASE_URL is not set. Add the Atlas mongodb+srv connection string to .env.local, including a database name.",
+      "unreachable": "MongoDB is configured but the ping failed. Check the Atlas URL, network access list, and credentials."
     },
     "section": {
       "unavailable": "This section is not available yet."

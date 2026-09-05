@@ -8,25 +8,31 @@ import {
   validateProjectWriteInput,
 } from "@/cms/projects/validation";
 import type { MutationFailureCode, MutationFieldErrors } from "@/cms/result";
+import type { ProjectFormState } from "@/cms/projects/form-state";
 
-export type ProjectFormState = {
-  status: "idle" | "saved" | "error";
-  code?: MutationFailureCode;
-  fieldErrors?: MutationFieldErrors;
-};
-
-export const initialProjectFormState: ProjectFormState = { status: "idle" };
-
-function toFormState(result: {
-  ok: false;
-  code: MutationFailureCode;
-  fieldErrors?: MutationFieldErrors;
-}): ProjectFormState {
+function withFormValues(
+  formData: FormData,
+  state: Omit<ProjectFormState, "values">,
+): ProjectFormState {
   return {
+    ...state,
+    values: readProjectWriteForm(formData),
+  };
+}
+
+function toFormState(
+  formData: FormData,
+  result: {
+    ok: false;
+    code: MutationFailureCode;
+    fieldErrors?: MutationFieldErrors;
+  },
+): ProjectFormState {
+  return withFormValues(formData, {
     status: "error",
     code: result.code,
     fieldErrors: result.fieldErrors,
-  };
+  });
 }
 
 export async function createProjectAction(
@@ -37,29 +43,35 @@ export async function createProjectAction(
     const auth = await requireAdminMutation();
 
     if (!auth.ok) {
-      return { status: "error", code: "unauthorized" };
+      return withFormValues(formData, {
+        status: "error",
+        code: "unauthorized",
+      });
     }
 
     const parsed = validateProjectWriteInput(readProjectWriteForm(formData));
 
     if (!parsed.ok) {
-      return {
+      return withFormValues(formData, {
         status: "error",
         code: "validation",
         fieldErrors: parsed.fieldErrors,
-      };
+      });
     }
 
     const result = await getProjectService().create(auth.admin, parsed.value);
 
     if (!result.ok) {
-      return toFormState(result);
+      return toFormState(formData, result);
     }
 
     redirect(`/admin/projects/${result.value.key}`);
   } catch (error) {
     unstable_rethrow(error);
-    return { status: "error", code: "unavailable" };
+    return withFormValues(formData, {
+      status: "error",
+      code: "unavailable",
+    });
   }
 }
 
@@ -71,24 +83,27 @@ export async function updateProjectAction(
     const auth = await requireAdminMutation();
 
     if (!auth.ok) {
-      return { status: "error", code: "unauthorized" };
+      return withFormValues(formData, {
+        status: "error",
+        code: "unauthorized",
+      });
     }
 
     const keyValue = formData.get("key");
     const key = typeof keyValue === "string" ? keyValue : "";
 
     if (!key) {
-      return { status: "error", code: "notFound" };
+      return withFormValues(formData, { status: "error", code: "notFound" });
     }
 
     const parsed = validateProjectWriteInput(readProjectWriteForm(formData));
 
     if (!parsed.ok) {
-      return {
+      return withFormValues(formData, {
         status: "error",
         code: "validation",
         fieldErrors: parsed.fieldErrors,
-      };
+      });
     }
 
     const result = await getProjectService().update(
@@ -98,13 +113,16 @@ export async function updateProjectAction(
     );
 
     if (!result.ok) {
-      return toFormState(result);
+      return toFormState(formData, result);
     }
 
-    return { status: "saved" };
+    return withFormValues(formData, { status: "saved" });
   } catch (error) {
     unstable_rethrow(error);
-    return { status: "error", code: "unavailable" };
+    return withFormValues(formData, {
+      status: "error",
+      code: "unavailable",
+    });
   }
 }
 

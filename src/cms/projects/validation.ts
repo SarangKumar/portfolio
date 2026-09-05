@@ -101,7 +101,7 @@ function validateList(
   return [...items];
 }
 
-export function readProjectWriteForm(formData: FormData): {
+export type ProjectFormFields = {
   title: string;
   slug: string;
   summary: string;
@@ -111,7 +111,53 @@ export function readProjectWriteForm(formData: FormData): {
   githubUrl: string;
   demoUrl: string;
   internalNotes: string;
-} {
+};
+
+export function emptyProjectFormFields(): ProjectFormFields {
+  return {
+    title: "",
+    slug: "",
+    summary: "",
+    description: "",
+    technologies: "",
+    skillKeys: "",
+    githubUrl: "",
+    demoUrl: "",
+    internalNotes: "",
+  };
+}
+
+export function projectRecordToFormFields(
+  project?: {
+    title: string;
+    slug: string;
+    summary: string;
+    description: string | null;
+    technologies: readonly string[];
+    skillKeys: readonly string[];
+    githubUrl: string | null;
+    demoUrl: string | null;
+    internalNotes: string | null;
+  } | null,
+): ProjectFormFields {
+  if (!project) {
+    return emptyProjectFormFields();
+  }
+
+  return {
+    title: project.title,
+    slug: project.slug,
+    summary: project.summary,
+    description: project.description ?? "",
+    technologies: project.technologies.join(", "),
+    skillKeys: project.skillKeys.join(", "),
+    githubUrl: project.githubUrl ?? "",
+    demoUrl: project.demoUrl ?? "",
+    internalNotes: project.internalNotes ?? "",
+  };
+}
+
+export function readProjectWriteForm(formData: FormData): ProjectFormFields {
   const read = (name: string) => {
     const value = formData.get(name);
     return typeof value === "string" ? value : "";

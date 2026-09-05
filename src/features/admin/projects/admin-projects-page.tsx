@@ -2,8 +2,9 @@ import { getTranslations } from "next-intl/server";
 import { readAuthorizedAdminContext } from "@/admin/actions";
 import { getCurrentAdmin } from "@/admin/access";
 import { getProjectService } from "@/cms/projects/runtime";
-import { AccessDenied } from "@/features/auth/access-denied";
+import { DatabaseHealthNotice } from "@/features/admin/database-health";
 import { AdminSectionPlaceholder } from "@/features/admin/admin-section-placeholder";
+import { AccessDenied } from "@/features/auth/access-denied";
 import {
   CreateProjectLink,
   ProjectList,
@@ -33,6 +34,7 @@ export async function AdminProjectsPage() {
           label={t("cms.projects.create")}
         />
       </div>
+      <DatabaseHealthNotice />
       {listed.ok ? (
         <ProjectList
           projects={listed.value}

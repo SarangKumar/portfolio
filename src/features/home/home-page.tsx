@@ -46,7 +46,7 @@ export async function HomePage() {
 
   return (
     <div className="stack-section">
-      <header className="stack-compact border-b border-border pb-5">
+      <header className="stack-compact border-b border-border pb-8">
         <p className="type-label text-primary">{t("hero.kicker")}</p>
         <h1 className="type-display">
           {profile.displayName ?? t("hero.placeholderName")}
@@ -54,7 +54,11 @@ export async function HomePage() {
         <p className="max-w-prose type-body text-muted-foreground">
           {profile.headline ?? t("hero.placeholderHeadline")}
         </p>
-        {!showProfile ? (
+        {profile.summary ? (
+          <p className="max-w-prose type-small text-muted-foreground">
+            {profile.summary}
+          </p>
+        ) : !showProfile ? (
           <p className="max-w-prose type-small text-muted-foreground">
             {t("hero.placeholderSummary")}
           </p>

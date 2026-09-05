@@ -36,94 +36,109 @@ export type ProjectItem = {
   experienceIds: readonly string[];
 };
 
-/**
- * Sample projects. Slugs are public; ids stay out of URLs.
- * Links use example.com, not real products.
- */
 export const projects: readonly ProjectItem[] = [
   {
-    id: "proj-lorem-gateway",
-    slug: "lorem-gateway",
-    title: "Lorem Gateway",
-    summary: "A compact sample case study used to exercise the project layout.",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec sed odio dui.",
-    technologies: ["Lorem", "TypeScript", "Next.js"],
-    skillIds: ["skill-lorem", "skill-dolor", "skill-consectetur"],
-    githubUrl: "https://example.com/code/lorem-gateway",
-    demoUrl: "https://example.com/demo/lorem-gateway",
-    media: [],
-    architecture:
-      "Maecenas sed diam eget risus varius blandit sit amet non magna. Nested routes, typed catalogs, and placeholder media.",
-    problem:
-      "Nullam quis risus eget urna mollis ornare vel eu leo. Pages needed realistic length without real product claims.",
-    solution:
-      "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Structured fields with lorem copy.",
-    challenges:
-      "Keeping internal ids out of URLs while still linking skills and roles.",
-    decisions:
-      "Public slugs only. Evidence counts instead of proficiency bars.",
-    tradeoffs: "No screenshots until real media is published.",
-    testing: "Catalog helpers and ranking covered in unit tests.",
-    performance: "Static generation for published slugs.",
-    futureImprovements: "Replace this copy with a real case study.",
-    sections: [
-      {
-        id: "notes",
-        title: "Notes",
-        body: "Vestibulum id ligula porta felis euismod semper. Additional lorem for the optional sections list.",
-      },
-    ],
-    experienceIds: ["exp-lorem-labs"],
-  },
-  {
-    id: "proj-ipsum-ledger",
-    slug: "ipsum-ledger",
-    title: "Ipsum Ledger",
+    id: "proj-slack-shift-manager",
+    slug: "slack-shift-manager",
+    title: "Slack Shift Manager",
     summary:
-      "Second sample project so ranking and grids have more than one card.",
+      "Python automation that tracks engineer availability and allocates support tickets through Slack.",
     description:
-      "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac.",
-    technologies: ["Ipsum", "React"],
-    skillIds: ["skill-ipsum", "skill-sit"],
+      "A Python utility adopted by 12 support engineers at Komprise. It applies object-oriented design and MySQL-backed data management to automate availability tracking and ticket allocation, replacing recurring manual manager coordination.",
+    technologies: ["Python", "OOP", "MySQL", "Slack API"],
+    skillIds: [
+      "skill-python",
+      "skill-oop",
+      "skill-mysql",
+      "skill-application-design",
+    ],
     githubUrl: null,
-    demoUrl: "https://example.com/demo/ipsum-ledger",
-    media: [],
-    architecture: "A narrow sample architecture note for the detail page.",
-    problem: "Need a second slug for sitemap and static params.",
-    solution:
-      "Publish another lorem project with fewer case-study fields filled.",
-    challenges: null,
-    decisions: null,
-    tradeoffs: null,
-    testing: null,
-    performance: null,
-    futureImprovements: null,
-    sections: [],
-    experienceIds: ["exp-ipsum-collective"],
-  },
-  {
-    id: "proj-dolor-canvas",
-    slug: "dolor-canvas",
-    title: "Dolor Canvas",
-    summary: "Third sample so the home ranking can show a top three.",
-    description:
-      "Donec ullamcorper nulla non metus auctor fringilla. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.",
-    technologies: ["Dolor", "SVG"],
-    skillIds: ["skill-dolor", "skill-adipiscing"],
-    githubUrl: "https://example.com/code/dolor-canvas",
     demoUrl: null,
     media: [],
-    architecture: null,
-    problem: "Charts and featured lists need at least three titled items.",
-    solution: "Add a third lorem project with mixed empty case-study fields.",
-    challenges: "Empty media should not invent screenshots.",
-    decisions: null,
-    tradeoffs: "Demo URL left unpublished.",
+    architecture:
+      "Object-oriented Python service with MySQL for engineer matching and ticket distribution, plus Slack reactions for real-time success and failure feedback.",
+    problem:
+      "Support managers were coordinating engineer availability and ticket assignment by hand.",
+    solution:
+      "A database-driven matching workflow that posts allocation results back to Slack.",
+    challenges:
+      "Keeping allocation feedback immediate for on-call engineers without adding another dashboard.",
+    decisions:
+      "Use Slack reactions as the operator interface instead of a separate UI.",
+    tradeoffs:
+      "The repository is internal, so there is no public source or demo URL.",
     testing: null,
     performance: null,
     futureImprovements: null,
     sections: [],
-    experienceIds: ["exp-lorem-labs"],
+    experienceIds: ["exp-komprise-engineer"],
+  },
+  {
+    id: "proj-fest-platforms",
+    slug: "fest-platforms",
+    title: "Aatmatrisha & dotSlash 5.0",
+    summary:
+      "Event platforms for PES University’s techno-cultural fest and a 24-hour hackathon.",
+    description:
+      "As Technical Head for Aatmatrisha, led technical execution for PES University’s annual techno-cultural fest serving 5,000+ attendees. Also built the dotSlash 5.0 platform for a 24-hour hackathon with 140+ participants, including QR-based ticketing for verification and check-in.",
+    technologies: ["Next.js", "MongoDB", "Web Applications"],
+    skillIds: [
+      "skill-nextjs",
+      "skill-mongodb",
+      "skill-javascript",
+      "skill-application-design",
+    ],
+    githubUrl: null,
+    demoUrl: null,
+    media: [],
+    architecture:
+      "Next.js web applications with MongoDB-backed attendee and ticketing data, including a QR check-in flow for the hackathon.",
+    problem:
+      "Large campus events needed reliable registration, verification, and day-of operations.",
+    solution:
+      "Purpose-built platforms for fest operations and hackathon ticketing rather than generic form tools.",
+    challenges:
+      "Supporting thousands of attendees and a 24-hour hackathon check-in window.",
+    decisions: "QR tickets for attendee verification at the door.",
+    tradeoffs:
+      "Event-specific deployments rather than a general ticketing product.",
+    testing: null,
+    performance: null,
+    futureImprovements: null,
+    sections: [],
+    experienceIds: ["exp-pes-university"],
+  },
+  {
+    id: "proj-notevault",
+    slug: "notevault",
+    title: "NoteVault",
+    summary:
+      "Developer-focused notes with Markdown, authentication, and contextual linking.",
+    description:
+      "Open-source note-taking platform with Markdown editing, authentication, and interconnected note navigation. Emphasis on maintainable architecture and usability. 26+ GitHub stars.",
+    technologies: ["Next.js", "MongoDB", "Markdown", "Authentication", "SEO"],
+    skillIds: [
+      "skill-nextjs",
+      "skill-mongodb",
+      "skill-javascript",
+      "skill-application-design",
+    ],
+    githubUrl: "https://github.com/Nexus-PES/NoteVault",
+    demoUrl: null,
+    media: [],
+    architecture:
+      "Next.js application with MongoDB persistence, authenticated sessions, and Markdown-based note graphs.",
+    problem:
+      "Developer notes are hard to keep connected when they live as isolated files.",
+    solution:
+      "Contextual note-linking and Markdown editing in a single authenticated workspace.",
+    challenges: "Keeping navigation usable as the note graph grows.",
+    decisions: "Markdown as the editing surface; publish as open source.",
+    tradeoffs: "No official hosted demo on this site.",
+    testing: null,
+    performance: "Public SEO for the project presence.",
+    futureImprovements: null,
+    sections: [],
+    experienceIds: ["exp-pes-university"],
   },
 ];
