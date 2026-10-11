@@ -174,8 +174,8 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
 
-  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --shadow-card: var(--ds-shadow-card);
 

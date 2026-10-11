@@ -1,0 +1,253 @@
+{
+  "version": "1.4.0",
+  "components": {
+    "accordion": {
+      "files": [
+        "src/components/ui/accordion/accordion.css",
+        "src/components/ui/accordion/index.tsx"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "alert": {
+      "files": ["src/components/ui/alert/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "button": {
+      "files": ["src/components/ui/button/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "alert-dialog": {
+      "files": [
+        "src/components/ui/alert-dialog/alert-dialog.css",
+        "src/components/ui/alert-dialog/index.tsx"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "aspect-ratio": {
+      "files": ["src/components/ui/aspect-ratio/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "attachment": {
+      "files": ["src/components/ui/attachment/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "avatar": {
+      "files": ["src/components/ui/avatar/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "badge": {
+      "files": ["src/components/ui/badge/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "breadcrumb": {
+      "files": ["src/components/ui/breadcrumb/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "calendar": {
+      "files": ["src/components/ui/calendar/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "card": {
+      "files": ["src/components/ui/card/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "chart": {
+      "files": ["src/components/ui/chart/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "checkbox": {
+      "files": ["src/components/ui/checkbox/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "kbd": {
+      "files": ["src/components/ui/kbd/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "command": {
+      "files": ["src/components/ui/command/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "popover": {
+      "files": ["src/components/ui/popover/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "combobox": {
+      "files": ["src/components/ui/combobox/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "table": {
+      "files": ["src/components/ui/table/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "pagination": {
+      "files": ["src/components/ui/pagination/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "input": {
+      "files": ["src/components/ui/input/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "dropdown-menu": {
+      "files": ["src/components/ui/dropdown-menu/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "skeleton": {
+      "files": ["src/components/ui/skeleton/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "data-table": {
+      "files": ["src/components/ui/data-table/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "date-picker": {
+      "files": ["src/components/ui/date-picker/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "dialog": {
+      "files": [
+        "src/components/ui/dialog/dialog.css",
+        "src/components/ui/dialog/index.tsx"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "drag-and-drop": {
+      "files": ["src/components/ui/drag-and-drop/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "drawer": {
+      "files": [
+        "src/components/ui/drawer/drawer.css",
+        "src/components/ui/drawer/index.tsx"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "empty-state": {
+      "files": ["src/components/ui/empty-state/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "file-upload": {
+      "files": ["src/components/ui/file-upload/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "label": {
+      "files": ["src/components/ui/label/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "form": {
+      "files": ["src/components/ui/form/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "hover-card": {
+      "files": ["src/components/ui/hover-card/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "input-group": {
+      "files": ["src/components/ui/input-group/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "input-otp": {
+      "files": ["src/components/ui/input-otp/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "marker": {
+      "files": ["src/components/ui/marker/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "native-select": {
+      "files": ["src/components/ui/native-select/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "navigation-menu": {
+      "files": [
+        "src/components/ui/navigation-menu/index.tsx",
+        "src/components/ui/navigation-menu/navigation-menu.css"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "progress": {
+      "files": ["src/components/ui/progress/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "radio-group": {
+      "files": ["src/components/ui/radio-group/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "resizable": {
+      "files": ["src/components/ui/resizable/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "score-ring": {
+      "files": ["src/components/ui/score-ring/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "scroll-area": {
+      "files": ["src/components/ui/scroll-area/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "select": {
+      "files": ["src/components/ui/select/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "separator": {
+      "files": ["src/components/ui/separator/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "sheet": {
+      "files": [
+        "src/components/ui/sheet/index.tsx",
+        "src/components/ui/sheet/sheet.css"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "tooltip": {
+      "files": [
+        "src/components/ui/tooltip/index.tsx",
+        "src/components/ui/tooltip/tooltip.css"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "sidebar": {
+      "files": ["src/components/ui/sidebar/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "slider": {
+      "files": ["src/components/ui/slider/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "spinner": {
+      "files": ["src/components/ui/spinner/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "switch": {
+      "files": ["src/components/ui/switch/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "tabs": {
+      "files": ["src/components/ui/tabs/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "textarea": {
+      "files": ["src/components/ui/textarea/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "toast": {
+      "files": [
+        "src/components/ui/toast/index.tsx",
+        "src/components/ui/toast/toast.css"
+      ],
+      "installedAt": "2026-10-11"
+    },
+    "toggle": {
+      "files": ["src/components/ui/toggle/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "toggle-group": {
+      "files": ["src/components/ui/toggle-group/index.tsx"],
+      "installedAt": "2026-10-11"
+    },
+    "typography": {
+      "files": ["src/components/ui/typography/index.tsx"],
+      "installedAt": "2026-10-11"
+    }
+  }
+}
