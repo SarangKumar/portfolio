@@ -1,5 +1,13 @@
+/**
+ * `kind` drives which timeline an entry renders in (`/experience` splits
+ * work from education) and which icon its timeline dot shows. Admin editing
+ * of this field is future work — see CLAUDE.md.
+ */
+export type ExperienceKind = "work" | "education";
+
 export type PublicExperience = {
   id: string;
+  kind: ExperienceKind;
   company: string;
   role: string;
   startDate: string;
@@ -14,6 +22,7 @@ export type PublicExperience = {
 export const experience: readonly PublicExperience[] = [
   {
     id: "exp-komprise-engineer",
+    kind: "work",
     company: "Komprise India Private Limited",
     role: "Software Engineer",
     startDate: "2025-07",
@@ -53,6 +62,7 @@ export const experience: readonly PublicExperience[] = [
   },
   {
     id: "exp-komprise-intern",
+    kind: "work",
     company: "Komprise India Private Limited",
     role: "Software Engineer Intern",
     startDate: "2025-01",
@@ -75,6 +85,7 @@ export const experience: readonly PublicExperience[] = [
   },
   {
     id: "exp-pes-university",
+    kind: "education",
     company: "PES University",
     role: "B.Tech, Computer Science Engineering",
     startDate: "2021-08",

@@ -226,6 +226,18 @@
   .glow-breathe {
     animation: glow-breathe 4.8s ease-in-out infinite;
   }
+
+  /* Timeline rail: draws downward from the top once on mount. */
+  .timeline-grow {
+    animation: timeline-grow 900ms var(--ease-out-soft) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* Timeline dot: pops in after its rail segment has drawn past it. */
+  .timeline-dot {
+    animation: timeline-dot 420ms var(--ease-out-soft) both;
+    animation-delay: var(--delay, 0ms);
+  }
 }
 
 @keyframes fade-up {
@@ -251,10 +263,32 @@
   }
 }
 
+@keyframes timeline-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes timeline-dot {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
   .glow-breathe,
-  .lift {
+  .lift,
+  .timeline-grow,
+  .timeline-dot {
     animation: none !important;
     transition: none !important;
     transform: none !important;
