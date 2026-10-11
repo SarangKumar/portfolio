@@ -11,13 +11,12 @@ here, not there.
 - v2.0.0: a fresh start. The earlier app (CMS, auth, content layer, tests) was
   removed. A backup of the old tree exists outside the repo, and git history on
   this branch keeps the earlier commits.
-- Stack: Next.js (App Router, JavaScript, no TypeScript), Tailwind CSS v4 via
-  PostCSS, Vinyaas components.
+- Stack: Next.js (App Router, TypeScript), Tailwind CSS v4 via PostCSS,
+  Vinyaas components.
 
 ## Config
 
-- `jsconfig.json` maps `@/*` to `./src/*`.
-- `next.config.mjs` has no custom options.
+- `tsconfig.json` maps `@/*` to `./src/*`. `next.config.ts` has no custom options.
 - `postcss.config.mjs` uses `@tailwindcss/postcss`.
 - `eslint.config.mjs`, `.prettierrc`, `.prettierignore`, `.husky/pre-commit`
   (`lint-staged`) and `.gitignore` were kept from v1. Scripts: `npm run lint`,
@@ -30,9 +29,9 @@ here, not there.
   `npx vinyaas@1.4.0 doctor`.
 - `components.json` was written by `vinyaas init`. `add` does not update it.
   Edit it by hand if the config needs to change.
-- Components live in `src/components/ui/<name>/` (`index.jsx` plus any sibling
+- Components live in `src/components/ui/<name>/` (`index.tsx` plus any sibling
   `.css`). Import the folder: `@/components/ui/button`.
-- `src/lib/utils.js` provides `cn`. Registry files import `@/lib/utils`.
+- `src/lib/utils.ts` provides `cn`. Registry files import `@/lib/utils`.
 - Don't run `vinyaas init` again on this repo. It rewrites the managed blocks
   of `globals.css`, which holds the palette. Back up `globals.css` first if you
   have to.
@@ -44,5 +43,5 @@ here, not there.
   to utilities in `@theme inline`. Use semantic utilities such as `bg-primary`,
   `text-muted-foreground`, `border-border`. Don't hardcode colours.
 - `@custom-variant dark` makes `dark:` follow the `.dark` class.
-- The root layout doesn't yet add `dark` to `<html>`. Add it when the dark
-  theme should apply.
+- The root layout sets the `dark` class on `<html>`, because the palette is
+  dark-first.
