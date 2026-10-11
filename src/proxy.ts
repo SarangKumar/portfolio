@@ -1,56 +1,38 @@
-import NextAuth from "next-auth";
 import createIntlMiddleware from "next-intl/middleware";
-import {
-  NextResponse,
-  type NextFetchEvent,
-  type NextRequest,
-} from "next/server";
-import { authConfig } from "./auth/config";
+import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "./auth/admin-session";
 import {
   isPrivatePath,
-  loginRedirectPath,
-  shouldRedirectToLogin,
+  pathnameWithoutLocale,
+  unlockRedirectPath,
+  UNLOCK_PATH,
 } from "./auth/paths";
+import { safeInternalPath } from "./auth/redirect";
 import { routing } from "./i18n/routing";
 
-const { auth } = NextAuth(authConfig);
 const handleI18n = createIntlMiddleware(routing);
 
-type AuthProxy = (
-  request: NextRequest,
-  event: NextFetchEvent,
-) => ReturnType<typeof handleI18n>;
+export default function proxy(request: NextRequest) {
+  const { pathname, origin, searchParams } = request.nextUrl;
+  const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+  const unlocked = verifyAdminSession(token, process.env.AUTH_SECRET ?? "");
 
-const protectPrivateRoutes = auth((request) => {
-  const isAuthenticated = Boolean(request.auth?.user?.id);
-
-  if (shouldRedirectToLogin(request.nextUrl.pathname, isAuthenticated)) {
-    return NextResponse.redirect(
-      new URL(
-        loginRedirectPath(request.nextUrl.pathname),
-        request.nextUrl.origin,
-      ),
-    );
+  // Redirect here rather than in the page: a redirect from inside a streamed
+  // page is sent as a 200, not a 307.
+  if (unlocked && pathnameWithoutLocale(pathname) === UNLOCK_PATH) {
+    const target = safeInternalPath(searchParams.get("callbackUrl") ?? "");
+    return NextResponse.redirect(new URL(target, origin));
   }
 
-  return handleI18n(request);
-}) as unknown as AuthProxy;
-
-export default function proxy(request: NextRequest, event: NextFetchEvent) {
-  if (!isPrivatePath(request.nextUrl.pathname)) {
+  if (!isPrivatePath(pathname)) {
     return handleI18n(request);
   }
 
-  if (!process.env.AUTH_SECRET) {
-    return NextResponse.redirect(
-      new URL(
-        loginRedirectPath(request.nextUrl.pathname),
-        request.nextUrl.origin,
-      ),
-    );
+  if (unlocked) {
+    return handleI18n(request);
   }
 
-  return protectPrivateRoutes(request, event);
+  return NextResponse.redirect(new URL(unlockRedirectPath(pathname), origin));
 }
 
 export const config = {

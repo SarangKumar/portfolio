@@ -1,3 +1,5 @@
+import { UNLOCK_PATH } from "@/auth/paths";
+
 const PRIVATE_HOME = "/admin";
 
 export function safeInternalPath(value: string | undefined): string {
@@ -13,11 +15,7 @@ export function safeInternalPath(value: string | undefined): string {
     return PRIVATE_HOME;
   }
 
-  if (
-    value.startsWith("/login") ||
-    value.startsWith("/signup") ||
-    value.startsWith("/api/")
-  ) {
+  if (value.startsWith(UNLOCK_PATH) || value.startsWith("/api/")) {
     return PRIVATE_HOME;
   }
 

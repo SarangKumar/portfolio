@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 import { adminLayoutView } from "@/admin/layout-view";
 import { adminNavItems, isAdminNavItemActive } from "@/config/admin-navigation";
-import { createAdminRecord } from "@/admin/directory";
+import { createAdminRecord } from "@/admin/record";
 
 const activeAdmin = createAdminRecord("owner@example.com", "active");
 

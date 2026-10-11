@@ -1,27 +1,27 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
-import {
-  AdminAuthorizationError,
-  resolveAdminAccess,
-  type AdminAccess,
-} from "@/admin/authorize";
-import { buildAdminDirectory } from "@/admin/directory";
+import { AdminAuthorizationError, type AdminAccess } from "@/admin/authorize";
+import { createAdminRecord } from "@/admin/record";
 import type { Admin } from "@/admin/model";
-import { getCurrentUser } from "@/auth/session";
+import { hasAdminSession } from "@/auth/admin-gate";
+import { UNLOCK_PATH } from "@/auth/paths";
 import { serverEnv } from "@/lib/env/server";
 
-export function loadAdminDirectory() {
-  return buildAdminDirectory({
-    bootstrapEmail: serverEnv.adminEmail,
-    emails: serverEnv.adminEmails,
-    inactiveEmails: serverEnv.adminInactiveEmails,
-  });
+/**
+ * There is one admin: whoever holds the unlocked session cookie. The record
+ * carries the owner identity so existing rows keep their owner.
+ */
+function ownerAdmin(): Admin {
+  return createAdminRecord(serverEnv.adminEmail || "owner", "active");
 }
 
 export async function resolveCurrentAdminAccess(): Promise<AdminAccess> {
-  const user = await getCurrentUser();
-  return resolveAdminAccess(user, loadAdminDirectory());
+  if (!(await hasAdminSession())) {
+    return { status: "unauthenticated" };
+  }
+
+  return { status: "allowed", admin: ownerAdmin() };
 }
 
 export async function getCurrentAdmin(): Promise<Admin | null> {
@@ -38,7 +38,7 @@ export async function requireAdmin(): Promise<Admin> {
   const access = await resolveCurrentAdminAccess();
 
   if (access.status === "unauthenticated") {
-    redirect("/login");
+    redirect(UNLOCK_PATH);
   }
 
   if (access.status !== "allowed") {

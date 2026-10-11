@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { signOutAction } from "@/features/auth/actions";
+import { lockAdminAction } from "@/features/auth/actions";
 
 type SignOutFormProps = {
   label: string;
@@ -7,7 +7,7 @@ type SignOutFormProps = {
 
 export function SignOutForm({ label }: SignOutFormProps) {
   return (
-    <form action={signOutAction}>
+    <form action={lockAdminAction}>
       <Button type="submit" size="sm" variant="outline">
         {label}
       </Button>

@@ -60,8 +60,40 @@ icon-sm | icon-lg`. To style a non-button element as a button, use
   API changes have to keep them type-checking. Don't edit them as if they were
   the real file; ask before deleting them.
 
+## Testing
+
+- Don't force tests. Don't add per-component or per-feature tests by default.
+- Write a test only for pure logic with real branching or risk: e.g. the
+  stack-grading function, password and session verification.
+- Don't block work on coverage. Keep existing tests passing; if a change breaks
+  a test that only asserts markup, update or remove that assertion rather than
+  adding new ones.
+
 ## Integrations
 
 - Vercel Analytics and Speed Insights are mounted in
   `src/app/[locale]/layout.tsx` (`@vercel/analytics/next`,
   `@vercel/speed-insights/next`).
+
+## Admin auth (password-only)
+
+- No accounts. `/unlock` takes the password, checks it with bcrypt against
+  `ADMIN_PASSWORD_HASH`, and sets a signed `pf_admin` cookie (HMAC over
+  `AUTH_SECRET`, 8h, httpOnly, sameSite lax). `src/proxy.ts` checks the cookie
+  for `/admin/*`; `hasAdminSession()` in `src/auth/admin-gate.ts` checks it in
+  server code. Lock = `lockAdminAction`.
+- `ADMIN_EMAIL` is no longer used to log in. It only seeds the owner identity
+  id (`ownerIdentityId()`), so application rows created before the change keep
+  their owner. Keep it unchanged.
+- **`$` in `ADMIN_PASSWORD_HASH` must be escaped as `\$` in `.env`.** Next runs
+  dotenv-expand over `.env` values, so an unescaped bcrypt hash loads as a
+  corrupted string and the password can never match. The same expansion
+  happens to values set in the shell (`process.env`), and an escaped value
+  there is kept with the backslashes, so it doesn't work either. Put the hash
+  in `.env` with escapes.
+- Redirects that depend on the session must be in `src/proxy.ts`. A
+  `redirect()` called from a streamed page (e.g. `/unlock` when already
+  unlocked) is sent as a 200, not a 307.
+- Browser-test the auth flow with Playwright, not hand-built server-action
+  POSTs. The hand-built POST returns "Connection closed" and doesn't prove
+  anything about the app.

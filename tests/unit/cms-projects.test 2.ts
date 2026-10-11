@@ -9,7 +9,7 @@ import {
   validateProjectWriteInput,
 } from "@/cms/projects/validation";
 import { publishedProjects } from "@/content/published";
-import { createAdminRecord } from "@/admin/directory";
+import { createAdminRecord } from "@/admin/record";
 
 const admin = createAdminRecord("owner@example.com", "active");
 

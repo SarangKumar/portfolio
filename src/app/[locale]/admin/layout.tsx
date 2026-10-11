@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { UNLOCK_PATH } from "@/auth/paths";
 import { resolveCurrentAdminAccess } from "@/admin/access";
 import { adminLayoutView } from "@/admin/layout-view";
 import { AdminShell } from "@/features/admin/admin-shell";
@@ -46,8 +47,8 @@ export default async function AdminLayout({
   const access = await resolveCurrentAdminAccess();
   const view = adminLayoutView(access);
 
-  if (view === "login") {
-    redirect("/login");
+  if (view === "unlock") {
+    redirect(UNLOCK_PATH);
   }
 
   if (view === "denied") {
@@ -62,7 +63,7 @@ export default async function AdminLayout({
   }
 
   if (access.status !== "allowed") {
-    redirect("/login");
+    redirect(UNLOCK_PATH);
   }
 
   const copy = await getAdminShellCopy();

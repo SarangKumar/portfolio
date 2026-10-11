@@ -1,53 +1,50 @@
 "use server";
 
-import { AuthError } from "next-auth";
-import { redirect, unstable_rethrow } from "next/navigation";
-import { signIn, signOut } from "@/auth";
-import { attemptLogin } from "@/auth/login";
-import type { LoginFormState } from "@/auth/login-state";
+import { redirect } from "next/navigation";
+import {
+  checkAdminPassword,
+  endAdminSession,
+  startAdminSession,
+} from "@/auth/admin-gate";
 import { getLoginRateLimitKey, loginRateLimiter } from "@/auth/rate-limit";
-import { postLogoutPath } from "@/auth/redirect";
+import { postLogoutPath, safeInternalPath } from "@/auth/redirect";
 
-async function authenticateCredentials(
-  email: string,
-  password: string,
-  redirectTo: string,
-): Promise<boolean> {
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo,
-    });
-    return true;
-  } catch (error) {
-    unstable_rethrow(error);
+export type UnlockFormState = {
+  status: "idle" | "error" | "rateLimited";
+};
 
-    if (error instanceof AuthError) {
-      return false;
-    }
+const MAX_PASSWORD_LENGTH = 256;
 
-    throw error;
-  }
-}
-
-export async function submitLogin(
-  _previous: LoginFormState,
+export async function submitUnlock(
+  _previous: UnlockFormState,
   formData: FormData,
-): Promise<LoginFormState> {
-  const result = await attemptLogin(formData, {
-    consume: (key) => loginRateLimiter.consume(key),
-    rateLimitKey: await getLoginRateLimitKey(),
-    authenticate: authenticateCredentials,
-  });
+): Promise<UnlockFormState> {
+  const password = formData.get("password");
+  const callbackUrl = formData.get("callbackUrl");
 
-  if (result.status === "authenticated") {
-    redirect(result.redirectTo);
+  if (
+    typeof password !== "string" ||
+    !password ||
+    password.length > MAX_PASSWORD_LENGTH
+  ) {
+    return { status: "error" };
   }
 
-  return result;
+  if (!loginRateLimiter.consume(await getLoginRateLimitKey()).allowed) {
+    return { status: "rateLimited" };
+  }
+
+  if (!(await checkAdminPassword(password))) {
+    return { status: "error" };
+  }
+
+  await startAdminSession();
+  redirect(
+    safeInternalPath(typeof callbackUrl === "string" ? callbackUrl : ""),
+  );
 }
 
-export async function signOutAction() {
-  await signOut({ redirectTo: postLogoutPath });
+export async function lockAdminAction() {
+  await endAdminSession();
+  redirect(postLogoutPath);
 }

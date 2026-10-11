@@ -1,6 +1,5 @@
 import "server-only";
 
-export { toAdminRecord, type AdminDocument } from "@/db/admin";
 export { getPrismaClient } from "@/db/client";
 export {
   parseDatabaseUrl,

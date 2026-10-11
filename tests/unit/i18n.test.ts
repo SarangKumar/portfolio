@@ -26,9 +26,8 @@ describe("i18n foundation", () => {
   });
 
   it("keeps authentication copy in the translation catalog", () => {
-    expect(enMessages.auth.login.signup).toBeTruthy();
-    expect(enMessages.auth.signup.signIn).toBeTruthy();
-    expect(enMessages.auth.login.error).toBeTruthy();
+    expect(enMessages.auth.unlock.submit).toBeTruthy();
+    expect(enMessages.auth.unlock.error).toBeTruthy();
     expect(enMessages.auth.logout.action).toBeTruthy();
     expect(enMessages.auth.admin.title).toBeTruthy();
     expect(enMessages.auth.denied.title).toBeTruthy();

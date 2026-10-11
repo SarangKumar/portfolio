@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { createAdminRecord } from "@/admin/directory";
+import { createAdminRecord } from "@/admin/record";
 import {
   archiveJobApplication,
   changeJobApplicationStatus,

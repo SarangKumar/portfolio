@@ -1,5 +1,4 @@
 import { describe, expect, it } from "@jest/globals";
-import { toAdminRecord } from "@/db/admin";
 import {
   parseDatabaseUrl,
   requireDatabaseUrl,
@@ -148,37 +147,5 @@ describe("database operation errors", () => {
       DATABASE_MISSING_MESSAGE,
     );
     expect(toDatabaseError(configError)).toBe(configError);
-  });
-});
-
-describe("admin persistence mapping", () => {
-  it("maps a Prisma admin document onto the existing Admin identity", () => {
-    expect(
-      toAdminRecord({
-        identityId: "abc123abc123abc123abc123",
-        email: "owner@example.com",
-        status: "active",
-        createdAt: new Date("2026-01-01T00:00:00.000Z"),
-        updatedAt: new Date("2026-02-01T00:00:00.000Z"),
-      }),
-    ).toEqual({
-      id: "abc123abc123abc123abc123",
-      email: "owner@example.com",
-      status: "active",
-      createdAt: "2026-01-01T00:00:00.000Z",
-      updatedAt: "2026-02-01T00:00:00.000Z",
-    });
-  });
-
-  it("rejects malformed documents without leaking field values", () => {
-    expect(() =>
-      toAdminRecord({
-        identityId: "",
-        email: "owner@example.com",
-        status: "compromised",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }),
-    ).toThrow(DATABASE_UNAVAILABLE_MESSAGE);
   });
 });
