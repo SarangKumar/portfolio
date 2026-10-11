@@ -3,11 +3,7 @@ import { TrackedExternalLink } from "@/analytics/tracked-external-link";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
 import { PageHeader } from "@/components/content/page-header";
 import { PageSection } from "@/components/content/page-section";
-import {
-  buttonClassName,
-  buttonSizes,
-  buttonVariants,
-} from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { contactProfile } from "@/data/contact";
 import { ContactForm } from "@/features/contact/contact-form";
 import { cn } from "@/lib/cn";
@@ -26,9 +22,7 @@ export async function ContactPage() {
           <TrackedExternalLink
             href={`mailto:${contactProfile.email}`}
             className={cn(
-              buttonClassName.base,
-              buttonVariants.primary,
-              buttonSizes.sm,
+              buttonVariants({ variant: "default", size: "sm" }),
               "w-fit",
             )}
             {...getExternalAnchorProps(`mailto:${contactProfile.email}`)}

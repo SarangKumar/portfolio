@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import { analyticsEvents, trackResumeEvent } from "@/analytics/events";
 import { ContentPlaceholder } from "@/components/content/content-placeholder";
-import {
-  buttonClassName,
-  buttonSizes,
-  buttonVariants,
-} from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import type { ResumeVersion } from "@/data/resumes";
 import { cn } from "@/lib/cn";
 import { defaultResume } from "@/lib/resume";
@@ -86,9 +82,7 @@ export function ResumePanel({ versions, copy }: ResumePanelProps) {
           href={selected.fileSrc}
           download={selected.fileName ?? true}
           className={cn(
-            buttonClassName.base,
-            buttonVariants.primary,
-            buttonSizes.sm,
+            buttonVariants({ variant: "default", size: "sm" }),
             "w-fit",
           )}
           onClick={() =>

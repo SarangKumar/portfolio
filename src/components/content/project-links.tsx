@@ -1,11 +1,6 @@
 import { ExternalLink, GitBranch } from "lucide-react";
 import { TrackedExternalLink } from "@/analytics/tracked-external-link";
-import {
-  buttonClassName,
-  buttonSizes,
-  buttonVariants,
-} from "@/components/ui/button";
-import { cn } from "@/lib/cn";
+import { buttonVariants } from "@/components/ui/button";
 import { getExternalAnchorProps } from "@/lib/href";
 
 type ProjectLinksProps = {
@@ -30,11 +25,7 @@ export function ProjectLinks({
       {githubUrl ? (
         <TrackedExternalLink
           href={githubUrl}
-          className={cn(
-            buttonClassName.base,
-            buttonVariants.outline,
-            buttonSizes.sm,
-          )}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
           {...getExternalAnchorProps(githubUrl)}
         >
           <GitBranch />
@@ -44,11 +35,7 @@ export function ProjectLinks({
       {demoUrl ? (
         <a
           href={demoUrl}
-          className={cn(
-            buttonClassName.base,
-            buttonVariants.primary,
-            buttonSizes.sm,
-          )}
+          className={buttonVariants({ variant: "default", size: "sm" })}
           {...getExternalAnchorProps(demoUrl)}
         >
           <ExternalLink />

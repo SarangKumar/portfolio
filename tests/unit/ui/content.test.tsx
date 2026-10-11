@@ -31,13 +31,13 @@ describe("Card", () => {
 });
 
 describe("Separator", () => {
-  it("is hidden from the accessibility tree when decorative", () => {
-    const { container } = render(<Separator />);
-    expect(container.firstChild).toHaveAttribute("aria-hidden", "true");
+  it("renders a native <hr> when horizontal", () => {
+    render(<Separator />);
+    expect(screen.getByRole("separator").tagName).toBe("HR");
   });
 
-  it("exposes orientation when it is semantic", () => {
-    render(<Separator decorative={false} orientation="vertical" />);
+  it("exposes vertical orientation", () => {
+    render(<Separator orientation="vertical" />);
     expect(screen.getByRole("separator")).toHaveAttribute(
       "aria-orientation",
       "vertical",

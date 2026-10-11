@@ -17,7 +17,7 @@ const statusVariants: Record<JobApplicationStatus, BadgeVariant> = {
   offer: "success",
   rejected: "destructive",
   withdrawn: "secondary",
-  ghosted: "default",
+  ghosted: "outline",
 };
 
 const priorityVariants: Record<JobApplicationPriority, BadgeVariant> = {

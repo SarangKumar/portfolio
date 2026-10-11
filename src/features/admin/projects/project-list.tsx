@@ -1,9 +1,5 @@
 import NextLink from "next/link";
-import {
-  buttonClassName,
-  buttonSizes,
-  buttonVariants,
-} from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import type { AdminProjectSummary } from "@/cms/projects/types";
 import { PublicationStatusBadge } from "@/features/admin/publication-status-badge";
@@ -79,9 +75,7 @@ export function CreateProjectLink({
     <NextLink
       href={href}
       className={cn(
-        buttonClassName.base,
-        buttonVariants.primary,
-        buttonSizes.sm,
+        buttonVariants({ variant: "default", size: "sm" }),
         "hover:text-primary-foreground",
       )}
     >

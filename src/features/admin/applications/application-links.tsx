@@ -1,9 +1,5 @@
 import NextLink from "next/link";
-import {
-  buttonClassName,
-  buttonSizes,
-  buttonVariants,
-} from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 export function CreateApplicationLink({
@@ -17,9 +13,7 @@ export function CreateApplicationLink({
     <NextLink
       href={href}
       className={cn(
-        buttonClassName.base,
-        buttonVariants.primary,
-        buttonSizes.sm,
+        buttonVariants({ variant: "default", size: "sm" }),
         "hover:text-primary-foreground",
       )}
     >

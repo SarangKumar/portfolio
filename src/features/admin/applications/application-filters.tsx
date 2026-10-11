@@ -1,11 +1,7 @@
 import NextLink from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  buttonClassName,
-  buttonSizes,
-  buttonVariants,
-} from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import {
   APPLICATIONS_PATH,
@@ -121,11 +117,7 @@ export function ApplicationFilters({ state, copy }: ApplicationFiltersProps) {
         </Button>
         <NextLink
           href={APPLICATIONS_PATH}
-          className={cn(
-            buttonClassName.base,
-            buttonVariants.ghost,
-            buttonSizes.sm,
-          )}
+          className={buttonVariants({ variant: "ghost", size: "sm" })}
         >
           {copy.clearFilters}
         </NextLink>
