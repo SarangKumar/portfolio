@@ -68,23 +68,184 @@ export function buildIndex(c: Content): SearchItem[] {
   ];
 }
 
-/** Skills = curated skills ∪ every technology used by a published project. */
+export type DerivedSkill = {
+  name: string;
+  category: string;
+  proficiency: string;
+  featured: boolean;
+  order: number;
+  projects: { title: string; href: string }[];
+  experience: { title: string; href: string }[];
+};
+
+/**
+ * Skills view: every technology used by a published project or experience
+ * role, resolved through the admin-managed `skills` collection (name/alias
+ * match → rename/merge; hidden → dropped; category/order/flags → grouping).
+ * Unmatched technologies land in the "From projects" category.
+ */
 export function deriveSkills(c: Content) {
-  const usage = new Map<string, string[]>();
+  const fallbackCategory = label(c.site.labels, "skills.fromProjects");
+  const byKey = new Map<string, Content["skills"][number]>();
+  for (const s of c.skills)
+    for (const k of [s.name, ...(s.aliases ?? [])])
+      byKey.set(k.toLowerCase(), s);
+  const out = new Map<string, DerivedSkill>();
+  const hidden = new Set<string>();
+  const touch = (raw: string) => {
+    const s = byKey.get(raw.toLowerCase());
+    if (s?.hidden) {
+      hidden.add(s.name);
+      return null;
+    }
+    const name = s?.name ?? raw;
+    if (!out.has(name))
+      out.set(name, {
+        name,
+        category: s?.category || fallbackCategory,
+        proficiency: s?.proficiency ?? "",
+        featured: Boolean(s?.featured),
+        order: s?.order ?? 999,
+        projects: [],
+        experience: [],
+      });
+    return out.get(name)!;
+  };
+  const addOnce = (
+    list: { title: string; href: string }[],
+    item: { title: string; href: string },
+  ) => {
+    if (!list.some((x) => x.href === item.href)) list.push(item);
+  };
   for (const p of c.projects)
-    for (const t of p.technologies)
-      usage.set(t, [...(usage.get(t) ?? []), p.title]);
-  const names = new Set([...c.skills.map((s) => s.name), ...usage.keys()]);
-  return [...names]
-    .map((name) => ({
-      name,
-      category:
-        c.skills.find((s) => s.name === name)?.category ??
-        label(c.site.labels, "skills.fromProjects"),
-      projects: usage.get(name) ?? [],
-    }))
-    .sort(
-      (a, b) =>
-        b.projects.length - a.projects.length || a.name.localeCompare(b.name),
+    for (const t of p.technologies) {
+      const d = touch(t);
+      if (d)
+        addOnce(d.projects, { title: p.title, href: `/projects/${p.slug}` });
+    }
+  for (const e of c.experience)
+    for (const t of e.skills) {
+      const d = touch(t);
+      if (d)
+        addOnce(d.experience, {
+          title: e.company,
+          href: `${c.site.experienceHref}#${e.id}`,
+        });
+    }
+  for (const s of c.skills) {
+    if (s.hidden || hidden.has(s.name)) continue;
+    const d = touch(s.name);
+    if (!d) continue;
+    for (const slug of s.projects ?? []) {
+      const p = c.projects.find((x) => x.slug === slug);
+      if (p)
+        addOnce(d.projects, { title: p.title, href: `/projects/${p.slug}` });
+    }
+    for (const id of s.experience ?? []) {
+      const e = c.experience.find((x) => x.id === id);
+      if (e)
+        addOnce(d.experience, {
+          title: e.company,
+          href: `${c.site.experienceHref}#${e.id}`,
+        });
+    }
+  }
+  return [...out.values()].sort(
+    (a, b) =>
+      Number(b.featured) - Number(a.featured) ||
+      a.order - b.order ||
+      b.projects.length +
+        b.experience.length -
+        (a.projects.length + a.experience.length) ||
+      a.name.localeCompare(b.name),
+  );
+}
+
+/** Group skills by category in the configured order. */
+export function groupSkills(c: Content, skills: DerivedSkill[]) {
+  const cats = [...new Set(skills.map((s) => s.category))];
+  const rank = (x: string) => {
+    const i = c.site.skillCategories.indexOf(x);
+    return i < 0 ? 999 : i;
+  };
+  return cats
+    .sort((a, b) => rank(a) - rank(b))
+    .map((category) => ({
+      category,
+      skills: skills.filter((s) => s.category === category),
+    }));
+}
+
+/** Inclusive month count between YYYY-MM strings (end empty = now). */
+export function monthsBetween(start: string, end: string) {
+  const [sy, sm] = start.split("-").map(Number);
+  const now = new Date();
+  const [ey, em] = end
+    ? end.split("-").map(Number)
+    : [now.getFullYear(), now.getMonth() + 1];
+  return Math.max(1, (ey - sy) * 12 + (em - sm) + 1);
+}
+
+export function formatDuration(labels: Record<string, string>, months: number) {
+  const y = Math.floor(months / 12),
+    m = months % 12;
+  const parts = [];
+  if (y)
+    parts.push(
+      label(labels, y === 1 ? "duration.yr" : "duration.yrs", { n: y }),
     );
+  if (m)
+    parts.push(
+      label(labels, m === 1 ? "duration.mo" : "duration.mos", { n: m }),
+    );
+  return parts.join(" ");
+}
+
+export function formatMonth(ym: string) {
+  if (!ym) return "";
+  const [y, m] = ym.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, 1)).toLocaleString("en-US", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+/** LinkedIn-style: roles grouped under each company, newest first. */
+export function groupExperience(c: Content) {
+  const groups: {
+    company: string;
+    companyUrl: string;
+    location: string;
+    workplace: string;
+    roles: Content["experience"];
+    months: number;
+  }[] = [];
+  for (const e of c.experience) {
+    let g = groups.find((x) => x.company === e.company);
+    if (!g)
+      groups.push(
+        (g = {
+          company: e.company,
+          companyUrl: e.companyUrl,
+          location: e.location,
+          workplace: e.workplace,
+          roles: [],
+          months: 0,
+        }),
+      );
+    g.roles.push(e);
+  }
+  for (const g of groups) {
+    const start = g.roles.map((r) => r.start).sort()[0];
+    const ongoing = g.roles.some((r) => !r.end);
+    const end = ongoing
+      ? ""
+      : g.roles
+          .map((r) => r.end)
+          .sort()
+          .at(-1)!;
+    g.months = monthsBetween(start, end);
+  }
+  return groups;
 }

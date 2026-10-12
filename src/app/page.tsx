@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BeanBlob } from "@/components/site/bean";
+import { ExperienceList } from "@/components/site/experience-list";
 import { ProjectCard } from "@/components/site/project-card";
 import { Section } from "@/components/site/section";
 import { getContent, getT } from "@/lib/content";
@@ -10,7 +11,7 @@ export const revalidate = 60;
 export default async function Home() {
   const content = await getContent();
   const t = await getT();
-  const { site, projects, posts, resume } = content;
+  const { site, projects, posts } = content;
   const featured = site.featuredProjectSlugs.length
     ? site.featuredProjectSlugs
         .map((s) => projects.find((p) => p.slug === s))
@@ -104,32 +105,33 @@ export default async function Home() {
         </Section>
       ) : null}
 
-      {site.homeSections.resume && resume.experience.length ? (
+      {site.homeSections.experience && content.experience.length ? (
         <Section
           index={idx()}
           title={t("home.resume")}
           aside={
-            <Link href={site.resumeHref} className="tag link-u">
-              {t("home.fullResume")}
-            </Link>
+            <span className="flex gap-4">
+              <Link href={site.experienceHref} className="tag link-u">
+                {t("experience.all")}
+              </Link>
+              {site.homeSections.resume ? (
+                <Link href={site.resumeHref} className="tag link-u">
+                  {t("home.fullResume")}
+                </Link>
+              ) : null}
+            </span>
           }
         >
-          <ul className="divide-border divide-y">
-            {resume.experience.map((r) => (
-              <li
-                key={`${r.company}-${r.role}`}
-                className="grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:items-baseline"
-              >
-                <span>
-                  <span className="block font-serif text-2xl">{r.role}</span>
-                  <span className="text-muted-foreground text-sm">
-                    {r.company}
-                  </span>
-                </span>
-                <span className="tag">{r.period}</span>
-              </li>
-            ))}
-          </ul>
+          <p className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+            <span className="chip">
+              <span
+                className={`bean size-2 ${site.career.available ? "bg-emerald-500" : "bg-muted-foreground"}`}
+              />
+              {site.career.label}
+            </span>
+            <span className="text-muted-foreground">{site.career.detail}</span>
+          </p>
+          <ExperienceList content={content} compact />
         </Section>
       ) : null}
 

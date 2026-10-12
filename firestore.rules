@@ -9,6 +9,7 @@ service cloud.firestore {
     }
 
     // Site configuration: public read, admin write.
+    // config/site and config/resume
     match /config/{docId} {
       allow read: if true;
       allow write: if isAdmin();
@@ -17,10 +18,10 @@ service cloud.firestore {
     // Content collections: the public sees only published docs.
     match /{col}/{docId} {
       allow read: if isAdmin()
-        || (col in ['projects','posts','books','bookmarks','notes','skills','diagrams']
+        || (col in ['projects','posts','experience','books','bookmarks','notes','skills','diagrams']
             && resource.data.status == 'published');
       allow write: if isAdmin()
-        && col in ['projects','posts','books','bookmarks','notes','skills','diagrams'];
+        && col in ['projects','posts','experience','books','bookmarks','notes','skills','diagrams'];
     }
 
     // Public board: anyone may submit a pending comment; only approved ones are readable.

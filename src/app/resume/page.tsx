@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { ExperienceList } from "@/components/site/experience-list";
 import { PageIntro, Section } from "@/components/site/section";
+import { SkillsGrid } from "@/components/site/skills-grid";
 import { getContent, getT } from "@/lib/content";
 
 export const revalidate = 60;
@@ -11,7 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ResumePage() {
-  const { resume, site } = await getContent();
+  const content = await getContent();
+  const { resume } = content;
   const t = await getT();
   return (
     <>
@@ -34,30 +37,7 @@ export default async function ResumePage() {
         ) : null}
       </PageIntro>
       <Section index="02" title={t("resume.experience")}>
-        <ol className="space-y-12">
-          {resume.experience.map((r) => (
-            <li
-              key={`${r.company}-${r.role}`}
-              className="grid gap-3 md:grid-cols-[14rem_1fr]"
-            >
-              <div>
-                <p className="tag">{r.period}</p>
-                <p className="text-muted-foreground mt-1 text-sm">
-                  {r.location}
-                </p>
-              </div>
-              <div>
-                <h3 className="font-serif text-3xl">{r.role}</h3>
-                <p className="text-muted-foreground">{r.company}</p>
-                <ul className="text-foreground/85 mt-4 list-disc space-y-2 pl-5 leading-relaxed">
-                  {r.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <ExperienceList content={content} compact showHighlights />
       </Section>
       {resume.achievements.length ? (
         <Section index="03" title={t("resume.achievements")}>
@@ -90,18 +70,8 @@ export default async function ResumePage() {
         </ul>
       </Section>
       <Section index="05" title={t("resume.skills")}>
-        <dl className="grid gap-6 md:grid-cols-2">
-          {resume.skills.map((g) => (
-            <div key={g.group}>
-              <dt className="font-medium">{g.group}</dt>
-              <dd className="text-muted-foreground mt-1 text-sm">
-                {g.items.join(" · ")}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <SkillsGrid content={content} />
       </Section>
-      <p className="container-x sr-only">{site.name}</p>
     </>
   );
 }

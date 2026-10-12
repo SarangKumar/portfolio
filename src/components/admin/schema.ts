@@ -120,8 +120,67 @@ export const SCHEMAS: Record<
     label: "Skills",
     titleKey: "name",
     fields: [
-      { key: "name", label: "Name", type: "text" },
-      { key: "category", label: "Category", type: "text" },
+      { key: "name", label: "Display name (rename)", type: "text" },
+      {
+        key: "aliases",
+        label:
+          "Aliases — project/experience tech with these names merge into this skill",
+        type: "list",
+      },
+      {
+        key: "category",
+        label: "Category (group; order set in Site → skillCategories)",
+        type: "text",
+      },
+      { key: "order", label: "Order within category", type: "number" },
+      {
+        key: "proficiency",
+        label: "Proficiency",
+        type: { options: ["", "expert", "proficient", "familiar"] },
+      },
+      {
+        key: "featured",
+        label: "Featured (shown first, emphasised)",
+        type: "bool",
+      },
+      {
+        key: "hidden",
+        label: "Hidden (also hides matching derived tech)",
+        type: "bool",
+      },
+      { key: "projects", label: "Extra linked project slugs", type: "list" },
+      { key: "experience", label: "Extra linked experience ids", type: "list" },
+      status,
+    ],
+  },
+  experience: {
+    label: "Experience",
+    titleKey: "role",
+    fields: [
+      {
+        key: "company",
+        label: "Company (roles with the same company are grouped)",
+        type: "text",
+      },
+      { key: "companyUrl", label: "Company link", type: "text" },
+      { key: "role", label: "Role / title", type: "text" },
+      { key: "employmentType", label: "Employment type", type: "text" },
+      { key: "location", label: "Location", type: "text" },
+      {
+        key: "workplace",
+        label: "Workplace (Hybrid / Remote / On-site)",
+        type: "text",
+      },
+      { key: "start", label: "Start (YYYY-MM)", type: "text" },
+      { key: "end", label: "End (YYYY-MM, empty = present)", type: "text" },
+      { key: "description", label: "Description", type: "textarea" },
+      {
+        key: "highlights",
+        label: "Resume highlights (one per line)",
+        type: "lines",
+      },
+      { key: "skills", label: "Skills (feed the skills view)", type: "list" },
+      { key: "order", label: "Order", type: "number" },
       status,
     ],
   },
@@ -171,6 +230,16 @@ export const SITE_FIELDS: Field[] = [
   { key: "handle", label: "Terminal handle", type: "text" },
   { key: "resumeHref", label: "Resume link (Home + footer)", type: "text" },
   {
+    key: "experienceHref",
+    label: "Experience link (Home + footer)",
+    type: "text",
+  },
+  {
+    key: "skillCategories",
+    label: "Skill category order (comma separated)",
+    type: "list",
+  },
+  {
     key: "pages",
     label:
       "Page intros {projects|blogs|library|lab|board: {eyebrow, title, intro}}",
@@ -206,7 +275,8 @@ export const SITE_FIELDS: Field[] = [
   },
   {
     key: "homeSections",
-    label: "Homepage sections {featured,focus,writing,skills,resume}",
+    label:
+      "Homepage sections {featured,focus,writing,skills,resume,experience}",
     type: "json",
   },
   { key: "links", label: "Links [{label, href}]", type: "json" },

@@ -15,6 +15,9 @@ export type SiteConfig = {
   nav: Link[];
   /** Where Home/footer link the resume. */
   resumeHref: string;
+  experienceHref: string;
+  /** Display order of skill categories. */
+  skillCategories: string[];
   seo: { title: string; titleTemplate: string; description: string };
   /** Short handle used by the terminal banner/prompt. */
   handle: string;
@@ -39,6 +42,7 @@ export type SiteConfig = {
     writing: boolean;
     skills: boolean;
     resume: boolean;
+    experience: boolean;
   };
 };
 
@@ -108,8 +112,38 @@ export type Note = {
 
 export type Skill = {
   id: string;
+  /** Display name. Technologies matching the name or an alias merge into this skill. */
   name: string;
+  aliases: string[];
   category: string;
+  order: number;
+  proficiency: "expert" | "proficient" | "familiar" | "";
+  featured: boolean;
+  /** Hide from the public skills view (also hides matching project/experience tech). */
+  hidden: boolean;
+  /** Extra links beyond what's derived: project slugs / experience ids. */
+  projects: string[];
+  experience: string[];
+  status: Status;
+};
+
+export type Experience = {
+  id: string;
+  company: string;
+  companyUrl: string;
+  role: string;
+  employmentType: string;
+  location: string;
+  workplace: string;
+  /** YYYY-MM */
+  start: string;
+  /** YYYY-MM, empty = present */
+  end: string;
+  description: string;
+  /** Optional resume-style bullet points. */
+  highlights: string[];
+  skills: string[];
+  order: number;
   status: Status;
 };
 
@@ -157,13 +191,6 @@ export type Comment = {
   status: "pending" | "approved" | "rejected";
 };
 
-export type ResumeRole = {
-  company: string;
-  role: string;
-  location: string;
-  period: string;
-  bullets: string[];
-};
 export type ResumeEducation = {
   school: string;
   degree: string;
@@ -174,9 +201,7 @@ export type Resume = {
   summary: string;
   /** Public path or URL of the downloadable PDF, e.g. /resumes/cv.pdf */
   pdfUrl: string;
-  experience: ResumeRole[];
   education: ResumeEducation[];
-  skills: { group: string; items: string[] }[];
   achievements: string[];
 };
 
@@ -185,6 +210,7 @@ export type Content = {
   site: SiteConfig;
   projects: Project[];
   posts: Post[];
+  experience: Experience[];
   books: Book[];
   bookmarks: Bookmark[];
   notes: Note[];
@@ -195,6 +221,7 @@ export type Content = {
 export const COLLECTIONS = [
   "projects",
   "posts",
+  "experience",
   "books",
   "bookmarks",
   "notes",

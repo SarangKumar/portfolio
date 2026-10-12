@@ -6,6 +6,7 @@ import type { Link as L } from "@/content/types";
 import { useT } from "./labels-provider";
 
 export function SiteFooter({
+  experienceHref,
   name,
   email,
   links,
@@ -15,6 +16,7 @@ export function SiteFooter({
   email: string;
   links: L[];
   resumeHref: string;
+  experienceHref: string;
 }) {
   const pathname = usePathname();
   const t = useT();
@@ -45,6 +47,9 @@ export function SiteFooter({
                 {l.label}
               </a>
             ))}
+            <Link href={experienceHref} className="link-u">
+              {t("footer.experience")}
+            </Link>
             <Link href={resumeHref} className="link-u">
               {t("footer.resume")}
             </Link>

@@ -70,6 +70,7 @@ export default async function RootLayout({
             email={site.email}
             links={site.links}
             resumeHref={site.resumeHref}
+            experienceHref={site.experienceHref}
           />
         </LabelsProvider>
       </body>

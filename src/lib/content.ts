@@ -79,6 +79,9 @@ export const getContent = cache(async (): Promise<Content> => {
     site: c.site,
     resume: c.resume,
     projects: pub(c.projects).sort((a, b) => a.order - b.order),
+    experience: pub(c.experience ?? seed.experience).sort(
+      (a, b) => a.order - b.order || b.start.localeCompare(a.start),
+    ),
     posts: pub(c.posts).sort((a, b) => b.date.localeCompare(a.date)),
     books: pub(c.books),
     bookmarks: pub(c.bookmarks),

@@ -1,7 +1,7 @@
 import { ProjectCard } from "@/components/site/project-card";
 import { PageIntro, Section } from "@/components/site/section";
 import { getContent, getT } from "@/lib/content";
-import { deriveSkills } from "@/lib/derive";
+import { SkillsGrid } from "@/components/site/skills-grid";
 import { pageMetadata } from "@/lib/page-meta";
 
 export const revalidate = 60;
@@ -13,8 +13,6 @@ export default async function ProjectsPage() {
   const page = content.site.pages.projects;
   const shipped = content.projects.filter((p) => p.kind !== "idea");
   const ideas = content.projects.filter((p) => p.kind === "idea");
-  const skills = deriveSkills(content);
-  const categories = [...new Set(skills.map((s) => s.category))];
 
   return (
     <>
@@ -38,28 +36,7 @@ export default async function ProjectsPage() {
         </Section>
       ) : null}
       <Section index={ideas.length ? "03" : "02"} title={t("projects.skills")}>
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map((c) => (
-            <div key={c}>
-              <h3 className="font-serif text-2xl">{c}</h3>
-              <ul className="mt-4 space-y-2">
-                {skills
-                  .filter((s) => s.category === c)
-                  .map((s) => (
-                    <li
-                      key={s.name}
-                      className="flex items-baseline justify-between gap-4 text-sm"
-                    >
-                      <span>{s.name}</span>
-                      <span className="tag truncate">
-                        {s.projects.length ? s.projects.join(", ") : "—"}
-                      </span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <SkillsGrid content={content} />
       </Section>
     </>
   );
