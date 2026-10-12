@@ -9,10 +9,12 @@ export function SiteFooter({
   name,
   email,
   links,
+  resumeHref,
 }: {
   name: string;
   email: string;
   links: L[];
+  resumeHref: string;
 }) {
   const pathname = usePathname();
   const t = useT();
@@ -43,6 +45,9 @@ export function SiteFooter({
                 {l.label}
               </a>
             ))}
+            <Link href={resumeHref} className="link-u">
+              {t("footer.resume")}
+            </Link>
             <Link href="/admin" className="link-u">
               {t("footer.admin")}
             </Link>

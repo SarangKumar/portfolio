@@ -34,10 +34,10 @@ import { auth, db } from "@/lib/firebase/client";
 import { adminEmail, isFirebaseConfigured } from "@/lib/firebase/config";
 import { cn } from "@/lib/utils";
 import { FieldInput } from "./fields";
-import { SCHEMAS, SITE_FIELDS } from "./schema";
+import { RESUME_FIELDS, SCHEMAS, SITE_FIELDS, type Field } from "./schema";
 
 type Doc = Record<string, unknown> & { id: string };
-type View = "site" | "comments" | CollectionName;
+type View = "site" | "resume" | "comments" | CollectionName;
 
 export function AdminApp() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
@@ -109,6 +109,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 function Dashboard({ user }: { user: User }) {
   const [view, setView] = useState<View>("site");
   const [msg, setMsg] = useState<string | null>(null);
+  const [reload, setReload] = useState(0);
   const store = db()!;
 
   async function importSeed() {
@@ -118,16 +119,24 @@ function Dashboard({ user }: { user: User }) {
       )
     )
       return;
-    const batch = writeBatch(store);
-    batch.set(doc(store, "config", "site"), seed.site);
-    for (const name of COLLECTIONS)
-      for (const item of seed[name]) batch.set(doc(store, name, item.id), item);
-    await batch.commit();
-    setMsg("Seed imported.");
+    try {
+      const batch = writeBatch(store);
+      batch.set(doc(store, "config", "site"), seed.site);
+      batch.set(doc(store, "config", "resume"), seed.resume);
+      for (const name of COLLECTIONS)
+        for (const item of seed[name])
+          batch.set(doc(store, name, item.id), item);
+      await batch.commit();
+      setMsg("Seed imported. Reopen a section to see it.");
+      setReload((r) => r + 1);
+    } catch (e) {
+      setMsg(`Import failed: ${errText(e)}`);
+    }
   }
 
   const nav: { id: View; label: string }[] = [
     { id: "site", label: "Site & homepage" },
+    { id: "resume", label: "Resume" },
     ...COLLECTIONS.map((c) => ({ id: c as View, label: SCHEMAS[c].label })),
     { id: "comments", label: "Board moderation" },
   ];
@@ -170,9 +179,21 @@ function Dashboard({ user }: { user: User }) {
           Published changes appear on the site within ~60s.
         </p>
       </aside>
-      <section key={view}>
+      <section key={`${view}-${reload}`}>
         {view === "site" ? (
-          <SiteEditor />
+          <DocEditor
+            docId="site"
+            title="Site & homepage"
+            fields={SITE_FIELDS}
+            fallback={seed.site}
+          />
+        ) : view === "resume" ? (
+          <DocEditor
+            docId="resume"
+            title="Resume"
+            fields={RESUME_FIELDS}
+            fallback={seed.resume}
+          />
         ) : view === "comments" ? (
           <Moderation />
         ) : (
@@ -183,50 +204,101 @@ function Dashboard({ user }: { user: User }) {
   );
 }
 
-function SiteEditor() {
+function errText(e: unknown) {
+  const err = e as { code?: string; message?: string };
+  return err?.code ?? err?.message ?? String(e);
+}
+
+function Banner({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      role="status"
+      className="border-primary/40 bg-primary/8 rounded-xl border p-4 text-sm"
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Edits a single config doc (config/site, config/resume), layered over seed. */
+function DocEditor({
+  docId,
+  title,
+  fields,
+  fallback,
+}: {
+  docId: string;
+  title: string;
+  fields: Field[];
+  fallback: object;
+}) {
   const store = db()!;
   const [data, setData] = useState<Record<string, unknown> | null>(null);
+  const [missing, setMissing] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string | null>>({});
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<string | null>(null);
   useEffect(() => {
-    getDoc(doc(store, "config", "site")).then((s) =>
-      setData(() => {
-        const r = (s.data() ?? {}) as Partial<typeof seed.site>;
-        return {
-          ...seed.site,
-          ...r,
-          seo: { ...seed.site.seo, ...r.seo },
-          pages: { ...seed.site.pages, ...r.pages },
-          labels: { ...seed.site.labels, ...r.labels },
-        };
-      }),
+    getDoc(doc(store, "config", docId))
+      .then((snap) => {
+        const base = fallback as Record<string, unknown>;
+        const r = (snap.data() ?? {}) as Record<string, unknown>;
+        const merged: Record<string, unknown> = { ...base, ...r };
+        for (const k of ["seo", "pages", "labels", "career", "homeSections"]) {
+          if (base[k] && typeof base[k] === "object" && !Array.isArray(base[k]))
+            merged[k] = { ...(base[k] as object), ...((r[k] as object) ?? {}) };
+        }
+        setMissing(fields.map((f) => f.key).filter((k) => !(k in r)));
+        setData(merged);
+      })
+      .catch((e) => setError(errText(e)));
+  }, [store, docId, fallback, fields]);
+  if (error)
+    return (
+      <Banner>
+        Couldn&apos;t read config/{docId} from Firestore: {error}. Check that
+        firestore.rules are deployed and you&apos;re signed in as the admin.
+      </Banner>
     );
-  }, [store]);
   if (!data) return <p className="text-muted-foreground">Loading…</p>;
   const invalid = Object.values(errors).some(Boolean);
   return (
     <div className="max-w-2xl space-y-4">
-      <h1 className="display text-4xl">Site & homepage</h1>
-      {SITE_FIELDS.map((f) => (
+      <h1 className="display text-4xl">{title}</h1>
+      {missing.length ? (
+        <Banner>
+          {missing.length === fields.length
+            ? "Not yet in Firestore"
+            : `Not yet in Firestore: ${missing.join(", ")}`}{" "}
+          — showing seed values. Save to store them, or use “Import seed
+          content”.
+        </Banner>
+      ) : null}
+      {fields.map((f) => (
         <FieldInput
           key={f.key}
           field={f}
           value={data[f.key]}
-          onChange={(v) => (setData({ ...data, [f.key]: v }), setSaved(false))}
+          onChange={(v) => (setData({ ...data, [f.key]: v }), setSaved(null))}
           onError={(k, e) => setErrors((x) => ({ ...x, [k]: e }))}
         />
       ))}
       <Button
         disabled={invalid}
-        onClick={async () => (
-          await setDoc(doc(store, "config", "site"), data),
-          setSaved(true)
-        )}
+        onClick={async () => {
+          try {
+            await setDoc(doc(store, "config", docId), data);
+            setMissing([]);
+            setSaved("Saved.");
+          } catch (e) {
+            setSaved(`Save failed: ${errText(e)}`);
+          }
+        }}
       >
         Save
       </Button>
       {saved ? (
-        <span className="text-muted-foreground ml-3 text-sm">Saved.</span>
+        <span className="text-muted-foreground ml-3 text-sm">{saved}</span>
       ) : null}
     </div>
   );
@@ -256,10 +328,35 @@ function CollectionEditor({ name }: { name: CollectionName }) {
   const [errors, setErrors] = useState<Record<string, string | null>>({});
   const [preview, setPreview] = useState(false);
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
   const load = useCallback(async () => {
-    const snap = await getDocs(collection(store, name));
-    setItems(snap.docs.map((d) => ({ ...d.data(), id: d.id })));
+    try {
+      const snap = await getDocs(collection(store, name));
+      setItems(snap.docs.map((d) => ({ ...d.data(), id: d.id })));
+      setLoadError(null);
+    } catch (e) {
+      setLoadError(errText(e));
+      setItems([]);
+    }
   }, [store, name]);
+  const seedItems = seed[name] as unknown as Doc[];
+  const fromSeed = items !== null && items.length === 0 && !loadError;
+  const shown = fromSeed ? seedItems : (items ?? []);
+
+  async function importCollection() {
+    setImporting(true);
+    try {
+      const batch = writeBatch(store);
+      for (const item of seedItems) batch.set(doc(store, name, item.id), item);
+      await batch.commit();
+      await load();
+    } catch (e) {
+      setLoadError(errText(e));
+    } finally {
+      setImporting(false);
+    }
+  }
   useEffect(() => {
     let live = true;
     Promise.resolve().then(() => {
@@ -348,13 +445,36 @@ function CollectionEditor({ name }: { name: CollectionName }) {
         </Button>
       </div>
       {!items ? <p className="text-muted-foreground mt-6">Loading…</p> : null}
-      {items?.length === 0 ? (
-        <p className="text-muted-foreground mt-6">
-          Nothing yet. Create one or import the seed content.
-        </p>
+      {loadError ? (
+        <div className="mt-6">
+          <Banner>
+            Couldn&apos;t read “{name}” from Firestore: {loadError}. Check that
+            firestore.rules are deployed and you&apos;re signed in as the admin.
+          </Banner>
+        </div>
+      ) : null}
+      {fromSeed ? (
+        <div className="mt-6">
+          <Banner>
+            <p>
+              Not yet in Firestore — showing {seedItems.length} seed item(s).
+              The public site is using these as fallback.
+            </p>
+            <Button
+              size="xs"
+              className="mt-3"
+              disabled={importing}
+              onClick={importCollection}
+            >
+              {importing
+                ? "Importing…"
+                : `Import seed ${schema.label.toLowerCase()}`}
+            </Button>
+          </Banner>
+        </div>
       ) : null}
       <ul className="divide-border mt-6 divide-y">
-        {items?.map((it) => (
+        {shown.map((it) => (
           <li
             key={it.id}
             className="flex items-center justify-between gap-4 py-3"
@@ -368,7 +488,8 @@ function CollectionEditor({ name }: { name: CollectionName }) {
               </span>
               <span className="tag">{String(it.status)}</span>
             </button>
-            <span className="flex shrink-0 gap-1">
+            {fromSeed ? <span className="tag shrink-0">seed</span> : null}
+            <span className={cn("flex shrink-0 gap-1", fromSeed && "hidden")}>
               <Button
                 size="xs"
                 variant="outline"
@@ -440,7 +561,11 @@ function Moderation() {
   const [items, setItems] = useState<Comment[] | null>(null);
   const [filter, setFilter] = useState<Comment["status"]>("pending");
   const load = useCallback(async () => {
-    const snap = await getDocs(collection(store, "comments"));
+    const snap = await getDocs(collection(store, "comments")).catch((e) => {
+      alert(`Couldn't read comments: ${errText(e)}`);
+      return null;
+    });
+    if (!snap) return setItems([]);
     setItems(
       snap.docs
         .map((d) => ({ ...(d.data() as Omit<Comment, "id">), id: d.id }))

@@ -41,6 +41,12 @@ async function fromFirestore(): Promise<Content | null> {
   try {
     const siteSnap = await getDoc(doc(store, "config", "site"));
     const result = { ...seed } as Content;
+    const resumeSnap = await getDoc(doc(store, "config", "resume"));
+    if (resumeSnap.exists())
+      result.resume = {
+        ...seed.resume,
+        ...(resumeSnap.data() as Partial<Content["resume"]>),
+      };
     if (siteSnap.exists())
       result.site = mergeSite(siteSnap.data() as Partial<SiteConfig>);
     await Promise.all(
@@ -71,6 +77,7 @@ export const getContent = cache(async (): Promise<Content> => {
     xs.filter((x) => x.status === "published");
   return {
     site: c.site,
+    resume: c.resume,
     projects: pub(c.projects).sort((a, b) => a.order - b.order),
     posts: pub(c.posts).sort((a, b) => b.date.localeCompare(a.date)),
     books: pub(c.books),

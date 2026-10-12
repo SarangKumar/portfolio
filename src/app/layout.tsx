@@ -65,7 +65,12 @@ export default async function RootLayout({
           <main id="content" className="flex-1">
             <PageTransition>{children}</PageTransition>
           </main>
-          <SiteFooter name={site.name} email={site.email} links={site.links} />
+          <SiteFooter
+            name={site.name}
+            email={site.email}
+            links={site.links}
+            resumeHref={site.resumeHref}
+          />
         </LabelsProvider>
       </body>
     </html>

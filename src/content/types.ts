@@ -13,6 +13,8 @@ export type PageCopy = { eyebrow: string; title: string; intro: string };
 export type SiteConfig = {
   /** Navbar destinations, in order. Labels editable; hrefs are the six routes. */
   nav: Link[];
+  /** Where Home/footer link the resume. */
+  resumeHref: string;
   seo: { title: string; titleTemplate: string; description: string };
   /** Short handle used by the terminal banner/prompt. */
   handle: string;
@@ -36,6 +38,7 @@ export type SiteConfig = {
     focus: boolean;
     writing: boolean;
     skills: boolean;
+    resume: boolean;
   };
 };
 
@@ -154,7 +157,31 @@ export type Comment = {
   status: "pending" | "approved" | "rejected";
 };
 
+export type ResumeRole = {
+  company: string;
+  role: string;
+  location: string;
+  period: string;
+  bullets: string[];
+};
+export type ResumeEducation = {
+  school: string;
+  degree: string;
+  period: string;
+  detail: string;
+};
+export type Resume = {
+  summary: string;
+  /** Public path or URL of the downloadable PDF, e.g. /resumes/cv.pdf */
+  pdfUrl: string;
+  experience: ResumeRole[];
+  education: ResumeEducation[];
+  skills: { group: string; items: string[] }[];
+  achievements: string[];
+};
+
 export type Content = {
+  resume: Resume;
   site: SiteConfig;
   projects: Project[];
   posts: Post[];

@@ -10,7 +10,7 @@ export const revalidate = 60;
 export default async function Home() {
   const content = await getContent();
   const t = await getT();
-  const { site, projects, posts } = content;
+  const { site, projects, posts, resume } = content;
   const featured = site.featuredProjectSlugs.length
     ? site.featuredProjectSlugs
         .map((s) => projects.find((p) => p.slug === s))
@@ -101,6 +101,35 @@ export default async function Home() {
               <ProjectCard key={p.id} project={p} index={i} />
             ))}
           </div>
+        </Section>
+      ) : null}
+
+      {site.homeSections.resume && resume.experience.length ? (
+        <Section
+          index={idx()}
+          title={t("home.resume")}
+          aside={
+            <Link href={site.resumeHref} className="tag link-u">
+              {t("home.fullResume")}
+            </Link>
+          }
+        >
+          <ul className="divide-border divide-y">
+            {resume.experience.map((r) => (
+              <li
+                key={`${r.company}-${r.role}`}
+                className="grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:items-baseline"
+              >
+                <span>
+                  <span className="block font-serif text-2xl">{r.role}</span>
+                  <span className="text-muted-foreground text-sm">
+                    {r.company}
+                  </span>
+                </span>
+                <span className="tag">{r.period}</span>
+              </li>
+            ))}
+          </ul>
         </Section>
       ) : null}
 

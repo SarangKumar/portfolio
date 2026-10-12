@@ -169,6 +169,7 @@ export const SITE_FIELDS: Field[] = [
     type: "json",
   },
   { key: "handle", label: "Terminal handle", type: "text" },
+  { key: "resumeHref", label: "Resume link (Home + footer)", type: "text" },
   {
     key: "pages",
     label:
@@ -205,8 +206,30 @@ export const SITE_FIELDS: Field[] = [
   },
   {
     key: "homeSections",
-    label: "Homepage sections {featured,focus,writing,skills}",
+    label: "Homepage sections {featured,focus,writing,skills,resume}",
     type: "json",
   },
   { key: "links", label: "Links [{label, href}]", type: "json" },
+];
+
+export const RESUME_FIELDS: Field[] = [
+  { key: "summary", label: "Summary", type: "textarea" },
+  {
+    key: "pdfUrl",
+    label:
+      "Downloadable PDF (path under /public, e.g. /resumes/cv.pdf, or a URL)",
+    type: "text",
+  },
+  {
+    key: "experience",
+    label: "Experience [{company, role, location, period, bullets[]}]",
+    type: "json",
+  },
+  {
+    key: "education",
+    label: "Education [{school, degree, period, detail}]",
+    type: "json",
+  },
+  { key: "skills", label: "Skills [{group, items[]}]", type: "json" },
+  { key: "achievements", label: "Highlights (one per line)", type: "lines" },
 ];

@@ -278,6 +278,7 @@ export const seed: Content = {
       { href: "/lab", label: "Architecture Lab" },
       { href: "/board", label: "Public Board" },
     ],
+    resumeHref: "/resume",
     seo: {
       title: "Sarang Kumar — Software Engineer",
       titleTemplate: "%s · Sarang Kumar",
@@ -393,6 +394,16 @@ export const seed: Content = {
       "terminal.status": "{career}",
       "terminal.contact": "{email}",
       "terminal.notFound": "command not found: {cmd}. try 'help'",
+      "home.resume": "Experience",
+      "home.fullResume": "Full resume",
+      "resume.eyebrow": "Resume",
+      "resume.title": "Experience & education",
+      "resume.download": "Download PDF ↓",
+      "resume.experience": "Experience",
+      "resume.education": "Education",
+      "resume.skills": "Technical skills",
+      "resume.achievements": "Highlights",
+      "footer.resume": "Resume",
       "notFound.eyebrow": "404",
       "notFound.title": "Nothing brewing here.",
       "notFound.link": "Back home",
@@ -422,7 +433,105 @@ export const seed: Content = {
     ],
     featuredProjectSlugs: ["vinyaas", "aavedak", "dotfiles"],
     featuredPostSlugs: [],
-    homeSections: { featured: true, focus: true, writing: true, skills: true },
+    homeSections: {
+      featured: true,
+      focus: true,
+      writing: true,
+      skills: true,
+      resume: true,
+    },
+  },
+  resume: {
+    summary:
+      "Software Engineer with 1.5+ years of experience building production applications and developer tools. Skilled in JavaScript, TypeScript, Python, SQL, REST APIs, cloud integrations, application design, performance optimization, and automated testing.",
+    pdfUrl: "/resumes/Sarang_Kumar-2.pdf",
+    experience: [
+      {
+        company: "Komprise India Private Limited",
+        role: "Software Engineer",
+        location: "Bangalore, India",
+        period: "Jul 2025 – Present",
+        bullets: [
+          "Resolved a production Google Cloud Storage filer-onboarding issue, helping protect customer contracts worth approximately $200K annually.",
+          "Built an Alerts Center using React, Redux Toolkit, RTK Query, and TanStack Table, integrating REST APIs, global search, advanced filters, protected routes, and 12 months of historical data.",
+          "Reduced frontend bundle size by approximately 120 KB by modernizing legacy modules, consolidating shared components, and removing deprecated dependencies.",
+          "Expanded automated test coverage with Jest unit tests and Playwright integration and UI tests for critical application workflows.",
+          "Integrated reusable UI components and shared form infrastructure across data-store and user-management workflows, improving consistency and maintainability.",
+        ],
+      },
+      {
+        company: "Komprise India Private Limited",
+        role: "Software Engineer Intern",
+        location: "Bangalore, India",
+        period: "Jan 2025 – Jun 2025",
+        bullets: [
+          "Built a Python and MySQL Slack Shift Manager for 12 support engineers, automating availability tracking and support-ticket coordination.",
+          "Automated customer usage reporting for 450+ accounts, tracking resource consumption, license expirations, and overages.",
+          "Contributed to data-store workflows, internal tools, and application fixes across frontend and systems codebases.",
+        ],
+      },
+    ],
+    education: [
+      {
+        school: "PES University",
+        degree: "B.Tech. in Computer Science and Engineering",
+        period: "2021 – 2025",
+        detail: "CGPA: 8.81/10",
+      },
+    ],
+    skills: [
+      {
+        group: "Languages",
+        items: ["C++", "Java", "Python", "JavaScript", "TypeScript", "SQL"],
+      },
+      {
+        group: "Frontend",
+        items: [
+          "React",
+          "Next.js",
+          "Redux Toolkit",
+          "RTK Query",
+          "TanStack Table",
+          "Tailwind CSS",
+        ],
+      },
+      {
+        group: "Backend & Databases",
+        items: ["Node.js", "Express.js", "REST APIs", "MySQL", "MongoDB"],
+      },
+      {
+        group: "Cloud & Infrastructure",
+        items: [
+          "Google Cloud Platform (GCP)",
+          "Google Cloud Storage (GCS)",
+          "Docker",
+          "CI/CD",
+        ],
+      },
+      {
+        group: "Testing & Engineering",
+        items: [
+          "Jest",
+          "Playwright",
+          "Unit Testing",
+          "Integration Testing",
+          "OOP",
+          "DSA",
+          "Application Design",
+          "Agile Development",
+          "Code Review",
+        ],
+      },
+      { group: "Tools", items: ["Git", "GitHub", "Postman", "npm"] },
+    ],
+    achievements: [
+      "Helped protect ~$200K/year in customer contracts by resolving a production GCS filer-onboarding issue.",
+      "Cut ~120 KB from the frontend bundle by modernizing legacy modules.",
+      "Automated usage reporting for 450+ customer accounts.",
+      "Led technical work for Aatmatrisha, a university techno-cultural fest supporting 5,000+ attendees.",
+      "Built the dotSlash 5.0 hackathon platform for 140+ participants with QR-based ticketing.",
+      "Published Vinyaas — 56 UI primitives and a companion CLI — to npm.",
+    ],
   },
   projects: [
     {
