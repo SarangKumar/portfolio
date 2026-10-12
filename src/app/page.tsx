@@ -39,12 +39,18 @@ export default async function Home() {
         />
         <div className="container-x relative grid items-center gap-x-12 gap-y-10 pt-16 pb-16 sm:pt-24 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:pt-28 lg:pb-20">
           <div className="min-w-0">
-            <p className="eyebrow fade-up">
-              <span className="idx">01/</span>{" "}
-              {t("home.from", { location: site.location })}
-            </p>
+            <div className="flex items-start justify-between gap-4">
+              <p className="eyebrow fade-up pt-2">
+                <span className="idx">01/</span>{" "}
+                {t("home.from", { location: site.location })}
+              </p>
+              {/* Phones/tablets: a small bot beside the eyebrow (desktop shows the big one). */}
+              <div className="fade-up -mt-4 -mr-2 w-[120px] shrink-0 sm:w-[160px] lg:hidden">
+                <HeroRobot max={128} />
+              </div>
+            </div>
             <h1
-              className="display fade-up mt-6 text-[clamp(2.75rem,10vw,5.5rem)] leading-[0.95] lg:text-[clamp(4.5rem,6.6vw,6rem)]"
+              className="display fade-up mt-2 lg:mt-6 text-[clamp(2.75rem,10vw,5.5rem)] leading-[0.95] lg:text-[clamp(4.5rem,6.6vw,6rem)]"
               style={{ ["--delay" as string]: "80ms" }}
             >
               {site.role}

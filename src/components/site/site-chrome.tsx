@@ -135,7 +135,7 @@ export function SiteChrome({
             >
               <SquareTerminal size={20} strokeWidth={1.75} className="size-5" />
             </Button>
-            <ThemeToggle className="hidden sm:inline-flex" />
+            <ThemeToggle className="border-border size-11 rounded-full border sm:size-8 sm:border-transparent" />
             <Button
               variant="ghost"
               size="icon-sm"

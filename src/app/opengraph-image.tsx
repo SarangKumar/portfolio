@@ -9,10 +9,9 @@ export const revalidate = 60;
 export default async function Image() {
   const content = await getContent();
   const t = await getT();
-  void t;
 
   return renderOg({
-    eyebrow: "Portfolio",
+    eyebrow: t("home.from", { location: content.site.location }),
     title: content.site.role,
     subtitle: content.site.tagline,
   });

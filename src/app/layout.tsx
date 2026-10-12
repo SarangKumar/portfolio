@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
-import { Analytics } from "@vercel/analytics/next";
 import { LabelsProvider } from "@/components/site/labels-provider";
 import { ParallaxController } from "@/components/site/parallax";
 import { PageTransition } from "@/components/site/page-transition";
@@ -10,6 +9,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { themeScript } from "@/components/site/theme-toggle";
 import { getContent } from "@/lib/content";
 import { buildIndex } from "@/lib/derive";
+import { VercelInsights } from "@/components/site/vercel-insights";
 import { JsonLd } from "@/components/site/json-ld";
 import { SITE_URL, abs } from "@/lib/site-url";
 import "./globals.css";
@@ -139,7 +139,7 @@ export default async function RootLayout({
             footerNav={site.footerNav}
           />
         </LabelsProvider>
-        <Analytics />
+        <VercelInsights />
       </body>
     </html>
   );
