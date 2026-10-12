@@ -1,6 +1,11 @@
 /**
  * Public identity from the 2026 SDE resume.
  */
+export type ProfileHighlight = {
+  value: string;
+  label: string;
+};
+
 export type Profile = {
   displayName: string | null;
   headline: string | null;
@@ -10,11 +15,16 @@ export type Profile = {
   focusSkillIds: readonly string[];
   expertiseSkillIds: readonly string[];
   interests: readonly string[];
+  /** A handful of concrete numbers already stated in `experience.ts`
+   * achievements, restated for a stat strip (e.g. on /resume). Keep these
+   * traceable to an actual achievement line — don't add a figure that isn't
+   * backed by one. */
+  highlights: readonly ProfileHighlight[];
 };
 
 export const profile: Profile = {
   displayName: "Sarang Kumar",
-  headline: "Software Engineer at Komprise",
+  headline: "Software Engineer",
   summary:
     "Software Engineer with experience developing and supporting enterprise-scale applications across frontend, backend, and systems environments. Experienced in application development, REST APIs, relational and NoSQL databases, object-oriented programming, automated testing, CI/CD, production debugging, and Agile development.",
   background:
@@ -40,5 +50,14 @@ export const profile: Profile = {
     "Cloud-storage application workflows",
     "Reusable frontend infrastructure",
     "Production debugging",
+  ],
+  highlights: [
+    {
+      value: "$200K+",
+      label: "in customer contracts retained by a production hotfix",
+    },
+    { value: "450+", label: "customer accounts monitored by an internal tool" },
+    { value: "5,000+", label: "attendees supported as a fest Technical Head" },
+    { value: "8.81/10", label: "CGPA in Computer Science Engineering" },
   ],
 };

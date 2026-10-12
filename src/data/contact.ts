@@ -22,10 +22,5 @@ export const contactProfile: ContactProfile = {
       label: "GitHub",
       href: "https://github.com/SarangKumar",
     },
-    {
-      id: "social-phone",
-      label: "+91 9973694884",
-      href: "tel:+919973694884",
-    },
   ],
 };

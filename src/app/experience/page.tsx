@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Marker } from "@/components/ui/marker";
 import { PageHeader } from "@/components/site/page-header";
 import { Timeline, type TimelineEntry } from "@/components/site/timeline";
 import { experience } from "@/data/experience";
 
 export const metadata: Metadata = {
   title: "Experience",
-  description: "Work history and education, with what I achieved at each.",
+  description: "Education and work, in order, with what I achieved at each.",
 };
 
 function formatRange(start: string, end: string | null) {
@@ -27,31 +26,20 @@ function toEntry(role: (typeof experience)[number]): TimelineEntry {
 }
 
 export default function ExperiencePage() {
-  const work = experience.filter((role) => role.kind === "work").map(toEntry);
-  const education = experience
-    .filter((role) => role.kind === "education")
+  // One chronological line, oldest first — education and work interleaved
+  // the way they actually happened, not split into disconnected lists.
+  const timeline = [...experience]
+    .sort((a, b) => a.startDate.localeCompare(b.startDate))
     .map(toEntry);
 
   return (
-    <div className="app-container flex flex-col gap-16">
+    <div className="app-container flex flex-col gap-12">
       <PageHeader
         title="Experience"
-        description="Roles and education, with the work and achievements behind each."
+        description="Education and work, in the order it happened."
       />
 
-      {work.length > 0 ? (
-        <section className="flex flex-col gap-6">
-          <Marker variant="separator">Work</Marker>
-          <Timeline entries={work} />
-        </section>
-      ) : null}
-
-      {education.length > 0 ? (
-        <section className="flex flex-col gap-6">
-          <Marker variant="separator">Education</Marker>
-          <Timeline entries={education} delayOffset={work.length * 140} />
-        </section>
-      ) : null}
+      <Timeline entries={timeline} />
     </div>
   );
 }

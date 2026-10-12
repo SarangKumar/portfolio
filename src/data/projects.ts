@@ -38,6 +38,92 @@ export type ProjectItem = {
 
 export const projects: readonly ProjectItem[] = [
   {
+    id: "proj-aavedak",
+    slug: "aavedak",
+    title: "Aavedak",
+    summary:
+      "A personal job-search operating system: resume and cover-letter generation with ATS scoring, job discovery, Gmail-based outreach tracking, and an end-to-end application pipeline.",
+    description:
+      'अवसर — "opportunity." Aavedak recommends and prepares; the user decides and sends. A pnpm monorepo with a Next.js web app, a FastAPI backend, and a browser extension, built around one workflow: onboarding, resume, dashboard, job discovery, cover letters, ATS scoring, referrals, applying, tracking, and follow-up. Its interface is built with Vinyaas — the same component system this portfolio is built with.',
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "FastAPI",
+      "Python",
+      "Neon Postgres",
+      "Tailwind CSS",
+      "Vinyaas",
+    ],
+    skillIds: [
+      "skill-nextjs",
+      "skill-typescript",
+      "skill-javascript",
+      "skill-python",
+      "skill-rest",
+      "skill-application-design",
+    ],
+    githubUrl: "https://github.com/SarangKumar/aavedak",
+    demoUrl: "https://aavedak.vercel.app",
+    media: [],
+    architecture:
+      "Three services in one monorepo: a Next.js app (apps/web) for the product surface, a FastAPI service (apps/api) for ATS scoring, job discovery, and Gmail integration, and a browser extension (apps/extension) for capturing job postings while browsing. Neon Postgres is the shared data store.",
+    problem:
+      "Job searching is scattered across a resume, a spreadsheet of applications, a dozen browser tabs of postings, and an inbox of recruiter email — with no single place tracking what was sent, to whom, and what happened next.",
+    solution:
+      "One pipeline from discovery to follow-up: find postings, tailor a resume and cover letter against each one with ATS scoring, track outreach through Gmail, and follow every application through to an outcome.",
+    challenges:
+      "Keeping three separate services (web, API, extension) consistent on one data model and one design system, and building ATS scoring that is actually useful rather than a black-box number.",
+    decisions:
+      "Split ATS scoring and job discovery into a Python service so the matching and scraping logic isn't entangled with the Next.js app; used Vinyaas for the UI so the design system is reusable across this project and others.",
+    tradeoffs: null,
+    testing: null,
+    performance: null,
+    futureImprovements: null,
+    sections: [],
+    experienceIds: [],
+  },
+  {
+    id: "proj-vinyaas",
+    slug: "vinyaas",
+    title: "Vinyaas",
+    summary:
+      "A registry-driven CLI that installs customizable, Tailwind CSS v4 React components as source files into a project — not a runtime package.",
+    description:
+      "Vinyaas copies components (button, dialog, navigation menu, resizable panels, command palette, charts, data tables, and more — 56 in the current registry) straight into a project's own source tree, in the shadcn/ui tradition. init, add, list, search, info, doctor, and update commands cover setup, discovery, and upgrades. Published to npm as vinyaas, currently at v1.4.0. This portfolio's UI is built with it.",
+    technologies: [
+      "TypeScript",
+      "Next.js",
+      "Tailwind CSS v4",
+      "Node.js",
+      "class-variance-authority",
+    ],
+    skillIds: [
+      "skill-typescript",
+      "skill-javascript",
+      "skill-nextjs",
+      "skill-application-design",
+    ],
+    githubUrl: "https://github.com/SarangKumar/shilp",
+    demoUrl: "https://vinyaas.vercel.app",
+    media: [],
+    architecture:
+      "A pnpm monorepo: packages/cli is the published CLI (built with esbuild), apps/docs is the Next.js registry and documentation site. The CLI resolves a consumer project's tsconfig/jsconfig path aliases, fetches registry JSON from the docs site's /r endpoint, and writes component source plus any CSS variables or dependencies the component declares.",
+    problem:
+      "Component libraries that ship as npm packages are easy to install but hard to actually customize — real changes mean fighting the library's API instead of just editing the component.",
+    solution:
+      "Treat components as code you own: the CLI copies the source into the project once, so every component can be edited directly like any other file, with no abstraction layer to work around.",
+    challenges:
+      "Keeping an accessibility contract (correct ARIA roles, keyboard behavior, focus management) consistent across 56 independently-installable components, and resolving each consumer project's own alias and Tailwind setup reliably across Next.js, Vite, and plain React.",
+    decisions:
+      "Components are grouped by registry category rather than framework version, so `vinyaas add --category forms` installs a coherent set at once; CSS variables are only touched when a component actually declares them, so unrelated theme tokens are never overwritten.",
+    tradeoffs: null,
+    testing: null,
+    performance: null,
+    futureImprovements: null,
+    sections: [],
+    experienceIds: [],
+  },
+  {
     id: "proj-slack-shift-manager",
     slug: "slack-shift-manager",
     title: "Slack Shift Manager",

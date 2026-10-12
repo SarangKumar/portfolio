@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/site/page-header";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TypographyMuted, TypographyP } from "@/components/ui/typography";
 import { projects } from "@/data/projects";
 
 type ProjectPageProps = {
@@ -86,9 +87,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </div>
 
       {project.description ? (
-        <p className="text-muted-foreground max-w-3xl leading-relaxed">
+        <TypographyP className="text-muted-foreground max-w-3xl">
           {project.description}
-        </p>
+        </TypographyP>
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -102,9 +103,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <CardTitle className="text-sm">{field.label}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {project[field.key]}
-              </p>
+              <TypographyMuted>{project[field.key]}</TypographyMuted>
             </CardContent>
           </Card>
         ))}
@@ -122,9 +121,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <CardTitle className="text-sm">{section.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {section.body}
-              </p>
+              <TypographyMuted>{section.body}</TypographyMuted>
             </CardContent>
           </Card>
         ))}

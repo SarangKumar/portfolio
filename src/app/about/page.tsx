@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Quote, Sparkle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/site/page-header";
+import {
+  TypographyBlockquote,
+  TypographyMuted,
+  TypographyP,
+} from "@/components/ui/typography";
 import { profile } from "@/data/profile";
 
 export const metadata: Metadata = {
@@ -24,9 +29,9 @@ export default function AboutPage() {
       >
         <div className="flex flex-col gap-3">
           <h2 className="section-title">Background</h2>
-          <p className="text-muted-foreground max-w-prose leading-relaxed">
+          <TypographyP className="text-muted-foreground max-w-prose">
             {profile.background}
-          </p>
+          </TypographyP>
           <Link
             href="/experience"
             className="text-primary mt-1 inline-flex w-fit items-center gap-1.5 text-sm font-medium"
@@ -36,13 +41,12 @@ export default function AboutPage() {
           </Link>
         </div>
 
-        <blockquote className="border-primary/40 bg-card lift relative flex flex-col gap-3 rounded-xl border-l-2 p-6">
-          <Quote className="text-primary/50 size-6" aria-hidden />
-          <p className="text-foreground/90 text-sm leading-relaxed italic">
+        <div className="border-border bg-card lift rounded-xl border p-6">
+          <TypographyBlockquote className="text-foreground/90 border-primary text-sm">
             {profile.philosophy}
-          </p>
-          <span className="meta not-italic">How I work</span>
-        </blockquote>
+          </TypographyBlockquote>
+          <TypographyMuted className="mt-3">How I work</TypographyMuted>
+        </div>
       </section>
 
       <section
@@ -50,20 +54,19 @@ export default function AboutPage() {
         style={{ "--delay": "260ms" } as React.CSSProperties}
       >
         <h2 className="section-title">Interests</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <ul className="grid gap-3 sm:grid-cols-2">
           {profile.interests.map((interest, index) => (
-            <div
+            <li
               key={interest}
-              className="lift fade-up border-border bg-card/60 flex items-center gap-3 rounded-lg border p-4"
+              className="lift fade-up border-border bg-card/60 rounded-lg border p-4 text-sm leading-snug"
               style={
                 { "--delay": `${320 + index * 60}ms` } as React.CSSProperties
               }
             >
-              <Sparkle className="text-primary size-4 shrink-0" />
-              <span className="text-sm leading-snug">{interest}</span>
-            </div>
+              {interest}
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
     </div>
   );

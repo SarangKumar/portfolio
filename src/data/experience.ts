@@ -26,9 +26,9 @@ export const experience: readonly PublicExperience[] = [
     company: "Komprise India Private Limited",
     role: "Software Engineer",
     startDate: "2025-07",
-    endDate: null,
+    endDate: "2026-06",
     description:
-      "Contribute to customer-facing production systems at Komprise in Bangalore: cloud-storage workflows, reusable application infrastructure, production hotfixes, and automated testing. Work in roughly two-month Agile release cycles with engineering, UX, and business stakeholders.",
+      "Contributed to customer-facing production systems at Komprise in Bangalore: cloud-storage workflows, reusable application infrastructure, production hotfixes, and automated testing. Worked in roughly two-month Agile release cycles with engineering, UX, and business stakeholders.",
     technologies: [
       "React",
       "JavaScript",

@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { TypographyH1, TypographyLead } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
 type PageHeaderProps = {
   eyebrow?: string;
@@ -7,7 +9,7 @@ type PageHeaderProps = {
   children?: ReactNode;
 };
 
-/** Page intro with a staggered fade-up entrance. */
+/** Page intro with a staggered fade-up entrance, built on Vinyaas typography. */
 export function PageHeader({
   eyebrow,
   title,
@@ -15,7 +17,7 @@ export function PageHeader({
   children,
 }: PageHeaderProps) {
   return (
-    <header className="flex flex-col gap-3 max-w-2xl">
+    <header className="flex max-w-2xl flex-col gap-3">
       {eyebrow ? (
         <p
           className="chip fade-up w-fit"
@@ -25,19 +27,19 @@ export function PageHeader({
           {eyebrow}
         </p>
       ) : null}
-      <h1
-        className="page-title fade-up"
+      <TypographyH1
+        className={cn("fade-up text-4xl sm:text-5xl")}
         style={{ "--delay": "60ms" } as React.CSSProperties}
       >
         {title}
-      </h1>
+      </TypographyH1>
       {description ? (
-        <p
-          className="text-muted-foreground fade-up text-base leading-relaxed"
+        <TypographyLead
+          className="text-muted-foreground fade-up"
           style={{ "--delay": "120ms" } as React.CSSProperties}
         >
           {description}
-        </p>
+        </TypographyLead>
       ) : null}
       {children}
     </header>

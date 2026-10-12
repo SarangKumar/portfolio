@@ -1,5 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
+import {
+  GithubContributions,
+  GithubContributionsSkeleton,
+} from "@/components/site/github-contributions";
 import { ProjectCard } from "@/components/site/project-card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -9,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TypographyLead } from "@/components/ui/typography";
 import { experience } from "@/data/experience";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
@@ -20,7 +26,13 @@ export default function HomePage() {
     .map((id) => skills.find((skill) => skill.id === id))
     .filter((skill) => skill !== undefined);
   const featured = projects.slice(0, 3);
-  const latest = experience[0];
+
+  const work = experience.filter((role) => role.kind === "work");
+  const currentRole = work.find((role) => role.endDate === null);
+  const mostRecentRole = [...work].sort((a, b) =>
+    b.startDate.localeCompare(a.startDate),
+  )[0];
+  const highlightRole = currentRole ?? mostRecentRole;
 
   return (
     <div className="flex flex-col gap-20">
@@ -36,12 +48,12 @@ export default function HomePage() {
           >
             {profile.displayName}
           </h1>
-          <p
-            className="text-muted-foreground fade-up max-w-2xl text-lg leading-relaxed"
+          <TypographyLead
+            className="text-muted-foreground fade-up max-w-2xl text-lg"
             style={{ "--delay": "120ms" } as React.CSSProperties}
           >
             {profile.summary}
-          </p>
+          </TypographyLead>
           <div
             className="fade-up flex flex-wrap gap-3"
             style={{ "--delay": "180ms" } as React.CSSProperties}
@@ -80,22 +92,38 @@ export default function HomePage() {
             All projects →
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+        {/* Bento: the first project leads, spanning both rows; the other
+            two stack alongside it. With exactly three featured projects this
+            reads as one clear lead story plus two supporting ones. */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-rows-2">
+          {featured[0] ? (
+            <div className="lg:row-span-2">
+              <ProjectCard project={featured[0]} index={0} featured />
+            </div>
+          ) : null}
+          {featured.slice(1).map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index + 1} />
           ))}
         </div>
       </section>
 
-      {latest ? (
+      <section className="app-container flex flex-col gap-6">
+        <Suspense fallback={<GithubContributionsSkeleton />}>
+          <GithubContributions />
+        </Suspense>
+      </section>
+
+      {highlightRole ? (
         <section className="app-container flex flex-col gap-6">
-          <h2 className="section-title">Currently</h2>
+          <h2 className="section-title">
+            {currentRole ? "Currently" : "Most recently"}
+          </h2>
           <Card className={cn("lift fade-up")}>
             <CardHeader>
               <CardTitle className="text-base">
-                {latest.role} · {latest.company}
+                {highlightRole.role} · {highlightRole.company}
               </CardTitle>
-              <CardDescription>{latest.description}</CardDescription>
+              <CardDescription>{highlightRole.description}</CardDescription>
             </CardHeader>
             <div className="flex flex-col gap-4 px-6 pb-2">
               <Link
