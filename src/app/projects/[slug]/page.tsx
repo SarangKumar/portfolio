@@ -42,6 +42,7 @@ export default async function ProjectPage({ params }: Props) {
           src={p.icon}
           title={p.title}
           size={88}
+          morph={p.slug}
           className="fade-up"
         />
       </div>

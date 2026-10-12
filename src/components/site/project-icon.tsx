@@ -1,18 +1,29 @@
 import Image from "next/image";
+import { ViewTransition } from "react";
 import { cn } from "@/lib/utils";
 
-/** App-icon style project mark: every project ships a dark squircle icon. */
-export function ProjectIcon({
-  src,
-  title,
-  size = 40,
-  className,
-}: {
+type Props = {
   src?: string;
   title: string;
   size?: number;
   className?: string;
-}) {
+  morph?: string;
+};
+
+/** App-icon style project mark: every project ships a dark squircle icon. */
+export function ProjectIcon({ morph, ...props }: Props) {
+  if (!morph) return <Icon {...props} />;
+  // Same name on list row + case-study header → the icon morphs across navigation.
+  return (
+    <ViewTransition name={`icon-${morph}`} share="morph" default="none">
+      <span className="inline-flex shrink-0">
+        <Icon {...props} />
+      </span>
+    </ViewTransition>
+  );
+}
+
+function Icon({ src, title, size = 40, className }: Omit<Props, "morph">) {
   if (!src) {
     return (
       <span

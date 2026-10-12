@@ -38,6 +38,7 @@ export function ProjectCard({
               src={project.icon}
               title={project.title}
               size={52}
+              morph={project.slug}
               className="transition-transform duration-300 group-hover:scale-105"
             />
             <span>

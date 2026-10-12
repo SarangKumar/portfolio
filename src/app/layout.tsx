@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
 import { SiteChrome } from "@/components/site/site-chrome";
+import { PageTransition } from "@/components/site/page-transition";
 import { SiteFooter } from "@/components/site/site-footer";
 import { themeScript } from "@/components/site/theme-toggle";
 import { getContent } from "@/lib/content";
@@ -52,7 +53,7 @@ export default async function RootLayout({
           }}
         />
         <main id="content" className="flex-1">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
         <SiteFooter name={site.name} email={site.email} links={site.links} />
       </body>

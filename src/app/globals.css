@@ -245,3 +245,47 @@
 .prose-body code {
   @apply font-mono text-[0.9em];
 }
+
+/* ---- Page transitions (React <ViewTransition> + View Transitions API) ---- */
+/* The root snapshot (header, footer, terminal) doesn't animate; only the page does. */
+::view-transition-group(root) {
+  animation: none;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+::view-transition-group(site-header) {
+  z-index: 100;
+}
+::view-transition-old(.page-exit) {
+  animation: 160ms var(--ease-out-soft) both vt-fade reverse;
+}
+::view-transition-new(.page-enter) {
+  animation:
+    260ms var(--ease-out-soft) 120ms both vt-fade,
+    420ms var(--ease-out-soft) both vt-rise;
+}
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out-soft);
+}
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-rise {
+  from {
+    transform: translateY(10px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

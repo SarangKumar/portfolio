@@ -50,7 +50,10 @@ export function SiteChrome({ data }: { data: TerminalData }) {
       >
         Skip to content
       </a>
-      <header className="bg-background/80 border-border sticky top-0 z-30 border-b backdrop-blur-md">
+      <header
+        style={{ viewTransitionName: "site-header" }}
+        className="bg-background/80 border-border sticky top-0 z-30 border-b backdrop-blur-md"
+      >
         <div className="container-x flex h-14 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 font-medium">
             <BeanMark />
