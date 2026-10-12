@@ -54,7 +54,7 @@ export async function renderOg({
         viewBox="0 0 512 512"
         style={{ position: "absolute", right: -120, top: -60, opacity: 0.22 }}
       >
-        <path d={BEAN} fill="#FF7A1A" />
+        <path d={BEAN} fill="#DD9B5F" />
       </svg>
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
         <svg width="64" height="64" viewBox="0 0 512 512">
@@ -65,10 +65,10 @@ export async function renderOg({
             height="464"
             rx="112"
             fill="#120c07"
-            stroke="#FF8A33"
+            stroke="#DD9B5F"
             strokeWidth="8"
           />
-          <path d={BEAN} fill="#FF7A1A" />
+          <path d={BEAN} fill="#DD9B5F" />
           <path
             d="M280 160c-37 35-42 72-19 108 21 33 15 67-16 98"
             fill="none"
@@ -81,7 +81,7 @@ export async function renderOg({
         <div
           style={{
             fontSize: 22,
-            color: "#FF7A1A",
+            color: "#DD9B5F",
             marginLeft: 12,
             letterSpacing: 2,
             textTransform: "uppercase",
@@ -126,10 +126,10 @@ export async function renderOg({
                 width: 16,
                 height: 16,
                 borderRadius: 16,
-                background: "#FF7A1A",
+                background: "#DD9B5F",
               }}
             />
-            <div style={{ display: "flex", color: "#FF7A1A" }}>
+            <div style={{ display: "flex", color: "#DD9B5F" }}>
               {`${site.career.headline} · ${site.career.roles.join(" · ")}`}
             </div>
           </>

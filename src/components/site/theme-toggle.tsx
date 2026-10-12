@@ -36,9 +36,9 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
     >
       {dark ? (
-        <Sun size={20} strokeWidth={1.75} />
+        <Sun size={20} strokeWidth={1.75} className="size-5" />
       ) : (
-        <Moon size={20} strokeWidth={1.75} />
+        <Moon size={20} strokeWidth={1.75} className="size-5" />
       )}
     </Button>
   );

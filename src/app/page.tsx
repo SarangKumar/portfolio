@@ -32,22 +32,19 @@ export default async function Home() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" speed={-0.35} />
+        <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" speed={-0.2} />
         <BeanBlob
           className="bottom-0 -left-32 h-64 w-96 opacity-60"
           speed={0.25}
         />
-        <div
-          data-parallax="-0.15"
-          data-parallax-max="48"
-          className="container-x relative grid items-center gap-10 pt-20 pb-16 sm:pt-32 lg:grid-cols-[minmax(0,1fr)_auto]"
-        >
+        <div className="container-x relative grid items-center gap-x-12 gap-y-10 pt-16 pb-16 sm:pt-24 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:pt-28 lg:pb-20">
           <div className="min-w-0">
             <p className="eyebrow fade-up">
-              01/ {t("home.from", { location: site.location })}
+              <span className="idx">01/</span>{" "}
+              {t("home.from", { location: site.location })}
             </p>
             <h1
-              className="display fade-up mt-6 text-[clamp(2.75rem,11vw,8rem)]"
+              className="display fade-up mt-6 text-[clamp(2.75rem,10vw,5.5rem)] leading-[0.95] lg:text-[clamp(4.5rem,6.6vw,6rem)]"
               style={{ ["--delay" as string]: "80ms" }}
             >
               {site.role}
@@ -74,12 +71,12 @@ export default async function Home() {
           </div>
           <div
             aria-hidden={false}
-            data-parallax="0.12"
-            data-parallax-max="40"
-            className="fade-up hidden justify-center py-10 lg:flex"
+            data-parallax="0.06"
+            data-parallax-max="20"
+            className="fade-up hidden items-center justify-center lg:flex"
             style={{ ["--delay" as string]: "320ms" }}
           >
-            <HeroRobot size={300} />
+            <HeroRobot />
           </div>
         </div>
         {site.homeSections.skills ? (

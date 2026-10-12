@@ -88,8 +88,8 @@ export function SiteChrome({
                 className={cn(
                   "rounded-full px-3 py-1.5 text-sm transition-colors",
                   isActive(n.href)
-                    ? "bg-primary/12 text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
+                    ? "bg-primary/12 text-primary"
+                    : "text-muted-foreground hover:text-primary",
                 )}
               >
                 {n.label}
@@ -123,7 +123,7 @@ export function SiteChrome({
               className="size-11 sm:hidden"
               aria-label="Search"
             >
-              <Search size={20} strokeWidth={1.75} />
+              <Search size={20} strokeWidth={1.75} className="size-5" />
             </Button>
             <Button
               variant="ghost"
@@ -133,7 +133,7 @@ export function SiteChrome({
               aria-label="Toggle terminal (`)"
               aria-pressed={term}
             >
-              <SquareTerminal size={20} strokeWidth={1.75} />
+              <SquareTerminal size={20} strokeWidth={1.75} className="size-5" />
             </Button>
             <ThemeToggle className="hidden sm:inline-flex" />
             <Button
@@ -146,9 +146,9 @@ export function SiteChrome({
               aria-label="Menu"
             >
               {menuOpen ? (
-                <X size={20} strokeWidth={1.75} />
+                <X size={20} strokeWidth={1.75} className="size-5" />
               ) : (
-                <Menu size={20} strokeWidth={1.75} />
+                <Menu size={20} strokeWidth={1.75} className="size-5" />
               )}
             </Button>
           </div>
@@ -196,16 +196,20 @@ export function SiteChrome({
               </Button>
               <Button
                 variant="outline"
-                className="size-11 rounded-full"
+                className="size-11 rounded-full [&_svg]:size-5"
                 aria-label="Open terminal"
                 onClick={() => {
                   setMenu(null);
                   setTerm(true);
                 }}
               >
-                <SquareTerminal size={20} strokeWidth={1.75} />
+                <SquareTerminal
+                  size={20}
+                  strokeWidth={1.75}
+                  className="size-5"
+                />
               </Button>
-              <ThemeToggle className="size-11 rounded-full border" />
+              <ThemeToggle className="border-border size-11 rounded-full border [&_svg]:size-5" />
             </div>
           </nav>
         ) : null}

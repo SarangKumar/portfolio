@@ -32,7 +32,7 @@ export function BeanBlob({
       data-parallax={speed}
       data-parallax-max={160}
       className={cn(
-        "bean bg-primary/15 pointer-events-none absolute blur-2xl",
+        "bean bg-primary/25 pointer-events-none absolute blur-2xl",
         className,
       )}
     />

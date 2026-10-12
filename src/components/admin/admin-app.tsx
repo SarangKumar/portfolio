@@ -269,12 +269,11 @@ function CareerSwitch({
   msg: string | null;
 }) {
   return (
-    <div className="border-border flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4">
+    <div className="border-border bg-card flex max-w-2xl items-center justify-between gap-4 rounded-2xl border px-5 py-4">
       <div className="min-w-0">
-        <p className="font-medium">Open to work</p>
-        <p className="text-muted-foreground text-xs">
-          Hero line, navbar indicator, Experience status, terminal status, OG
-          images and JSON-LD “seeks”. Saves instantly.
+        <p className="font-medium leading-tight">Open to work</p>
+        <p className="text-muted-foreground mt-0.5 text-sm">
+          Shows your open-to-work status across the site. Saves instantly.
         </p>
         {msg ? (
           <p role="status" className="mt-1 text-xs">

@@ -24,7 +24,7 @@ export function PageIntro({
       )}
     >
       <p className="eyebrow">
-        {index}/ {eyebrow}
+        <span className="idx">{index}/</span> {eyebrow}
       </p>
       <h1 className="display mt-4 text-[clamp(2.5rem,9vw,4.5rem)]">{title}</h1>
       {children ? (
@@ -57,7 +57,7 @@ export function Section({
           data-parallax="0.08"
           data-parallax-max="14"
         >
-          {index ? `${index}/ ` : ""}
+          {index ? <span className="idx">{index}/ </span> : null}
           {title}
         </h2>
         {aside}
