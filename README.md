@@ -1,91 +1,55 @@
-# Personal portfolio
+# Sarang Kumar — portfolio (v3)
 
-Production-grade Next.js application foundation for a public portfolio and later private engineering tools.
+Clean, editorial portfolio built with **Next.js (App Router) + TypeScript**, **Tailwind CSS v4** and **[Vinyaas](https://vinyaas.vercel.app)** components, with **Firebase Auth + Cloud Firestore** behind a private admin panel. Designed for **Vercel Hobby + Firebase Spark (free)** — no servers, target ₹0–₹150/month.
 
-This repository currently has project setup, the design system, UI primitives, the global shell, public content pages with lorem ipsum sample catalogs, and a Phase 1 CMD ribbon. Certifications and badges appear on About and Resume. Replace the sample records before publishing a real identity.
+## Pages
 
-## Scripts
+| Route                     | What's there                                                                                                                                    |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                       | Hero, career status, about, featured projects, current focus, recent writing                                                                    |
+| `/projects`               | Project list with hover/focus popovers, future ideas, Skills derived from project technologies                                                  |
+| `/projects/[slug]`        | Case studies (architecture, implementation, testing, trade-offs) — Vinyaas, Aavedak, .dotfiles, …                                               |
+| `/blogs`, `/blogs/[slug]` | Articles + notes; searchable archive with category & tag filters                                                                                |
+| `/library`                | Books with reading notes, bookmarks/resources, idea & engineering notebook                                                                      |
+| `/lab`, `/lab/[slug]`     | Architecture Lab: config-driven SVG diagrams, playable request flows, component details, decisions, trade-offs, bottlenecks, failure simulation |
+| `/board`                  | Public Board — visitors submit notes; only admin-approved ones are shown                                                                        |
+| `/admin`                  | Private admin (Google sign-in, single admin email)                                                                                              |
 
-| Script                                          | Purpose                                               |
-| ----------------------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                                   | Build translations, then start the development server |
-| `npm run build`                                 | Production build                                      |
-| `npm run start`                                 | Start production server                               |
-| `npm run i18n:build`                            | Merge message namespaces into compiled catalogs       |
-| `npm run i18n:check`                            | Verify namespaces and that compiled output is current |
-| `npm run lint` / `lint:fix`                     | ESLint                                                |
-| `npm run format` / `format:check`               | Prettier                                              |
-| `npm run typecheck`                             | Strict TypeScript                                     |
-| `npm run test` / `test:watch` / `test:coverage` | Jest                                                  |
-| `npm run prisma:generate`                       | Generate Prisma Client from `prisma/schema.prisma`    |
-| `npm run prisma:push`                           | Push the Prisma schema to MongoDB (no SQL migrations) |
-| `npm run check`                                 | i18n:check + typecheck + lint + format:check + test   |
-| `npm run prepare`                               | Husky git hooks                                       |
+Shared UI: dark/light toggle, responsive navbar (exactly six destinations), bean identity + app-icon style project icons, **⌘K** palette, a terminal (press <kbd>`</kbd> or the terminal button; try `help`, `ls projects`, `open aavedak`, `search firebase`), reduced-motion aware animations. The palette and terminal are generated from the same published content as the pages (`src/lib/derive.ts`).
 
-## Architecture
-
-| Area               | Location                         |
-| ------------------ | -------------------------------- |
-| Routes / pages     | `src/app`                        |
-| Reusable UI        | `src/components/ui`              |
-| Feature components | `src/features`                   |
-| Utilities          | `src/lib`                        |
-| Configuration      | `src/config`, root config files  |
-| Data               | `src/data`                       |
-| Public content API | `src/content`                    |
-| Database (Prisma)  | `src/db`, `prisma/schema.prisma` |
-| Types              | `src/types`                      |
-| Translations       | `messages`, `src/i18n`           |
-| Analytics          | `src/analytics`                  |
-| SEO helpers        | `src/lib/seo.ts`                 |
-| Terminal commands  | `src/terminal`                   |
-| Tests              | `tests`                          |
-| Public assets      | `public`                         |
-| Design tokens      | `src/app/globals.css`            |
-| Motion conventions | `src/lib/motion.ts`              |
-
-The global shell (`src/components/layout`) provides header, footer, skip link, page container, and the CMD ribbon above the footer. CMD architecture is documented in `src/terminal/README.md`. Pages render inside `SiteShell` and should not duplicate that chrome. Public pages live in `src/features` and read structured data from `src/data`. Catalogs currently contain lorem ipsum sample records for layout and integration; replace them before publishing a real identity. Public experience is separate from any future private career system. Skills are modeled as relationships to roles and projects (evidence counts), not proficiency bars. Projects use public slugs in `/projects/[slug]`; internal IDs stay out of URLs. Blog posts use `/blog/[slug]` with Markdown rendered by `react-markdown`. Resume supports multiple versions, preview, download, and typed `resume_*` events. Contact accepts a validated form; delivery uses optional `CONTACT_WEBHOOK_URL`. Analytics is a typed, fail-open pipeline (`src/analytics`) that validates events server-side, stores them through a replaceable sink, and ranks featured projects from `project_view` counts with catalog fallback. Reusable Recharts visualizations live in `src/components/charts` and consume `--chart-*` tokens. Charts render only when they have useful published data. The public terminal UI (`src/features/terminal`) talks to a command registry (`src/terminal`) so new commands can be registered without changing the panel. SEO helpers live in `src/lib/seo.ts` (`sitemap.ts`, `robots.ts`, page metadata, and JSON-LD). There is no admin dashboard in this phase. Events do not store raw IP addresses or form PII.
-
-Locale-aware routing uses `src/app/[locale]` and `next-intl`. English is the only locale. Edit copy in `messages/{locale}/*.json`, then run `npm run i18n:build` to write `messages/compiled/{locale}.json`. Runtime loads the compiled catalogs. UI copy should use `useTranslations` / `getTranslations` from next-intl — do not wrap those APIs. Page-level `generateMetadata` should pass `{ locale, namespace }` into `getTranslations` so metadata can be localized later.
-
-## Design system
-
-Colors, type, spacing, radius, and motion live in CSS variables and Tailwind tokens (`src/app/globals.css`). Use utilities such as `bg-background`, `text-primary`, `type-heading`, `app-container`, and `surface-card`. Do not introduce a JavaScript palette or hardcode the same colors in components.
-
-Orange (`primary` / `accent`) is the visual accent — use it selectively. Motion helpers in `src/lib/motion.ts` cover hover, focus, press, entrance, and expansion, and must go through `withReducedMotion` / `useMotionTransition`.
-
-## UI primitives
-
-Reusable primitives live in `src/components/ui` and consume design tokens via `cn()`. They are variant-driven (for example `Button` `primary` | `secondary` | `outline` | `ghost` | `destructive`). Do not add shadcn or a second styling system. Use `Link` from `@/components/ui` for styled links; use `@/i18n/navigation` only for routing helpers.
-
-## Environment
-
-Copy `.env.example` to `.env.local`.
-
-- `NEXT_PUBLIC_*` — safe for the browser
-- All other variables — server-only; import from `src/lib/env/server.ts` (`server-only`)
-- `CONTACT_WEBHOOK_URL` — optional server endpoint for contact form delivery. When unset, the form still validates and reports that delivery is not configured.
-- `ANALYTICS_HASH_SALT` — optional salt for hashing IPs used only as an in-memory rate-limit fallback. Event records never include IP addresses.
-- `ANALYTICS_VAULT_PASSWORD` — server-only password for the hidden CMD folder `analytics/`. When unset, unlock always fails.
-- `DATABASE_URL` — server-only MongoDB connection string for Prisma. Never use `NEXT_PUBLIC_*`. Production fails clearly if this is missing or not a MongoDB URL with a database name when the database client is created. Sync schema with `npm run prisma:push` (MongoDB does not use SQL migrations). Generate the client with `npm run prisma:generate`.
-
-### Local MongoDB replica set
-
-Prisma interactive transactions on MongoDB require a replica set (`P2031` without one). Atlas provides a replica set. Job application status history writes current status and an append-only history row together; a replica set keeps those two documents atomic.
-
-For local development, run a single-node replica set and point `DATABASE_URL` at it:
+## Run locally
 
 ```bash
-mongod --replSet rs0 --port 27017 --dbpath /data/db
-mongosh --eval 'rs.initiate({_id:"rs0", members:[{_id:0, host:"127.0.0.1:27017"}]})'
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+npm run lint
 ```
 
-```
-DATABASE_URL="mongodb://127.0.0.1:27017/portfolio?replicaSet=rs0"
-```
+With no Firebase env vars the site runs entirely on **`src/content/seed.ts`** — edit that file to change content. The board form and admin panel show a "configure Firebase" note.
 
-Without a replica set, the app falls back to ordered writes: append history first, then update `JobApplication.status`. A crash between those writes can leave a pending history row; retrying the same transition completes the status update without duplicating the row. Replica-set transactions are still required for true multi-document atomicity.
+## Firebase setup (free Spark plan)
 
-Public portfolio pages should read persisted catalogs through `src/content` (`getPublishedProjects`, and similar). That layer maps Prisma documents onto the existing `src/data` types and falls back to the static samples when `DATABASE_URL` is unset. Do not query Prisma from UI components.
+1. Create a project at <https://console.firebase.google.com>.
+2. **Authentication → Sign-in method →** enable **Google**. Under _Settings → Authorized domains_ add `localhost` and your Vercel domain.
+3. **Firestore Database →** create (production mode, any region near you, e.g. `asia-south1`).
+4. **Project settings → Your apps → Web app →** copy the config into `.env.local` (copy from `.env.example`).
+5. Set `NEXT_PUBLIC_ADMIN_EMAIL` to your Google email **and** put the same email in `firestore.rules` (`isAdmin()`). The rules are the real security boundary; the env var only controls the UI.
+6. Deploy rules: `npx firebase-tools login && npx firebase-tools deploy --only firestore:rules --project <project-id>` (or paste `firestore.rules` into the console's Rules tab).
+7. `npm run dev`, open `/admin`, sign in, click **Import seed content** to copy the seed into Firestore. From then on the site reads Firestore (published docs only) and falls back to seed if Firestore is unreachable.
 
-Server-only database helpers live in `src/db`. Import `getPrismaClient` only from Server Components, Route Handlers, and server actions. Wrap queries with `executeDatabaseOperation` so driver errors are not returned to visitors. This app uses Prisma ORM 6.19 because that release supports MongoDB with `prisma/schema.prisma`.
+### Content model
+
+`config/site` (site config, homepage sections, nav links, career status, featured slugs) and collections `projects`, `posts`, `books`, `bookmarks`, `notes`, `skills`, `diagrams`, `comments`. Every content doc has `status: "draft" | "published"`. Types live in `src/content/types.ts`. Diagrams are plain JSON (nodes with x/y, edges, flows, decisions, trade-offs, bottlenecks, failures) edited in the admin with a live preview.
+
+## Deploy to Vercel (Hobby)
+
+1. Push the branch and import the repo in Vercel (framework: Next.js, defaults are fine).
+2. Add the same `NEXT_PUBLIC_*` env vars in _Project → Settings → Environment Variables_.
+3. Add the Vercel domain to Firebase Auth's authorized domains.
+
+Pages are statically generated and revalidated every 60s (ISR), so Firestore reads stay tiny and edits appear within about a minute. New slugs created after a deploy render on demand.
+
+## Cost notes
+
+Vercel Hobby and Firebase Spark are free. No Cloud Functions, VMs or always-on services are used. To curb board spam, consider enabling Firebase App Check.
