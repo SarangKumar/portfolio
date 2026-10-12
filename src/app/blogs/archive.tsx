@@ -101,7 +101,7 @@ export function Archive({ posts }: { posts: Post[] }) {
                     className="group grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:gap-6"
                   >
                     <span>
-                      <span className="group-hover:text-primary block font-serif text-2xl transition-colors">
+                      <span className="group-hover:text-primary-ink block font-serif text-2xl transition-colors">
                         {p.title}
                       </span>
                       <span className="text-muted-foreground mt-1 block text-sm">

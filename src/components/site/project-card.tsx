@@ -45,7 +45,7 @@ export function ProjectCard({
               />
             </span>
             <span>
-              <span className="display group-hover:text-primary block text-3xl transition-colors sm:text-4xl">
+              <span className="display group-hover:text-primary-ink block text-3xl transition-colors sm:text-4xl">
                 {project.title}
               </span>
               <span className="text-muted-foreground mt-2 block max-w-2xl text-sm">

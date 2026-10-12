@@ -188,7 +188,7 @@ export default async function Home() {
                   href={`/blogs/${p.slug}`}
                   className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between"
                 >
-                  <span className="group-hover:text-primary font-serif text-2xl transition-colors">
+                  <span className="group-hover:text-primary-ink font-serif text-2xl transition-colors">
                     {p.title}
                   </span>
                   <span className="tag">

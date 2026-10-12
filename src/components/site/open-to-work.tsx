@@ -84,7 +84,7 @@ export function OpenToWork({
               ? { target: "_blank", rel: "noreferrer" }
               : {})}
             {...(c.href.endsWith(".pdf") ? { download: true } : {})}
-            className="text-foreground hover:text-primary decoration-primary inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
+            className="text-foreground hover:text-primary-ink decoration-primary inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
           >
             <IconText
               text={c.label}

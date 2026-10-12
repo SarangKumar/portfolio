@@ -60,7 +60,7 @@ export default async function LibraryPage() {
                 className="group grid gap-1 py-4 sm:grid-cols-[1fr_auto]"
               >
                 <span>
-                  <span className="group-hover:text-primary inline-flex items-center gap-1.5 font-serif text-xl transition-colors">
+                  <span className="group-hover:text-primary-ink inline-flex items-center gap-1.5 font-serif text-xl transition-colors">
                     {b.title}
                     <ArrowUpRight
                       size={16}

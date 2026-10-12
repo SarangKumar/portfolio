@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { LabelsProvider } from "@/components/site/labels-provider";
 import { ParallaxController } from "@/components/site/parallax";
 import { PageTransition } from "@/components/site/page-transition";
@@ -138,6 +139,7 @@ export default async function RootLayout({
             footerNav={site.footerNav}
           />
         </LabelsProvider>
+        <Analytics />
       </body>
     </html>
   );

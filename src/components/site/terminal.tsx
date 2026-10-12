@@ -159,13 +159,13 @@ export function Terminal({
         {lines.map((l, i) => (
           <pre key={i} className="whitespace-pre-wrap">
             {l.kind === "in" ? (
-              <span className="text-[oklch(0.74_0.11_62)]">❯ </span>
+              <span className="text-[#f59a5b]">❯ </span>
             ) : null}
             {l.text}
           </pre>
         ))}
         <div ref={endRef} className="flex">
-          <span className="text-[oklch(0.74_0.11_62)]">❯&nbsp;</span>
+          <span className="text-[#f59a5b]">❯&nbsp;</span>
           <input
             id="term-input"
             autoFocus

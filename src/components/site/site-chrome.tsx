@@ -89,7 +89,7 @@ export function SiteChrome({
                   "rounded-full px-3 py-1.5 text-sm transition-colors",
                   isActive(n.href)
                     ? "bg-primary/12 text-primary"
-                    : "text-muted-foreground hover:text-primary",
+                    : "text-muted-foreground hover:text-primary-ink",
                 )}
               >
                 {n.label}

@@ -32,7 +32,7 @@ export default async function LabPage() {
                 failures: d.failures.length,
               })}
             </p>
-            <h2 className="display group-hover:text-primary mt-6 text-4xl transition-colors">
+            <h2 className="display group-hover:text-primary-ink mt-6 text-4xl transition-colors">
               {d.title}
             </h2>
             <p className="text-muted-foreground mt-4">{d.summary}</p>
