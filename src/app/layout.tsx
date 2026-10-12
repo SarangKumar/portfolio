@@ -35,6 +35,11 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     authors: [{ name: site.name }],
     metadataBase: new URL(SITE_URL),
+    verification: {
+      google:
+        process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+        "IAk36o0wRdV4UaM6vJ7qh_d518L26eOemV5QjxpM0II",
+    },
     alternates: { canonical: "/" },
     twitter: {
       card: "summary_large_image",
