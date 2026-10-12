@@ -30,12 +30,17 @@ export default async function Home() {
     <>
       <section className="relative overflow-hidden">
         <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" />
-        <BeanBlob className="bottom-0 -left-32 h-64 w-96 opacity-60" />
+        <BeanBlob
+          className="bottom-0 -left-32 h-64 w-96 opacity-60"
+          speed={0.1}
+        />
         <div className="container-x relative pt-20 pb-16 sm:pt-32">
           <p className="eyebrow fade-up">
             01/ {t("home.from", { location: site.location })}
           </p>
           <h1
+            data-parallax="-0.05"
+            data-parallax-max="28"
             className="display fade-up mt-6 text-6xl sm:text-8xl lg:text-9xl"
             style={{ ["--delay" as string]: "80ms" }}
           >
@@ -114,10 +119,16 @@ export default async function Home() {
               <Link href={site.experienceHref} className="tag link-u">
                 {t("experience.all")}
               </Link>
-              {site.homeSections.resume ? (
-                <Link href={site.resumeHref} className="tag link-u">
-                  {t("home.fullResume")}
-                </Link>
+              {site.homeSections.resume && content.resume.pdfUrl ? (
+                <a
+                  href={content.resume.pdfUrl}
+                  download
+                  target="_blank"
+                  rel="noreferrer"
+                  className="tag link-u"
+                >
+                  {t("resume.download")}
+                </a>
               ) : null}
             </span>
           }
@@ -131,6 +142,11 @@ export default async function Home() {
             </span>
             <span className="text-muted-foreground">{site.career.detail}</span>
           </p>
+          {content.resume.summary ? (
+            <p className="text-foreground/85 mb-10 max-w-3xl text-lg leading-relaxed">
+              {content.resume.summary}
+            </p>
+          ) : null}
           <ExperienceList content={content} compact />
         </Section>
       ) : null}

@@ -16,6 +16,7 @@ export type TerminalData = {
   career: string;
   email: string;
   links: { label: string; href: string }[];
+  resumeUrl: string;
   index: SearchItem[];
 };
 
@@ -89,6 +90,10 @@ export function Terminal({
             ...data.links.map((l) => `${l.label}: ${l.href}`),
           ].join("\n"),
         );
+      case "resume":
+        if (!data.resumeUrl) return out(t("terminal.noResume"));
+        window.open(data.resumeUrl, "_blank", "noopener");
+        return out(t("terminal.resume", { url: data.resumeUrl }));
       case "ls": {
         const group = GROUPS[arg.toLowerCase()];
         if (!group)
@@ -151,13 +156,13 @@ export function Terminal({
         {lines.map((l, i) => (
           <pre key={i} className="whitespace-pre-wrap">
             {l.kind === "in" ? (
-              <span className="text-[oklch(0.74_0.11_62)]">❯ </span>
+              <span className="text-[#ff7a1a]">❯ </span>
             ) : null}
             {l.text}
           </pre>
         ))}
         <div ref={endRef} className="flex">
-          <span className="text-[oklch(0.74_0.11_62)]">❯&nbsp;</span>
+          <span className="text-[#ff7a1a]">❯&nbsp;</span>
           <input
             id="term-input"
             autoFocus

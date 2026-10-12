@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
 import { LabelsProvider } from "@/components/site/labels-provider";
+import { ParallaxController } from "@/components/site/parallax";
 import { PageTransition } from "@/components/site/page-transition";
 import { SiteChrome } from "@/components/site/site-chrome";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -59,9 +60,11 @@ export default async function RootLayout({
               career: `${site.career.label} — ${site.career.detail}`,
               email: site.email,
               links: site.links,
+              resumeUrl: content.resume.pdfUrl,
               index: buildIndex(content),
             }}
           />
+          <ParallaxController />
           <main id="content" className="flex-1">
             <PageTransition>{children}</PageTransition>
           </main>
@@ -69,7 +72,6 @@ export default async function RootLayout({
             name={site.name}
             email={site.email}
             links={site.links}
-            resumeHref={site.resumeHref}
             experienceHref={site.experienceHref}
           />
         </LabelsProvider>

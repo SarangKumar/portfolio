@@ -13,8 +13,8 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.52 0.1 50);
-  --primary-foreground: oklch(0.98 0.016 73.684);
+  --primary: #e85d00;
+  --primary-foreground: #1a0f05;
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
@@ -24,28 +24,28 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.52 0.1 50);
-  --chart-1: oklch(0.646 0.222 41.116);
+  --ring: #e85d00;
+  --chart-1: #e85d00;
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.705 0.213 47.604);
-  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --sidebar-primary: #e85d00;
+  --sidebar-primary-foreground: #1a0f05;
   --sidebar-accent: oklch(0.967 0.001 286.375);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.705 0.213 47.604);
+  --sidebar-ring: #e85d00;
 
   /* Project extensions: not new colors, just --primary at lower opacity for
      glows and the hero mesh. No standalone hues introduced. */
-  --glow: oklch(0.705 0.213 47.604 / 30%);
-  --logo-glow: oklch(0.705 0.213 47.604 / 45%);
-  --mesh-a: oklch(0.705 0.213 47.604 / 18%);
-  --mesh-b: oklch(0.705 0.213 47.604 / 11%);
-  --mesh-c: oklch(0.705 0.213 47.604 / 6%);
+  --glow: color-mix(in oklab, #e85d00 30%, transparent);
+  --logo-glow: color-mix(in oklab, #e85d00 45%, transparent);
+  --mesh-a: color-mix(in oklab, #e85d00 18%, transparent);
+  --mesh-b: color-mix(in oklab, #e85d00 11%, transparent);
+  --mesh-c: color-mix(in oklab, #e85d00 6%, transparent);
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -56,8 +56,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.74 0.11 62);
-  --primary-foreground: oklch(0.18 0.02 60);
+  --primary: #ff7a1a;
+  --primary-foreground: #1a0f05;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -67,26 +67,26 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.74 0.11 62);
-  --chart-1: oklch(0.488 0.243 264.376);
+  --ring: #ff7a1a;
+  --chart-1: #ff7a1a;
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.646 0.222 41.116);
-  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --sidebar-primary: #ff7a1a;
+  --sidebar-primary-foreground: #1a0f05;
   --sidebar-accent: oklch(0.274 0.006 286.033);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.646 0.222 41.116);
+  --sidebar-ring: #ff7a1a;
 
-  --glow: oklch(0.646 0.222 41.116 / 22%);
-  --logo-glow: oklch(0.646 0.222 41.116 / 40%);
-  --mesh-a: oklch(0.646 0.222 41.116 / 16%);
-  --mesh-b: oklch(0.646 0.222 41.116 / 10%);
-  --mesh-c: oklch(0.646 0.222 41.116 / 5%);
+  --glow: color-mix(in oklab, #ff7a1a 30%, transparent);
+  --logo-glow: color-mix(in oklab, #ff7a1a 45%, transparent);
+  --mesh-a: color-mix(in oklab, #ff7a1a 18%, transparent);
+  --mesh-b: color-mix(in oklab, #ff7a1a 11%, transparent);
+  --mesh-c: color-mix(in oklab, #ff7a1a 6%, transparent);
 }
 
 @theme inline {

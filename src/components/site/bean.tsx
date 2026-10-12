@@ -19,10 +19,18 @@ export function BeanMark({
   );
 }
 
-export function BeanBlob({ className }: { className?: string }) {
+export function BeanBlob({
+  className,
+  speed = -0.12,
+}: {
+  className?: string;
+  speed?: number;
+}) {
   return (
     <div
       aria-hidden
+      data-parallax={speed}
+      data-parallax-max={80}
       className={cn(
         "bean bg-primary/15 pointer-events-none absolute blur-2xl",
         className,

@@ -13,8 +13,6 @@ export type PageCopy = { eyebrow: string; title: string; intro: string };
 export type SiteConfig = {
   /** Navbar destinations, in order. Labels editable; hrefs are the six routes. */
   nav: Link[];
-  /** Where Home/footer link the resume. */
-  resumeHref: string;
   experienceHref: string;
   /** Display order of skill categories. */
   skillCategories: string[];

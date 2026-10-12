@@ -10,12 +10,10 @@ export function SiteFooter({
   name,
   email,
   links,
-  resumeHref,
 }: {
   name: string;
   email: string;
   links: L[];
-  resumeHref: string;
   experienceHref: string;
 }) {
   const pathname = usePathname();
@@ -49,9 +47,6 @@ export function SiteFooter({
             ))}
             <Link href={experienceHref} className="link-u">
               {t("footer.experience")}
-            </Link>
-            <Link href={resumeHref} className="link-u">
-              {t("footer.resume")}
             </Link>
             <Link href="/admin" className="link-u">
               {t("footer.admin")}

@@ -228,7 +228,6 @@ export const SITE_FIELDS: Field[] = [
     type: "json",
   },
   { key: "handle", label: "Terminal handle", type: "text" },
-  { key: "resumeHref", label: "Resume link (Home + footer)", type: "text" },
   {
     key: "experienceHref",
     label: "Experience link (Home + footer)",

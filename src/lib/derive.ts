@@ -24,6 +24,22 @@ export function buildIndex(c: Content): SearchItem[] {
       group: "Pages" as const,
       keywords: n.label,
     })),
+    {
+      id: "page-experience",
+      title: label(c.site.labels, "experience.title"),
+      subtitle: c.site.experienceHref,
+      href: c.site.experienceHref,
+      group: "Pages" as const,
+      keywords: "experience career work education",
+    },
+    ...c.experience.map((e) => ({
+      id: e.id,
+      title: `${e.role} · ${e.company}`,
+      subtitle: e.employmentType,
+      href: `${c.site.experienceHref}#${e.id}`,
+      group: "Pages" as const,
+      keywords: `${e.company} ${e.skills.join(" ")}`,
+    })),
     ...c.projects.map((p) => ({
       id: p.id,
       title: p.title,
