@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { getContent } from "./content";
 
@@ -5,6 +7,16 @@ export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_ALT = "Open Graph preview";
 
 async function serif(): Promise<ArrayBuffer | null> {
+  // Bundled locally so OG renders never depend on a Google Fonts round-trip.
+  try {
+    const buf = await readFile(
+      join(process.cwd(), "src/assets/fonts/InstrumentSerif-Regular.ttf"),
+    );
+    return buf.buffer.slice(
+      buf.byteOffset,
+      buf.byteOffset + buf.byteLength,
+    ) as ArrayBuffer;
+  } catch {}
   try {
     const css = await (
       await fetch("https://fonts.googleapis.com/css2?family=Instrument+Serif", {
