@@ -1,5 +1,5 @@
+import { IconText } from "@/components/site/icon-text";
 import { seoMeta } from "@/lib/page-meta";
-import { Download } from "lucide-react";
 import { OpenToWork } from "@/components/site/open-to-work";
 import type { Metadata } from "next";
 import { ExperienceList } from "@/components/site/experience-list";
@@ -43,8 +43,7 @@ export default async function ExperiencePage() {
               rel="noreferrer"
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center rounded-full px-5 font-medium transition-colors"
             >
-              <Download className="size-3.5 shrink-0" aria-hidden />
-              {t("resume.download").replace(/\s*[↓⬇]\s*$/, "")}
+              <IconText text={t("resume.download")} icon="download" />
             </a>
           ) : null}
         </div>

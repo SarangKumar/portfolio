@@ -1,5 +1,5 @@
+import { IconText } from "@/components/site/icon-text";
 import { HeroRobot } from "@/components/site/hero-robot";
-import { Download } from "lucide-react";
 import { OpenToWork } from "@/components/site/open-to-work";
 import Link from "next/link";
 import { BeanBlob } from "@/components/site/bean";
@@ -68,7 +68,7 @@ export default async function Home() {
               style={{ ["--delay" as string]: "240ms" }}
             >
               <Link href="/projects" className="link-u">
-                {t("home.cta")}
+                <IconText text={t("home.cta")} />
               </Link>
             </div>
           </div>
@@ -131,7 +131,7 @@ export default async function Home() {
           aside={
             <span className="flex flex-wrap gap-x-4 gap-y-2 whitespace-nowrap">
               <Link href={site.experienceHref} className="tag link-u">
-                {t("experience.all")}
+                <IconText text={t("experience.all")} />
               </Link>
               {site.homeSections.resume && content.resume.pdfUrl ? (
                 <a
@@ -141,8 +141,7 @@ export default async function Home() {
                   rel="noreferrer"
                   className="tag link-u inline-flex items-center gap-1.5 whitespace-nowrap"
                 >
-                  <Download className="size-3.5 shrink-0" aria-hidden />
-                  {t("resume.download").replace(/\s*[↓⬇]\s*$/, "")}
+                  <IconText text={t("resume.download")} icon="download" />
                 </a>
               ) : null}
             </span>

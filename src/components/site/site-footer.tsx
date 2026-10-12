@@ -1,5 +1,6 @@
 "use client";
 
+import { IconText, iconForHref } from "./icon-text";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Link as L } from "@/content/types";
@@ -33,24 +34,31 @@ export function SiteFooter({
           <span>
             {t("footer.credit", { year: new Date().getFullYear(), name })}
           </span>
-          <span className="flex gap-4">
+          <span className="-mx-2 flex flex-wrap gap-x-2">
             {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
-                className="link-u"
+                className="hover:text-foreground inline-flex min-h-11 items-center px-2 transition-colors"
                 target="_blank"
                 rel="noreferrer"
               >
-                {l.label}
+                <IconText text={l.label} icon={iconForHref(l.href)} />
               </a>
             ))}
             {footerNav.map((l) => (
-              <Link key={l.href} href={l.href} className="link-u">
+              <Link
+                key={l.href}
+                href={l.href}
+                className="hover:text-foreground inline-flex min-h-11 items-center px-2 transition-colors"
+              >
                 {l.label}
               </Link>
             ))}
-            <Link href="/admin" className="link-u">
+            <Link
+              href="/admin"
+              className="hover:text-foreground inline-flex min-h-11 items-center px-2 transition-colors"
+            >
               {t("footer.admin")}
             </Link>
           </span>

@@ -21,7 +21,7 @@ export function toggleTheme() {
   localStorage.setItem("theme", next);
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const dark = useSyncExternalStore(
     subscribe,
     () => document.documentElement.classList.contains("dark"),
@@ -31,10 +31,15 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon-sm"
+      className={className}
       onClick={toggleTheme}
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
     >
-      {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+      {dark ? (
+        <Sun size={20} strokeWidth={1.75} />
+      ) : (
+        <Moon size={20} strokeWidth={1.75} />
+      )}
     </Button>
   );
 }

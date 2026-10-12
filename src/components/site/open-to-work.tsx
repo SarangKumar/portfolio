@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/content/types";
+import { IconText, iconForHref } from "./icon-text";
 import { cn } from "@/lib/utils";
 
 /** Pulsing availability dot (orange when open, muted otherwise). */
@@ -67,9 +68,12 @@ export function OpenToWork({
               ? { target: "_blank", rel: "noreferrer" }
               : {})}
             {...(c.href.endsWith(".pdf") ? { download: true } : {})}
-            className="link-u text-foreground hover:text-primary whitespace-nowrap transition-colors"
+            className="text-foreground hover:text-primary decoration-primary inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
           >
-            {c.label}
+            <IconText
+              text={c.label}
+              icon={/[←→↗↓⬇]/.test(c.label) ? undefined : iconForHref(c.href)}
+            />
           </a>
         ))}
       </p>

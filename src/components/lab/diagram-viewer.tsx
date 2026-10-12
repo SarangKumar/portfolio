@@ -83,9 +83,9 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
   const points = diagram[tab];
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
-      <div className="space-y-4">
-        <div className="border-border bg-card/40 overflow-x-auto rounded-2xl border p-2">
+    <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="min-w-0 space-y-4">
+        <div className="border-border bg-card/40 overflow-x-auto overscroll-x-contain rounded-2xl border p-2 touch-pan-x touch-pan-y">
           <svg
             viewBox={`0 0 ${width} ${height}`}
             className="min-w-[640px]"

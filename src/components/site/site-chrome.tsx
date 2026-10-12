@@ -17,9 +17,11 @@ import { ThemeToggle } from "./theme-toggle";
 export function SiteChrome({
   data,
   nav,
+  footerNav = [],
 }: {
   data: TerminalData;
   nav: NavLink[];
+  footerNav?: NavLink[];
 }) {
   const t = useT();
   const pathname = usePathname();
@@ -111,41 +113,42 @@ export function SiteChrome({
               className="text-muted-foreground hidden gap-2 rounded-full sm:inline-flex"
               aria-label="Open search (⌘K)"
             >
-              <Search className="size-3.5" /> {t("nav.search")}{" "}
+              <Search size={16} strokeWidth={1.75} /> {t("nav.search")}{" "}
               <kbd className="tag">⌘K</kbd>
             </Button>
             <Button
               variant="ghost"
               size="icon-sm"
               onClick={() => setPalette(true)}
-              className="sm:hidden"
+              className="size-11 sm:hidden"
               aria-label="Search"
             >
-              <Search className="size-4" />
+              <Search size={20} strokeWidth={1.75} />
             </Button>
             <Button
               variant="ghost"
               size="icon-sm"
+              className="hidden sm:inline-flex"
               onClick={() => setTerm((t) => !t)}
               aria-label="Toggle terminal (`)"
               aria-pressed={term}
             >
-              <SquareTerminal className="size-4" />
+              <SquareTerminal size={20} strokeWidth={1.75} />
             </Button>
-            <ThemeToggle />
+            <ThemeToggle className="hidden sm:inline-flex" />
             <Button
               variant="ghost"
               size="icon-sm"
-              className="lg:hidden"
+              className="size-11 lg:hidden"
               onClick={() => setMenu(menuOpen ? null : pathname)}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav"
               aria-label="Menu"
             >
               {menuOpen ? (
-                <X className="size-4" />
+                <X size={20} strokeWidth={1.75} />
               ) : (
-                <Menu className="size-4" />
+                <Menu size={20} strokeWidth={1.75} />
               )}
             </Button>
           </div>
@@ -156,18 +159,54 @@ export function SiteChrome({
             aria-label="Mobile"
             className="container-x border-border flex flex-col border-t py-3 lg:hidden"
           >
-            {nav.map((n) => (
+            {[{ href: "/", label: "Home" }, ...nav, ...footerNav]
+              .filter((n, i, a) => a.findIndex((x) => x.href === n.href) === i)
+              .map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-current={isActive(n.href) ? "page" : undefined}
+                  className={cn(
+                    "flex min-h-12 items-center font-serif text-2xl",
+                    isActive(n.href) ? "text-primary" : "",
+                  )}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            {data.careerOn ? (
               <Link
-                key={n.href}
-                href={n.href}
-                className={cn(
-                  "py-2 font-serif text-2xl",
-                  isActive(n.href) ? "text-primary" : "",
-                )}
+                href="/experience"
+                className="text-muted-foreground flex min-h-11 items-center gap-2 text-sm"
               >
-                {n.label}
+                <StatusDot on />
+                {data.careerLabel}
               </Link>
-            ))}
+            ) : null}
+            <div className="border-border mt-2 flex items-center gap-2 border-t pt-3">
+              <Button
+                variant="outline"
+                className="h-11 flex-1 gap-2 rounded-full"
+                onClick={() => {
+                  setMenu(null);
+                  setPalette(true);
+                }}
+              >
+                <Search size={16} strokeWidth={1.75} /> {t("nav.search")}
+              </Button>
+              <Button
+                variant="outline"
+                className="size-11 rounded-full"
+                aria-label="Open terminal"
+                onClick={() => {
+                  setMenu(null);
+                  setTerm(true);
+                }}
+              >
+                <SquareTerminal size={20} strokeWidth={1.75} />
+              </Button>
+              <ThemeToggle className="size-11 rounded-full border" />
+            </div>
           </nav>
         ) : null}
       </header>

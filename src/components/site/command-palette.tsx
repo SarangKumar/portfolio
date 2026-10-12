@@ -55,7 +55,7 @@ function PaletteBody({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-2 pt-[max(0.5rem,6vh)] backdrop-blur-sm sm:p-4 sm:pt-[12vh]"
       onClick={onClose}
     >
       <div
@@ -66,7 +66,11 @@ function PaletteBody({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="border-border flex items-center gap-2 border-b px-4">
-          <Search className="text-muted-foreground size-4" />
+          <Search
+            size={16}
+            strokeWidth={1.75}
+            className="text-muted-foreground shrink-0"
+          />
           <input
             autoFocus
             value={q}
@@ -93,15 +97,21 @@ function PaletteBody({
               results[active] ? `pal-${results[active].id}` : undefined
             }
             placeholder={t("palette.placeholder")}
-            className="h-12 flex-1 bg-transparent text-sm outline-none"
+            className="h-12 min-w-0 flex-1 bg-transparent text-base outline-none sm:text-sm"
           />
-          <kbd className="tag">esc</kbd>
+          <button
+            type="button"
+            onClick={onClose}
+            className="tag -mr-2 inline-flex min-h-11 items-center px-2"
+          >
+            esc
+          </button>
         </div>
         <ul
           id="palette-list"
           ref={listRef}
           role="listbox"
-          className="max-h-[50vh] overflow-y-auto p-2"
+          className="max-h-[min(60dvh,28rem)] overflow-y-auto overscroll-contain p-2"
         >
           {results.length === 0 ? (
             <li className="text-muted-foreground p-4 text-sm">

@@ -61,6 +61,7 @@ export default async function RootLayout({
         <LabelsProvider labels={site.labels}>
           <SiteChrome
             nav={site.nav}
+            footerNav={site.footerNav}
             data={{
               name: site.name,
               brand: site.brand || site.name,

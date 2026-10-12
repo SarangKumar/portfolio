@@ -343,3 +343,9 @@
     animation: none !important;
   }
 }
+
+/* Reserve the scrollbar's width on every page so short and long pages (and the
+   view-transition snapshots between them) keep the same content width. */
+html {
+  scrollbar-gutter: stable;
+}

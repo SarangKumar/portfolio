@@ -1,3 +1,4 @@
+import { IconText } from "@/components/site/icon-text";
 import { seoMeta } from "@/lib/page-meta";
 import { JsonLd } from "@/components/site/json-ld";
 import { abs } from "@/lib/site-url";
@@ -66,7 +67,7 @@ export default async function PostPage({ params }: Props) {
       </div>
       <p className="tag mt-12">{p.tags.map((t) => `#${t}`).join("  ")}</p>
       <Link href="/blogs" className="link-u mt-8 inline-block text-sm">
-        {t("blogs.back")}
+        <IconText text={t("blogs.back")} />
       </Link>
     </article>
   );

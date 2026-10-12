@@ -138,22 +138,22 @@ export function Terminal({
     <div
       role="dialog"
       aria-label="Terminal"
-      className="fade-up fixed right-4 bottom-4 z-40 w-[min(42rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-[oklch(0.17_0.01_60)] text-[oklch(0.92_0.02_80)] shadow-2xl"
+      className="fade-up fixed right-2 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-40 w-[calc(100vw-1rem)] sm:right-4 sm:bottom-4 sm:w-[min(42rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-[oklch(0.17_0.01_60)] text-[oklch(0.92_0.02_80)] shadow-2xl"
     >
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-2">
+      <div className="flex items-center justify-between border-b border-white/10 px-4 py-1">
         <span className="font-mono text-xs opacity-70">
           {t("terminal.cwd")}
         </span>
         <button
           onClick={onClose}
           aria-label="Close terminal"
-          className="opacity-70 hover:opacity-100"
+          className="-mr-3 inline-flex size-11 items-center justify-center opacity-70 hover:opacity-100"
         >
-          <X className="size-4" />
+          <X size={20} strokeWidth={1.75} />
         </button>
       </div>
       <div
-        className="h-72 overflow-y-auto p-4 font-mono text-[13px] leading-relaxed"
+        className="h-[min(18rem,50dvh)] overflow-y-auto p-4 font-mono text-[13px] leading-relaxed"
         onClick={() => document.getElementById("term-input")?.focus()}
       >
         {lines.map((l, i) => (
@@ -190,7 +190,7 @@ export function Terminal({
                 setInput(n === -1 ? "" : history[n]);
               } else if (e.key === "Escape") onClose();
             }}
-            className="flex-1 bg-transparent outline-none"
+            className="min-w-0 flex-1 bg-transparent text-base outline-none sm:text-[13px]"
             spellCheck={false}
             autoComplete="off"
           />

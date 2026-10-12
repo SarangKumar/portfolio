@@ -1,3 +1,4 @@
+import { IconText } from "@/components/site/icon-text";
 import { seoMeta } from "@/lib/page-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -84,7 +85,7 @@ export default async function ProjectPage({ params }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              {t("project.live")}
+              <IconText text={t("project.live")} />
             </a>
           ) : null}
           {p.githubUrl ? (
@@ -94,7 +95,7 @@ export default async function ProjectPage({ params }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              {t("project.source")}
+              <IconText text={t("project.source")} />
             </a>
           ) : null}
           {diagram ? (
@@ -102,7 +103,7 @@ export default async function ProjectPage({ params }: Props) {
               href={`/lab/${diagram.slug}`}
               className="link-u text-foreground"
             >
-              {t("project.exploreLab")}
+              <IconText text={t("project.exploreLab")} />
             </Link>
           ) : null}
         </div>
@@ -138,7 +139,7 @@ export default async function ProjectPage({ params }: Props) {
       ) : null}
       <div className="container-x">
         <Link href="/projects" className="link-u text-sm">
-          {t("project.back")}
+          <IconText text={t("project.back")} />
         </Link>
       </div>
     </article>

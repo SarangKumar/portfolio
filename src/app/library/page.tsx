@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { PageIntro, Section } from "@/components/site/section";
 import { getContent, getT } from "@/lib/content";
 import { pageMetadata } from "@/lib/page-meta";
@@ -59,8 +60,14 @@ export default async function LibraryPage() {
                 className="group grid gap-1 py-4 sm:grid-cols-[1fr_auto]"
               >
                 <span>
-                  <span className="group-hover:text-primary font-serif text-xl transition-colors">
-                    {b.title} ↗
+                  <span className="group-hover:text-primary inline-flex items-center gap-1.5 font-serif text-xl transition-colors">
+                    {b.title}
+                    <ArrowUpRight
+                      size={16}
+                      strokeWidth={1.75}
+                      aria-hidden
+                      className="shrink-0"
+                    />
                   </span>
                   <span className="text-muted-foreground block text-sm">
                     {b.description}

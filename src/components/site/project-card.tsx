@@ -1,5 +1,6 @@
 "use client";
 
+import { IconText } from "@/components/site/icon-text";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import {
@@ -54,7 +55,12 @@ export function ProjectCard({
           </span>
           <span className="tag flex items-center gap-2">
             {t(`project.kind.${project.kind}`)} · {project.year}
-            <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <ArrowUpRight
+              size={16}
+              strokeWidth={1.75}
+              aria-hidden
+              className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
           </span>
         </Link>
       </HoverCardTrigger>
@@ -89,7 +95,7 @@ export function ProjectCard({
                 rel="noreferrer"
                 className="link-u"
               >
-                {t("project.live")}
+                <IconText text={t("project.live")} />
               </a>
             ) : null}
             {project.githubUrl ? (
@@ -99,7 +105,7 @@ export function ProjectCard({
                 rel="noreferrer"
                 className="link-u"
               >
-                {t("project.source")}
+                <IconText text={t("project.source")} />
               </a>
             ) : null}
           </div>

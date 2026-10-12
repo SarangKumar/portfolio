@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 /**
  * Scroll-linked parallax for any element with `data-parallax="<speed>"`.
@@ -11,7 +11,9 @@ import { useEffect } from "react";
  */
 export function ParallaxController() {
   const pathname = usePathname();
-  useEffect(() => {
+  // Layout effect: offsets are set in the same commit as the route change, so
+  // the view-transition snapshot already has them (no post-transition jump).
+  useLayoutEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     let els: HTMLElement[] = [];
     let frame = 0;
@@ -21,12 +23,21 @@ export function ParallaxController() {
       const vh = window.innerHeight;
       for (const el of els) {
         const speed = Number(el.dataset.parallax) || 0;
-        const r = el.getBoundingClientRect();
-        if (r.bottom < -200 || r.top > vh + 200) continue;
-        // Clamp so elements never drift far enough to overlap neighbours.
         const max = Number(el.dataset.parallaxMax) || 24;
-        const raw = (r.top + r.height / 2 - vh / 2) * speed;
-        const offset = Math.max(-max, Math.min(max, raw));
+        const cur = parseFloat(el.style.translate.split(" ")[1] || "0") || 0;
+        const r = el.getBoundingClientRect();
+        // Untranslated layout position, so the measurement has no feedback.
+        const top = r.top - cur;
+        if (r.bottom < -400 || top > vh + 400) continue;
+        const clamp = (v: number) => Math.max(-max, Math.min(max, v));
+        const center = top + r.height / 2;
+        // Offset relative to the element's position at scrollY = 0: every
+        // element is exactly in place at the top of a page (first paint,
+        // hydration, navigation), then drifts as you scroll.
+        const atTop = center + window.scrollY;
+        const offset = clamp(
+          clamp((center - vh / 2) * speed) - clamp((atTop - vh / 2) * speed),
+        );
         el.style.translate = `0 ${offset.toFixed(1)}px`;
       }
     };
