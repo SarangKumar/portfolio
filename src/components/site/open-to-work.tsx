@@ -1,5 +1,6 @@
 import type { SiteConfig } from "@/content/types";
-import { IconText, iconForHref } from "./icon-text";
+import { MapPin } from "lucide-react";
+import { ICON, IconText, iconForHref } from "./icon-text";
 import { cn } from "@/lib/utils";
 
 /** Pulsing availability dot (orange when open, muted otherwise). */
@@ -52,13 +53,28 @@ export function OpenToWork({
         <span className="font-serif text-xl sm:text-2xl">
           {career.headline}
         </span>
-        {career.roles?.length ? (
-          <span className="text-muted-foreground font-mono text-xs tracking-wide sm:text-sm">
-            {career.roles.join(" · ")}
+      </p>
+      {career.roles?.length ? (
+        <div className="pl-[1.375rem]">
+          <div className="overflow-hidden">
+            <ul
+              aria-label="Roles"
+              className="roles-list text-muted-foreground font-mono text-xs tracking-wide sm:text-sm"
+            >
+              {career.roles.map((r) => (
+                <li key={r}>{r}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : null}
+      <p className="text-muted-foreground flex flex-wrap items-center gap-x-5 gap-y-1 pl-[1.375rem] text-sm">
+        {career.locations ? (
+          <span className="inline-flex items-center gap-1.5">
+            <MapPin {...ICON} aria-hidden className="shrink-0" />
+            {career.locations}
           </span>
         ) : null}
-      </p>
-      <p className="text-muted-foreground flex flex-wrap items-center gap-x-5 gap-y-1 pl-[1.375rem] text-sm">
         {career.detail ? <span>{career.detail}</span> : null}
         {ctas.map((c) => (
           <a

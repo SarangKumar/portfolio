@@ -29,7 +29,9 @@ export default async function DiagramPage({ params }: Props) {
       <Link href="/lab" className="tag link-u">
         <IconText text={t("lab.back")} />
       </Link>
-      <h1 className="display mt-6 text-5xl sm:text-6xl">{d.title}</h1>
+      <h1 className="display mt-6 text-[clamp(2.25rem,8vw,3.75rem)]">
+        {d.title}
+      </h1>
       <p className="text-muted-foreground mt-4 mb-10 max-w-2xl text-lg">
         {d.summary}
       </p>

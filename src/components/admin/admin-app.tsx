@@ -98,7 +98,7 @@ export function AdminApp() {
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="container-x py-24">
-      <Link href="/" className="mb-10 flex items-center gap-2">
+      <Link href="/" className="mb-10 flex min-h-11 items-center gap-2">
         <BeanMark /> <span className="tag">Back to site</span>
       </Link>
       {children}
@@ -111,6 +111,40 @@ function Dashboard({ user }: { user: User }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const store = db()!;
+  const [careerOn, setCareerOn] = useState<boolean | null>(null);
+  const [careerMsg, setCareerMsg] = useState<string | null>(null);
+  useEffect(() => {
+    getDoc(doc(store, "config", "site"))
+      .then((snap) => {
+        const c = (snap.data() as { career?: { available?: boolean } })?.career;
+        setCareerOn(c?.available ?? seed.site.career.available);
+      })
+      .catch(() => setCareerOn(seed.site.career.available));
+  }, [store, reload]);
+  /** One click: writes only config/site.career.available (merge), immediately. */
+  async function toggleCareer() {
+    if (careerOn === null) return;
+    const next = !careerOn;
+    setCareerOn(next);
+    try {
+      await setDoc(
+        doc(store, "config", "site"),
+        { career: { available: next } },
+        { merge: true },
+      );
+      setCareerMsg(
+        next
+          ? "Open to work — on. Live within ~60s."
+          : "Open to work — off. Live within ~60s.",
+      );
+    } catch (e) {
+      setCareerOn(!next);
+      setCareerMsg(`Save failed: ${errText(e)}`);
+    }
+  }
+  const careerSwitch = (
+    <CareerSwitch on={careerOn} onToggle={toggleCareer} msg={careerMsg} />
+  );
 
   async function importSeed() {
     if (
@@ -179,9 +213,12 @@ function Dashboard({ user }: { user: User }) {
           Published changes appear on the site within ~60s.
         </p>
       </aside>
-      <section key={`${view}-${reload}`}>
+      <section key={`${view}-${reload}`} className="min-w-0 space-y-8">
+        {careerSwitch}
         {view === "site" ? (
           <DocEditor
+            careerOn={careerOn}
+            careerSwitch={careerSwitch}
             docId="site"
             title="Site & homepage"
             fields={SITE_FIELDS}
@@ -221,12 +258,63 @@ function Banner({ children }: { children: React.ReactNode }) {
 }
 
 /** Edits a single config doc (config/site, config/resume), layered over seed. */
+/** Prominent one-click "Open to work" switch (role="switch"). */
+function CareerSwitch({
+  on,
+  onToggle,
+  msg,
+}: {
+  on: boolean | null;
+  onToggle: () => void;
+  msg: string | null;
+}) {
+  return (
+    <div className="border-border flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4">
+      <div className="min-w-0">
+        <p className="font-medium">Open to work</p>
+        <p className="text-muted-foreground text-xs">
+          Hero line, navbar indicator, Experience status, terminal status, OG
+          images and JSON-LD “seeks”. Saves instantly.
+        </p>
+        {msg ? (
+          <p role="status" className="mt-1 text-xs">
+            {msg}
+          </p>
+        ) : null}
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={!!on}
+        aria-label="Open to work"
+        disabled={on === null}
+        onClick={onToggle}
+        className={cn(
+          "relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors disabled:opacity-50",
+          on ? "bg-primary" : "bg-muted",
+        )}
+      >
+        <span
+          className={cn(
+            "bg-background absolute left-1 size-6 rounded-full shadow transition-transform",
+            on ? "translate-x-6" : "translate-x-0",
+          )}
+        />
+      </button>
+    </div>
+  );
+}
+
 function DocEditor({
   docId,
   title,
   fields,
   fallback,
+  careerOn,
+  careerSwitch,
 }: {
+  careerOn?: boolean | null;
+  careerSwitch?: React.ReactNode;
   docId: string;
   title: string;
   fields: Field[];
@@ -275,19 +363,30 @@ function DocEditor({
         </Banner>
       ) : null}
       {fields.map((f) => (
-        <FieldInput
-          key={f.key}
-          field={f}
-          value={data[f.key]}
-          onChange={(v) => (setData({ ...data, [f.key]: v }), setSaved(null))}
-          onError={(k, e) => setErrors((x) => ({ ...x, [k]: e }))}
-        />
+        <div key={f.key} className="space-y-2">
+          {f.key === "career" && careerSwitch ? careerSwitch : null}
+          <FieldInput
+            field={f}
+            value={data[f.key]}
+            onChange={(v) => (setData({ ...data, [f.key]: v }), setSaved(null))}
+            onError={(k, e) => setErrors((x) => ({ ...x, [k]: e }))}
+          />
+        </div>
       ))}
       <Button
         disabled={invalid}
         onClick={async () => {
           try {
-            await setDoc(doc(store, "config", docId), data);
+            // The Open-to-work switch saves on its own; never overwrite it
+            // with the value this form loaded.
+            const out =
+              docId === "site" && careerOn != null
+                ? {
+                    ...data,
+                    career: { ...(data.career as object), available: careerOn },
+                  }
+                : data;
+            await setDoc(doc(store, "config", docId), out);
             setMissing([]);
             setSaved("Saved.");
           } catch (e) {

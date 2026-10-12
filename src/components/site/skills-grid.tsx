@@ -52,7 +52,10 @@ export function SkillsGrid({ content }: { content: Content }) {
                       {used.map((u, i) => (
                         <span key={u.href}>
                           {i ? ", " : ""}
-                          <Link href={u.href} className="hover:text-foreground">
+                          <Link
+                            href={u.href}
+                            className="hover:text-foreground -my-3 inline-block py-3"
+                          >
                             {u.title}
                           </Link>
                         </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 /**
  * Scroll-linked parallax for any element with `data-parallax="<speed>"`.
@@ -11,6 +11,13 @@ import { useLayoutEffect } from "react";
  */
 export function ParallaxController() {
   const pathname = usePathname();
+  const first = useRef(true);
+  // After the first page, the view transition is the entrance; the per-element
+  // fade-up would play a second time underneath it and look like a shift.
+  useLayoutEffect(() => {
+    if (first.current) first.current = false;
+    else document.documentElement.dataset.navigated = "";
+  }, [pathname]);
   // Layout effect: offsets are set in the same commit as the route change, so
   // the view-transition snapshot already has them (no post-transition jump).
   useLayoutEffect(() => {

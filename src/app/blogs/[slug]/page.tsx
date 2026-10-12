@@ -60,7 +60,9 @@ export default async function PostPage({ params }: Props) {
       <p className="eyebrow">
         {p.kind} · {p.category} · {p.date}
       </p>
-      <h1 className="display mt-4 text-5xl sm:text-6xl">{p.title}</h1>
+      <h1 className="display mt-4 text-[clamp(2.25rem,8vw,3.75rem)]">
+        {p.title}
+      </h1>
       <p className="text-muted-foreground mt-6 text-xl">{p.excerpt}</p>
       <div className="mt-10">
         <Markdown source={p.body} />

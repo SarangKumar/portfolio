@@ -47,7 +47,7 @@ export default async function Home() {
               01/ {t("home.from", { location: site.location })}
             </p>
             <h1
-              className="display fade-up mt-6 text-6xl sm:text-8xl xl:text-9xl"
+              className="display fade-up mt-6 text-[clamp(2.75rem,11vw,8rem)]"
               style={{ ["--delay" as string]: "80ms" }}
             >
               {site.role}

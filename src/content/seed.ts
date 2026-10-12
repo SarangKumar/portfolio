@@ -453,7 +453,8 @@ export const seed: Content = {
       available: true,
       label: "Open to work",
       headline: "Open to SDE roles",
-      detail: "Full-time, Bangalore or remote.",
+      locations: "Anywhere in India or Remote",
+      detail: "Full-time.",
       roles: ["Frontend", "Backend", "Full-stack", "Cloud", "DevOps"],
       ctas: [
         { label: "Resume ↓", href: "resume" },

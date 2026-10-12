@@ -26,7 +26,7 @@ export function PageIntro({
       <p className="eyebrow">
         {index}/ {eyebrow}
       </p>
-      <h1 className="display mt-4 text-5xl sm:text-7xl">{title}</h1>
+      <h1 className="display mt-4 text-[clamp(2.5rem,9vw,4.5rem)]">{title}</h1>
       {children ? (
         <div className="text-muted-foreground mt-6 max-w-2xl text-lg">
           {children}
@@ -53,7 +53,7 @@ export function Section({
     <section className={cn("container-x py-14", className)}>
       <div className="rule mb-8 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pt-4">
         <h2
-          className="eyebrow whitespace-nowrap"
+          className="eyebrow min-w-0 break-words"
           data-parallax="0.08"
           data-parallax-max="14"
         >

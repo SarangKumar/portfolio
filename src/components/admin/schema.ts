@@ -272,7 +272,7 @@ export const SITE_FIELDS: Field[] = [
   {
     key: "career",
     label:
-      "Career / open to work {available,label,headline,detail,roles[],ctas[{label,href; href resume = PDF}],navIndicator}",
+      "Career / open to work {available,label,headline,locations,detail,roles[],ctas[{label,href; href resume = PDF}],navIndicator}",
     type: "json",
   },
   {
@@ -403,7 +403,8 @@ export const PLACEHOLDERS: Record<string, string> = {
     available: true,
     label: "Open to work",
     headline: "Open to SDE roles",
-    detail: "Full-time, Bangalore or remote.",
+    locations: "Anywhere in India or Remote",
+    detail: "Full-time.",
     roles: ["Frontend", "Backend"],
     ctas: [{ label: "Download resume", href: "resume" }],
     navIndicator: true,

@@ -28,6 +28,17 @@ const LEGACY_NAVS = [
 const isLegacyNav = (nav?: SiteConfig["nav"]) =>
   LEGACY_NAVS.includes(nav?.map((n) => n.href).join(",") ?? "");
 
+/** Earlier seed text implied a Bangalore-only preference; preferred
+ * locations now live in `career.locations`. Untouched legacy text is upgraded. */
+function migrateCareer(
+  c: SiteConfig["career"],
+  base: SiteConfig["career"],
+): SiteConfig["career"] {
+  return c.detail === "Full-time, Bangalore or remote."
+    ? { ...c, detail: base.detail }
+    : c;
+}
+
 /** Firestore site config layered over seed, so new keys always have a value. */
 function mergeSite(remote: Partial<SiteConfig>): SiteConfig {
   const base = seed.site;
@@ -35,7 +46,7 @@ function mergeSite(remote: Partial<SiteConfig>): SiteConfig {
     ...base,
     ...remote,
     seo: { ...base.seo, ...remote.seo },
-    career: { ...base.career, ...remote.career },
+    career: migrateCareer({ ...base.career, ...remote.career }, base.career),
     homeSections: { ...base.homeSections, ...remote.homeSections },
     pages: { ...base.pages, ...remote.pages },
     labels: { ...base.labels, ...remote.labels },

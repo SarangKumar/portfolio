@@ -69,7 +69,7 @@ export default async function RootLayout({
               location: site.location,
               handle: site.handle,
               career: site.career.available
-                ? `${site.career.label}: ${site.career.headline} — ${site.career.roles.join(", ")}. ${site.career.detail}`
+                ? `${site.career.label}: ${site.career.headline} — ${site.career.roles.join(", ")}. ${[site.career.locations, site.career.detail].filter(Boolean).join(". ")}`
                 : "Not looking right now.",
               careerOn: site.career.available && site.career.navIndicator,
               careerLabel: site.career.label,
@@ -105,7 +105,13 @@ export default async function RootLayout({
                         seeks: {
                           "@type": "Demand",
                           name: `${site.career.headline}: ${site.career.roles.join(", ")}`,
-                          description: site.career.detail,
+                          description: [
+                            site.career.locations,
+                            site.career.detail,
+                          ]
+                            .filter(Boolean)
+                            .join(". "),
+                          areaServed: site.career.locations,
                         },
                       }
                     : {}),

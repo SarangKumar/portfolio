@@ -349,3 +349,56 @@
 html {
   scrollbar-gutter: stable;
 }
+
+/* Client-side navigations: the page view transition already animates the
+   whole page in, so skip per-element entrances (prevents a post-transition
+   12px settle that reads as layout shift). */
+html[data-navigated] .fade-up {
+  animation: none;
+}
+
+/* Touch devices: standalone links/chips get a 44px tap target. */
+@media (pointer: coarse) {
+  a.chip,
+  button.chip,
+  a.tag,
+  a.link-u:not(p a),
+  .tap {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (pointer: coarse) {
+  button:not(.chip),
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  [role="tab"] {
+    min-height: 44px;
+  }
+  button:not(.chip) {
+    min-width: 44px;
+  }
+}
+
+/* Separator list that wraps cleanly: every item carries a leading dot, and the
+   list is pulled left by one separator width inside an overflow-hidden box, so
+   the dot of whichever item starts a line is clipped (no orphan dots). */
+.roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: 0.25rem;
+  margin-left: -1.75em;
+}
+.roles-list > li {
+  white-space: nowrap;
+}
+.roles-list > li::before {
+  content: "·";
+  display: inline-block;
+  width: 1.75em;
+  text-align: center;
+  color: var(--color-primary);
+}

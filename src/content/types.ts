@@ -38,6 +38,8 @@ export type SiteConfig = {
     /** Short status, e.g. "Open to work". */
     label: string;
     headline: string;
+    /** Preferred work locations, e.g. "Anywhere in India or Remote". */
+    locations: string;
     detail: string;
     roles: string[];
     /** href "resume" resolves to the resume PDF. */

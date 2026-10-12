@@ -18,8 +18,8 @@ export function HeroRobot({ size = 280 }: { size?: number }) {
   if (dark === null) return <span style={{ width: size, height: size }} />;
   return (
     <RobotHead
-      shape="circle"
-      state="idle"
+      shape="square"
+      state="speaking"
       size={size}
       color={dark ? "#FF7A1A" : "#E85D00"}
       trimColor={dark ? "#3a2414" : "#f3d9c4"}

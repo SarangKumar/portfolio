@@ -69,7 +69,7 @@ export function SiteChrome({
           <Link
             href="/"
             aria-label="Home"
-            className="flex items-center gap-2 font-medium"
+            className="flex min-h-11 items-center gap-2 font-medium"
           >
             <BeanMark />
             <span className="font-serif text-lg">

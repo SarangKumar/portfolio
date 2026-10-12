@@ -13,7 +13,7 @@ export async function llmsText(full: boolean) {
   ];
   if (s.career.available)
     out.push(
-      `Status: ${s.career.headline} (${s.career.roles.join(", ")}). ${s.career.detail}`,
+      `Status: ${s.career.headline} (${s.career.roles.join(", ")}). Preferred location: ${s.career.locations}. ${s.career.detail}`,
       "",
     );
   out.push(
