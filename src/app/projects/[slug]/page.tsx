@@ -1,130 +1,99 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, GitBranch, ExternalLink } from "lucide-react";
-import { PageHeader } from "@/components/site/page-header";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TypographyMuted, TypographyP } from "@/components/ui/typography";
-import { projects } from "@/data/projects";
+import { Markdown } from "@/components/site/markdown";
+import { PageIntro, Section, TechTags } from "@/components/site/section";
+import { getContent, REVALIDATE } from "@/lib/content";
 
-type ProjectPageProps = {
-  params: Promise<{ slug: string }>;
-};
+export const revalidate = REVALIDATE;
 
-export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateStaticParams() {
+  const { projects } = await getContent();
+  return projects.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: ProjectPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((item) => item.slug === slug);
-  return project ? { title: project.title, description: project.summary } : {};
+  const p = (await getContent()).projects.find((x) => x.slug === slug);
+  return { title: p?.title ?? "Project", description: p?.summary };
 }
 
-const caseStudyFields = [
-  { key: "problem", label: "Problem" },
-  { key: "solution", label: "Solution" },
-  { key: "architecture", label: "Architecture" },
-  { key: "challenges", label: "Challenges" },
-  { key: "decisions", label: "Decisions" },
-  { key: "tradeoffs", label: "Trade-offs" },
-  { key: "testing", label: "Testing" },
-  { key: "performance", label: "Performance" },
-  { key: "futureImprovements", label: "Next" },
-] as const;
-
-export default async function ProjectPage({ params }: ProjectPageProps) {
+export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = projects.find((item) => item.slug === slug);
-  if (!project) notFound();
-
-  const fields = caseStudyFields.filter((field) => project[field.key]);
+  const { projects, diagrams } = await getContent();
+  const p = projects.find((x) => x.slug === slug);
+  if (!p) notFound();
+  const diagram = diagrams.find((d) => d.slug === p.diagramSlug);
+  const sections = [
+    { title: "Architecture", body: p.architecture },
+    { title: "Implementation", body: p.implementation },
+    { title: "Testing", body: p.testing },
+    { title: "Trade-offs", body: p.tradeoffs },
+    ...p.sections,
+  ].filter((s) => s.body);
 
   return (
-    <article className="app-container flex flex-col gap-12">
-      <Link
-        href="/projects"
-        className="text-muted-foreground hover:text-foreground inline-flex w-fit items-center gap-1.5 text-sm transition-colors"
+    <article>
+      <PageIntro
+        index={p.year}
+        eyebrow={`Case study · ${p.kind}`}
+        title={p.title}
       >
-        <ArrowLeft className="size-4" /> All projects
-      </Link>
-
-      <PageHeader title={project.title} description={project.summary}>
-        <div className="flex flex-wrap gap-2 pt-2">
-          {project.githubUrl ? (
+        <p>{p.summary}</p>
+        <div className="mt-6 flex flex-wrap gap-6 text-sm">
+          {p.demoUrl ? (
             <a
-              href={project.githubUrl}
+              href={p.demoUrl}
+              className="link-u text-foreground"
               target="_blank"
               rel="noreferrer"
-              className={buttonVariants({ variant: "outline" })}
             >
-              <GitBranch /> Source
+              Live site ↗
             </a>
           ) : null}
-          {project.demoUrl ? (
+          {p.githubUrl ? (
             <a
-              href={project.demoUrl}
+              href={p.githubUrl}
+              className="link-u text-foreground"
               target="_blank"
               rel="noreferrer"
-              className={buttonVariants({})}
             >
-              <ExternalLink /> Live site
+              Source ↗
             </a>
+          ) : null}
+          {diagram ? (
+            <Link
+              href={`/lab/${diagram.slug}`}
+              className="link-u text-foreground"
+            >
+              Explore in Architecture Lab →
+            </Link>
           ) : null}
         </div>
-      </PageHeader>
-
-      <div className="flex flex-wrap gap-1.5">
-        {project.technologies.map((tech) => (
-          <Badge key={tech} variant="secondary" className="font-normal">
-            {tech}
-          </Badge>
-        ))}
+      </PageIntro>
+      <div className="container-x">
+        <TechTags items={p.technologies} />
       </div>
-
-      {project.description ? (
-        <TypographyP className="text-muted-foreground max-w-3xl">
-          {project.description}
-        </TypographyP>
-      ) : null}
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {fields.map((field, index) => (
-          <Card
-            key={field.key}
-            className="lift fade-up"
-            style={{ "--delay": `${index * 50}ms` } as React.CSSProperties}
-          >
-            <CardHeader>
-              <CardTitle className="text-sm">{field.label}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TypographyMuted>{project[field.key]}</TypographyMuted>
-            </CardContent>
-          </Card>
-        ))}
-        {project.sections.map((section, index) => (
-          <Card
-            key={section.id}
-            className="lift fade-up"
-            style={
-              {
-                "--delay": `${(fields.length + index) * 50}ms`,
-              } as React.CSSProperties
-            }
-          >
-            <CardHeader>
-              <CardTitle className="text-sm">{section.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TypographyMuted>{section.body}</TypographyMuted>
-            </CardContent>
-          </Card>
-        ))}
+      <Section title="Overview">
+        <p className="max-w-3xl text-lg leading-relaxed">{p.description}</p>
+      </Section>
+      {sections.map((s, i) => (
+        <Section
+          key={s.title}
+          index={String(i + 1).padStart(2, "0")}
+          title={s.title}
+        >
+          <div className="max-w-3xl">
+            <Markdown source={s.body} />
+          </div>
+        </Section>
+      ))}
+      <div className="container-x">
+        <Link href="/projects" className="link-u text-sm">
+          ← All projects
+        </Link>
       </div>
     </article>
   );

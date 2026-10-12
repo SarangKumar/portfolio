@@ -1,96 +1,101 @@
-import Link from "next/link";
-import { ArrowUpRight, GitBranch } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import type { ProjectItem } from "@/data/projects";
+"use client";
 
-type ProjectCardProps = {
-  project: ProjectItem;
-  index?: number;
-  /** Bigger title, full description, more tags — for a bento-style lead card. */
-  featured?: boolean;
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import type { Project } from "@/content/types";
+
+const KIND: Record<Project["kind"], string> = {
+  shipped: "Shipped",
+  "in-progress": "In progress",
+  idea: "Idea",
 };
 
-const accentVars = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
-] as const;
-
+/** Project row with a rich hover/focus popover; click opens the case study. */
 export function ProjectCard({
   project,
-  index = 0,
-  featured = false,
-}: ProjectCardProps) {
-  const accent = accentVars[index % accentVars.length];
-  const ordinal = String(index + 1).padStart(2, "0");
-  const techLimit = featured ? 8 : 5;
-
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
   return (
-    <Card
-      className="lift fade-up group relative h-full overflow-hidden"
-      style={{ "--delay": `${index * 60}ms` } as React.CSSProperties}
-    >
-      {/* Per-project accent spine — gives each card a distinct identity
-          without reaching for another icon. */}
-      <span
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-1"
-        style={{ background: accent }}
-      />
-      {/* Large faint ordinal — a typographic flourish, not decoration for
-          decoration's sake: it's how the project sits in the list. */}
-      <span
-        aria-hidden
-        className="text-foreground pointer-events-none absolute -top-3 right-3 font-mono text-6xl font-bold opacity-[0.06] select-none"
-      >
-        {ordinal}
-      </span>
-
-      <CardHeader>
-        <CardTitle
-          className={`flex items-center justify-between gap-2 ${featured ? "text-xl" : "text-base"}`}
+    <HoverCard openDelay={150}>
+      <HoverCardTrigger>
+        <Link
+          href={`/projects/${project.slug}`}
+          className="group border-border lift fade-up grid gap-2 border-b py-6 sm:grid-cols-[3rem_1fr_auto] sm:items-baseline sm:gap-6"
+          style={{ ["--delay" as string]: `${index * 60}ms` }}
         >
-          <Link
-            href={`/projects/${project.slug}`}
-            className="after:absolute after:inset-0 rounded-md"
-          >
-            {project.title}
-          </Link>
-          <ArrowUpRight className="text-muted-foreground group-hover:text-primary size-4 shrink-0 transition-colors group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </CardTitle>
-        <CardDescription className={featured ? "text-sm" : undefined}>
-          {project.summary}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-1.5">
-          {project.technologies.slice(0, techLimit).map((tech) => (
-            <Badge key={tech} variant="secondary" className="font-normal">
-              {tech}
-            </Badge>
-          ))}
+          <span className="tag">{String(index + 1).padStart(2, "0")}</span>
+          <span>
+            <span className="display group-hover:text-primary block text-3xl transition-colors sm:text-4xl">
+              {project.title}
+            </span>
+            <span className="text-muted-foreground mt-2 block max-w-2xl text-sm">
+              {project.summary}
+            </span>
+          </span>
+          <span className="tag flex items-center gap-2">
+            {KIND[project.kind]} · {project.year}
+            <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </span>
+        </Link>
+      </HoverCardTrigger>
+      <HoverCardContent side="bottom" align="start" className="w-[22rem] p-0">
+        <div className="space-y-3 p-4">
+          <div className="flex items-center justify-between">
+            <span className="font-serif text-xl">{project.title}</span>
+            <span className="chip">
+              <span className="bean bg-primary size-2" />
+              {KIND[project.kind]}
+            </span>
+          </div>
+          <p className="text-muted-foreground text-sm">{project.description}</p>
+          {project.architecture ? (
+            <p className="text-xs">
+              <span className="eyebrow">Architecture · </span>
+              {project.architecture.slice(0, 160)}…
+            </p>
+          ) : null}
+          <div className="flex flex-wrap gap-1">
+            {project.technologies.map((t) => (
+              <span key={t} className="chip">
+                {t}
+              </span>
+            ))}
+          </div>
+          <div className="flex gap-4 pt-1 text-sm">
+            <Link href={`/projects/${project.slug}`} className="link-u">
+              Case study
+            </Link>
+            {project.demoUrl ? (
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="link-u"
+              >
+                Live
+              </a>
+            ) : null}
+            {project.githubUrl ? (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="link-u"
+              >
+                Source
+              </a>
+            ) : null}
+          </div>
         </div>
-        {project.githubUrl ? (
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-muted-foreground hover:text-foreground relative z-10 inline-flex w-fit items-center gap-1.5 text-xs transition-colors"
-          >
-            <GitBranch className="size-3.5" />
-            Source
-          </a>
-        ) : null}
-      </CardContent>
-    </Card>
+      </HoverCardContent>
+    </HoverCard>
   );
 }

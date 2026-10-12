@@ -7,13 +7,13 @@
    utilities in @theme inline. Don't hardcode colours in components. */
 :root {
   --radius: 0.5rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0.006 80);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.705 0.213 47.604);
+  --primary: oklch(0.52 0.1 50);
   --primary-foreground: oklch(0.98 0.016 73.684);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -24,7 +24,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.213 47.604);
+  --ring: oklch(0.52 0.1 50);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -50,14 +50,14 @@
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
+  --background: oklch(0.16 0.008 60);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.646 0.222 41.116);
-  --primary-foreground: oklch(0.98 0.016 73.684);
+  --primary: oklch(0.74 0.11 62);
+  --primary-foreground: oklch(0.18 0.02 60);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -67,7 +67,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.646 0.222 41.116);
+  --ring: oklch(0.74 0.11 62);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -90,6 +90,7 @@
 }
 
 @theme inline {
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
@@ -157,122 +158,90 @@
 }
 
 @layer utilities {
-  .app-container {
-    @apply mx-auto w-full max-w-5xl px-5 sm:px-8;
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
   }
-
-  /* Soft gold light pooled behind hero sections (Aavedak mesh). */
-  .mesh-bg {
-    background-image:
-      radial-gradient(
-        ellipse 60% 50% at 20% 20%,
-        var(--mesh-a),
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 50% 40% at 80% 10%,
-        var(--mesh-b),
-        transparent 65%
-      ),
-      radial-gradient(
-        ellipse 45% 35% at 60% 80%,
-        var(--mesh-c),
-        transparent 60%
-      );
+  .display {
+    @apply font-serif leading-[0.95] font-normal tracking-tight;
   }
-
-  .page-title {
-    @apply text-3xl font-semibold tracking-tight sm:text-4xl;
+  .eyebrow {
+    @apply text-muted-foreground font-mono text-[11px] tracking-[0.18em] uppercase;
   }
-
-  .section-title {
-    @apply text-lg font-semibold tracking-tight;
+  .tag {
+    @apply text-muted-foreground font-mono text-[11px] tracking-wider uppercase;
   }
-
-  .meta {
-    @apply text-muted-foreground font-mono text-xs;
+  /* The bean: a soft asymmetric pill used for chips, the logo and accents. */
+  .bean {
+    border-radius: 62% 38% 55% 45% / 55% 48% 52% 45%;
   }
-
-  /* Pill chip with a gold dot (Aavedak). */
   .chip {
-    @apply border-border/80 bg-card/70 text-muted-foreground inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm;
+    @apply border-border text-muted-foreground inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs;
   }
-
-  .chip-dot {
-    @apply bg-primary size-1.5 shrink-0 rounded-full shadow-[0_0_8px_var(--glow)];
+  .rule {
+    @apply border-border border-t;
   }
-
-  /* Card that rises and gains a gold edge on hover. */
+  .link-u {
+    @apply decoration-primary/50 hover:decoration-primary underline decoration-1 underline-offset-4 transition-colors;
+  }
   .lift {
-    @apply transition-[transform,border-color,box-shadow] duration-200 ease-(--ease-out-soft);
+    @apply transition-[transform,border-color] duration-300 ease-(--ease-out-soft) hover:-translate-y-0.5 hover:border-primary/50;
   }
-
-  .lift:hover {
-    @apply border-primary/40 -translate-y-0.5 shadow-[0_8px_30px_-12px_var(--glow)];
-  }
-
-  /* Entrance: fades up once on mount. Stagger with the --delay variable. */
   .fade-up {
-    animation: fade-up 560ms var(--ease-out-soft) both;
+    animation: fade-up 600ms var(--ease-out-soft) both;
     animation-delay: var(--delay, 0ms);
   }
-
-  /* Slow breathing glow under the monogram. */
-  .glow-breathe {
-    animation: glow-breathe 4.8s ease-in-out infinite;
+  .marquee {
+    animation: marquee 40s linear infinite;
   }
-
-  /* Timeline dot: pops in once its line segment has drawn past it. The
-     keyframe bakes in the same -50%/-50% centering as the dot's own
-     translate utilities, since an animated `transform` fully replaces the
-     static one rather than composing with it. */
-  .timeline-dot {
-    animation: timeline-dot 420ms var(--ease-out-soft) both;
-    animation-delay: var(--delay, 0ms);
+  .flow-dash {
+    stroke-dasharray: 6 6;
+    animation: dash 0.8s linear infinite;
   }
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-
-@keyframes glow-breathe {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.06);
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
   }
 }
-
-@keyframes timeline-dot {
-  from {
-    opacity: 0;
-    transform: scale(0.4);
-  }
+@keyframes dash {
   to {
-    opacity: 1;
-    transform: scale(1);
+    stroke-dashoffset: -12;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
-  .glow-breathe,
-  .lift,
-  .timeline-dot {
+  .marquee,
+  .flow-dash,
+  .lift {
     animation: none !important;
     transition: none !important;
-    transform: none !important;
   }
+}
+
+.prose-body h2 {
+  @apply mt-10 mb-3 font-serif text-2xl;
+}
+.prose-body p {
+  @apply my-4 leading-relaxed text-foreground/85;
+}
+.prose-body ul {
+  @apply my-4 list-disc space-y-1 pl-5 text-foreground/85;
+}
+.prose-body pre {
+  @apply bg-muted my-5 overflow-x-auto rounded-lg p-4 font-mono text-sm;
+}
+.prose-body code {
+  @apply font-mono text-[0.9em];
 }

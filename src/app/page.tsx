@@ -1,141 +1,144 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import { ArrowRight } from "lucide-react";
-import {
-  GithubContributions,
-  GithubContributionsSkeleton,
-} from "@/components/site/github-contributions";
+import { BeanBlob } from "@/components/site/bean";
 import { ProjectCard } from "@/components/site/project-card";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { TypographyLead } from "@/components/ui/typography";
-import { experience } from "@/data/experience";
-import { profile } from "@/data/profile";
-import { projects } from "@/data/projects";
-import { skills } from "@/data/skills";
-import { cn } from "@/lib/utils";
+import { Section } from "@/components/site/section";
+import { getContent, REVALIDATE } from "@/lib/content";
+import { deriveSkills } from "@/lib/derive";
 
-export default function HomePage() {
-  const focusSkills = profile.focusSkillIds
-    .map((id) => skills.find((skill) => skill.id === id))
-    .filter((skill) => skill !== undefined);
-  const featured = projects.slice(0, 3);
+export const revalidate = REVALIDATE;
 
-  const work = experience.filter((role) => role.kind === "work");
-  const currentRole = work.find((role) => role.endDate === null);
-  const mostRecentRole = [...work].sort((a, b) =>
-    b.startDate.localeCompare(a.startDate),
-  )[0];
-  const highlightRole = currentRole ?? mostRecentRole;
+export default async function Home() {
+  const content = await getContent();
+  const { site, projects, posts } = content;
+  const featured = site.featuredProjectSlugs.length
+    ? site.featuredProjectSlugs
+        .map((s) => projects.find((p) => p.slug === s))
+        .filter((p) => p !== undefined)
+    : projects.slice(0, 3);
+  const writing = site.featuredPostSlugs.length
+    ? site.featuredPostSlugs
+        .map((s) => posts.find((p) => p.slug === s))
+        .filter((p) => p !== undefined)
+    : posts.slice(0, 3);
+  const skills = deriveSkills(content);
 
   return (
-    <div className="flex flex-col gap-20">
-      <section className="mesh-bg relative -mt-12 pt-12 sm:-mt-16 sm:pt-16">
-        <div className="app-container flex flex-col gap-6">
-          <p className="chip fade-up w-fit">
-            <span className="chip-dot" aria-hidden />
-            {profile.headline}
-          </p>
+    <>
+      <section className="relative overflow-hidden">
+        <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" />
+        <BeanBlob className="bottom-0 -left-32 h-64 w-96 opacity-60" />
+        <div className="container-x relative pt-20 pb-16 sm:pt-32">
+          <p className="eyebrow fade-up">01/ From {site.location}</p>
           <h1
-            className="fade-up text-4xl font-semibold tracking-tight sm:text-6xl"
-            style={{ "--delay": "60ms" } as React.CSSProperties}
+            className="display fade-up mt-6 text-6xl sm:text-8xl lg:text-9xl"
+            style={{ ["--delay" as string]: "80ms" }}
           >
-            {profile.displayName}
+            {site.role}
           </h1>
-          <TypographyLead
-            className="text-muted-foreground fade-up max-w-2xl text-lg"
-            style={{ "--delay": "120ms" } as React.CSSProperties}
+          <p
+            className="fade-up mt-6 max-w-xl text-xl sm:text-2xl"
+            style={{ ["--delay" as string]: "160ms" }}
           >
-            {profile.summary}
-          </TypographyLead>
+            {site.tagline}
+          </p>
           <div
-            className="fade-up flex flex-wrap gap-3"
-            style={{ "--delay": "180ms" } as React.CSSProperties}
+            className="fade-up mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm"
+            style={{ ["--delay" as string]: "240ms" }}
           >
-            <Link href="/projects" className={buttonVariants({ size: "lg" })}>
-              View projects
-              <ArrowRight />
-            </Link>
-            <Link
-              href="/contact"
-              className={buttonVariants({ variant: "outline", size: "lg" })}
-            >
-              Get in touch
+            <span className="chip">
+              <span
+                className={`bean size-2 ${site.career.available ? "bg-emerald-500" : "bg-muted-foreground"}`}
+              />
+              {site.career.label}
+            </span>
+            <span className="text-muted-foreground">{site.career.detail}</span>
+            <Link href="/projects" className="link-u">
+              Selected work →
             </Link>
           </div>
-          <div
-            className="fade-up flex flex-wrap gap-2 pt-2"
-            style={{ "--delay": "240ms" } as React.CSSProperties}
-          >
-            {focusSkills.map((skill) => (
-              <Badge key={skill.id} variant="secondary" className="font-normal">
-                {skill.name}
-              </Badge>
+        </div>
+        <div
+          className="border-border overflow-hidden border-y py-3"
+          aria-hidden
+        >
+          <div className="marquee tag flex w-max gap-8 whitespace-nowrap">
+            {[...skills, ...skills].map((s, i) => (
+              <span key={i}>{s.name} •</span>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="app-container flex flex-col gap-6">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="section-title">Featured projects</h2>
-          <Link
-            href="/projects"
-            className="text-muted-foreground hover:text-primary text-sm transition-colors"
-          >
-            All projects →
-          </Link>
+      <Section index="02" title="About">
+        <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
+          <p className="display text-3xl">{site.name}</p>
+          <div className="text-foreground/85 space-y-4 text-lg leading-relaxed">
+            <p>{site.intro}</p>
+            <p className="text-muted-foreground">{site.about}</p>
+          </div>
         </div>
-        {/* Bento: the first project leads, spanning both rows; the other
-            two stack alongside it. With exactly three featured projects this
-            reads as one clear lead story plus two supporting ones. */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-rows-2">
-          {featured[0] ? (
-            <div className="lg:row-span-2">
-              <ProjectCard project={featured[0]} index={0} featured />
-            </div>
-          ) : null}
-          {featured.slice(1).map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index + 1} />
-          ))}
-        </div>
-      </section>
+      </Section>
 
-      <section className="app-container flex flex-col gap-6">
-        <Suspense fallback={<GithubContributionsSkeleton />}>
-          <GithubContributions />
-        </Suspense>
-      </section>
-
-      {highlightRole ? (
-        <section className="app-container flex flex-col gap-6">
-          <h2 className="section-title">
-            {currentRole ? "Currently" : "Most recently"}
-          </h2>
-          <Card className={cn("lift fade-up")}>
-            <CardHeader>
-              <CardTitle className="text-base">
-                {highlightRole.role} · {highlightRole.company}
-              </CardTitle>
-              <CardDescription>{highlightRole.description}</CardDescription>
-            </CardHeader>
-            <div className="flex flex-col gap-4 px-6 pb-2">
-              <Link
-                href="/experience"
-                className="text-primary inline-flex w-fit items-center gap-1 text-sm"
-              >
-                Full experience <ArrowRight className="size-3.5" />
-              </Link>
-            </div>
-          </Card>
-        </section>
+      {site.homeSections.featured ? (
+        <Section
+          index="03"
+          title="Featured work"
+          aside={
+            <Link href="/projects" className="tag link-u">
+              All projects
+            </Link>
+          }
+        >
+          <div className="border-border border-t">
+            {featured.map((p, i) => (
+              <ProjectCard key={p.id} project={p} index={i} />
+            ))}
+          </div>
+        </Section>
       ) : null}
-    </div>
+
+      {site.homeSections.focus ? (
+        <Section index="04" title="Current focus">
+          <ol className="grid gap-6 md:grid-cols-3">
+            {site.currentFocus.map((f, i) => (
+              <li key={f} className="border-border lift rounded-2xl border p-6">
+                <span className="tag">{String(i + 1).padStart(2, "0")}</span>
+                <p className="mt-6 font-serif text-2xl leading-snug">{f}</p>
+              </li>
+            ))}
+          </ol>
+        </Section>
+      ) : null}
+
+      {site.homeSections.writing && writing.length ? (
+        <Section
+          index="05"
+          title="Recent writing"
+          aside={
+            <Link href="/blogs" className="tag link-u">
+              Archive
+            </Link>
+          }
+        >
+          <ul className="divide-border divide-y">
+            {writing.map((p) => (
+              <li key={p.id}>
+                <Link
+                  href={`/blogs/${p.slug}`}
+                  className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between"
+                >
+                  <span className="group-hover:text-primary font-serif text-2xl transition-colors">
+                    {p.title}
+                  </span>
+                  <span className="tag">
+                    {p.category} · {p.date}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+    </>
   );
 }

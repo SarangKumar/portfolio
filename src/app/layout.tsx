@@ -1,49 +1,60 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
+import { SiteChrome } from "@/components/site/site-chrome";
 import { SiteFooter } from "@/components/site/site-footer";
-import { SiteHeader } from "@/components/site/site-header";
-import { projects } from "@/data/projects";
+import { themeScript } from "@/components/site/theme-toggle";
+import { getContent } from "@/lib/content";
+import { buildIndex } from "@/lib/derive";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const serif = Instrument_Serif({
+  variable: "--font-serif",
   subsets: ["latin"],
+  weight: "400",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const { site } = await getContent();
+  return {
+    title: {
+      default: `${site.name} — ${site.role}`,
+      template: `%s · ${site.name}`,
+    },
+    description: site.tagline,
+  };
+}
 
-export const metadata: Metadata = {
-  title: {
-    default: "Sarang Kumar",
-    template: "%s · Sarang Kumar",
-  },
-  description: "Portfolio of Sarang Kumar, software engineer.",
-};
-
-const headerProjects = projects.map((project) => ({
-  slug: project.slug,
-  title: project.title,
-  summary: project.summary,
-}));
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
+  const content = await getContent();
+  const { site } = content;
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      suppressHydrationWarning
+      className={`${sans.variable} ${mono.variable} ${serif.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="flex min-h-full flex-col">
-        <SiteHeader projects={headerProjects} />
-        <main id="content" className="flex-1 py-12 sm:py-16">
+        <SiteChrome
+          data={{
+            name: site.name,
+            role: site.role,
+            career: `${site.career.label} — ${site.career.detail}`,
+            email: site.email,
+            index: buildIndex(content),
+          }}
+        />
+        <main id="content" className="flex-1">
           {children}
         </main>
-        <SiteFooter />
+        <SiteFooter name={site.name} email={site.email} links={site.links} />
       </body>
     </html>
   );

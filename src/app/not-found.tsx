@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="app-container flex flex-col items-start gap-6">
-      <p className="meta">404</p>
-      <h1 className="page-title">This page doesn&apos;t exist.</h1>
-      <Link href="/" className={buttonVariants({ variant: "outline" })}>
+    <div className="container-x py-32">
+      <p className="eyebrow">404</p>
+      <h1 className="display mt-4 text-6xl">Nothing brewing here.</h1>
+      <Link href="/" className="link-u mt-8 inline-block">
         Back home
       </Link>
     </div>
