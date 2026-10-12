@@ -2,13 +2,14 @@ import Link from "next/link";
 import { BeanBlob } from "@/components/site/bean";
 import { ProjectCard } from "@/components/site/project-card";
 import { Section } from "@/components/site/section";
-import { getContent } from "@/lib/content";
+import { getContent, getT } from "@/lib/content";
 import { deriveSkills } from "@/lib/derive";
 
 export const revalidate = 60;
 
 export default async function Home() {
   const content = await getContent();
+  const t = await getT();
   const { site, projects, posts } = content;
   const featured = site.featuredProjectSlugs.length
     ? site.featuredProjectSlugs
@@ -21,6 +22,8 @@ export default async function Home() {
         .filter((p) => p !== undefined)
     : posts.slice(0, 3);
   const skills = deriveSkills(content);
+  let n = 1;
+  const idx = () => String(++n).padStart(2, "0");
 
   return (
     <>
@@ -28,7 +31,9 @@ export default async function Home() {
         <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" />
         <BeanBlob className="bottom-0 -left-32 h-64 w-96 opacity-60" />
         <div className="container-x relative pt-20 pb-16 sm:pt-32">
-          <p className="eyebrow fade-up">01/ From {site.location}</p>
+          <p className="eyebrow fade-up">
+            01/ {t("home.from", { location: site.location })}
+          </p>
           <h1
             className="display fade-up mt-6 text-6xl sm:text-8xl lg:text-9xl"
             style={{ ["--delay" as string]: "80ms" }}
@@ -53,23 +58,25 @@ export default async function Home() {
             </span>
             <span className="text-muted-foreground">{site.career.detail}</span>
             <Link href="/projects" className="link-u">
-              Selected work →
+              {t("home.cta")}
             </Link>
           </div>
         </div>
-        <div
-          className="border-border overflow-hidden border-y py-3"
-          aria-hidden
-        >
-          <div className="marquee tag flex w-max gap-8 whitespace-nowrap">
-            {[...skills, ...skills].map((s, i) => (
-              <span key={i}>{s.name} •</span>
-            ))}
+        {site.homeSections.skills ? (
+          <div
+            className="border-border overflow-hidden border-y py-3"
+            aria-hidden
+          >
+            <div className="marquee tag flex w-max gap-8 whitespace-nowrap">
+              {[...skills, ...skills].map((s, i) => (
+                <span key={i}>{s.name} •</span>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
       </section>
 
-      <Section index="02" title="About">
+      <Section index={idx()} title={t("home.about")}>
         <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
           <p className="display text-3xl">{site.name}</p>
           <div className="text-foreground/85 space-y-4 text-lg leading-relaxed">
@@ -79,13 +86,13 @@ export default async function Home() {
         </div>
       </Section>
 
-      {site.homeSections.featured ? (
+      {site.homeSections.featured && featured.length ? (
         <Section
-          index="03"
-          title="Featured work"
+          index={idx()}
+          title={t("home.featured")}
           aside={
             <Link href="/projects" className="tag link-u">
-              All projects
+              {t("home.allProjects")}
             </Link>
           }
         >
@@ -97,8 +104,8 @@ export default async function Home() {
         </Section>
       ) : null}
 
-      {site.homeSections.focus ? (
-        <Section index="04" title="Current focus">
+      {site.homeSections.focus && site.currentFocus.length ? (
+        <Section index={idx()} title={t("home.focus")}>
           <ol className="grid gap-6 md:grid-cols-3">
             {site.currentFocus.map((f, i) => (
               <li key={f} className="border-border lift rounded-2xl border p-6">
@@ -112,11 +119,11 @@ export default async function Home() {
 
       {site.homeSections.writing && writing.length ? (
         <Section
-          index="05"
-          title="Recent writing"
+          index={idx()}
+          title={t("home.writing")}
           aside={
             <Link href="/blogs" className="tag link-u">
-              Archive
+              {t("home.archive")}
             </Link>
           }
         >

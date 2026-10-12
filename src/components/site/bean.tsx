@@ -12,7 +12,7 @@ export function BeanMark({
   return (
     <ProjectIcon
       src="/projects/portfolio.svg"
-      title="Bean"
+      title=""
       size={size}
       className={className}
     />

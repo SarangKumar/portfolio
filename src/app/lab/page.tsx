@@ -1,23 +1,19 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/site/section";
-import { getContent } from "@/lib/content";
+import { getContent, getT } from "@/lib/content";
+import { pageMetadata } from "@/lib/page-meta";
 
 export const revalidate = 60;
-export const metadata: Metadata = { title: "Architecture Lab" };
+export const generateMetadata = () => pageMetadata("lab");
 
 export default async function LabPage() {
-  const { diagrams } = await getContent();
+  const { diagrams, site } = await getContent();
+  const t = await getT();
+  const page = site.pages.lab;
   return (
     <>
-      <PageIntro
-        index="01"
-        eyebrow="Architecture Lab"
-        title="How things are built"
-      >
-        Interactive system diagrams: play request flows, inspect components, and
-        simulate failures. Every diagram is plain configuration, edited from the
-        admin panel.
+      <PageIntro index="01" eyebrow={page.eyebrow} title={page.title}>
+        {page.intro}
       </PageIntro>
       <div className="container-x grid gap-6 md:grid-cols-2">
         {diagrams.map((d, i) => (
@@ -28,8 +24,11 @@ export default async function LabPage() {
             style={{ ["--delay" as string]: `${i * 80}ms` }}
           >
             <p className="tag">
-              {d.nodes.length} components · {d.flows.length} flows ·{" "}
-              {d.failures.length} failure scenarios
+              {t("lab.stats", {
+                nodes: d.nodes.length,
+                flows: d.flows.length,
+                failures: d.failures.length,
+              })}
             </p>
             <h2 className="display group-hover:text-primary mt-6 text-4xl transition-colors">
               {d.title}

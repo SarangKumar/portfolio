@@ -9,12 +9,7 @@ import {
 } from "@/components/ui/hover-card";
 import type { Project } from "@/content/types";
 import { ProjectIcon } from "./project-icon";
-
-const KIND: Record<Project["kind"], string> = {
-  shipped: "Live",
-  "in-progress": "In progress",
-  idea: "Idea",
-};
+import { useT } from "./labels-provider";
 
 /** Project row with a rich hover/focus popover; click opens the case study. */
 export function ProjectCard({
@@ -24,6 +19,7 @@ export function ProjectCard({
   project: Project;
   index: number;
 }) {
+  const t = useT();
   return (
     <HoverCard openDelay={150}>
       <HoverCardTrigger>
@@ -51,7 +47,7 @@ export function ProjectCard({
             </span>
           </span>
           <span className="tag flex items-center gap-2">
-            {KIND[project.kind]} · {project.year}
+            {t(`project.kind.${project.kind}`)} · {project.year}
             <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         </Link>
@@ -65,7 +61,7 @@ export function ProjectCard({
             </span>
             <span className="chip">
               <span className="bean bg-primary size-2" />
-              {KIND[project.kind]}
+              {t(`project.kind.${project.kind}`)}
             </span>
           </div>
           <p className="text-muted-foreground text-sm">{project.description}</p>
@@ -78,7 +74,7 @@ export function ProjectCard({
           </div>
           <div className="flex gap-4 pt-1 text-sm">
             <Link href={`/projects/${project.slug}`} className="link-u">
-              Case study
+              {t("project.caseStudy")}
             </Link>
             {project.demoUrl ? (
               <a
@@ -87,7 +83,7 @@ export function ProjectCard({
                 rel="noreferrer"
                 className="link-u"
               >
-                Live ↗
+                {t("project.live")}
               </a>
             ) : null}
             {project.githubUrl ? (
@@ -97,7 +93,7 @@ export function ProjectCard({
                 rel="noreferrer"
                 className="link-u"
               >
-                GitHub ↗
+                {t("project.source")}
               </a>
             ) : null}
           </div>

@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/lib/firebase/client";
+import { useT } from "@/components/site/labels-provider";
 
 export function CommentForm() {
+  const t = useT();
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">(
@@ -39,9 +41,9 @@ export function CommentForm() {
       onSubmit={submit}
       className="border-border space-y-4 rounded-3xl border p-6"
     >
-      <p className="font-serif text-2xl">Leave a note</p>
+      <p className="font-serif text-2xl">{t("board.formTitle")}</p>
       <label className="block space-y-1 text-sm">
-        <span className="text-muted-foreground">Name</span>
+        <span className="text-muted-foreground">{t("board.name")}</span>
         <Input
           required
           maxLength={60}
@@ -50,7 +52,7 @@ export function CommentForm() {
         />
       </label>
       <label className="block space-y-1 text-sm">
-        <span className="text-muted-foreground">Message</span>
+        <span className="text-muted-foreground">{t("board.message")}</span>
         <Textarea
           required
           maxLength={1000}
@@ -61,16 +63,16 @@ export function CommentForm() {
       </label>
       <div className="flex items-center gap-4">
         <Button type="submit" disabled={!store || state === "sending"}>
-          {state === "sending" ? "Sending…" : "Submit"}
+          {state === "sending" ? t("board.sending") : t("board.submit")}
         </Button>
         <p className="text-muted-foreground text-sm" role="status">
           {!store
-            ? "The board opens once Firebase is configured."
+            ? t("board.disabled")
             : state === "sent"
-              ? "Thanks! It'll appear once approved."
+              ? t("board.sent")
               : state === "error"
-                ? "Couldn't send — try again."
-                : "Comments are moderated before they appear."}
+                ? t("board.error")
+                : t("board.note")}
         </p>
       </div>
     </form>

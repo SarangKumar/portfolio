@@ -190,7 +190,16 @@ function SiteEditor() {
   const [saved, setSaved] = useState(false);
   useEffect(() => {
     getDoc(doc(store, "config", "site")).then((s) =>
-      setData({ ...seed.site, ...(s.data() ?? {}) }),
+      setData(() => {
+        const r = (s.data() ?? {}) as Partial<typeof seed.site>;
+        return {
+          ...seed.site,
+          ...r,
+          seo: { ...seed.site.seo, ...r.seo },
+          pages: { ...seed.site.pages, ...r.pages },
+          labels: { ...seed.site.labels, ...r.labels },
+        };
+      }),
     );
   }, [store]);
   if (!data) return <p className="text-muted-foreground">Loading…</p>;

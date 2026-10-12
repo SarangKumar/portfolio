@@ -15,9 +15,25 @@ import {
   type SiteConfig,
 } from "@/content/types";
 import { db } from "./firebase/client";
+import { label } from "./labels";
 
 /** Seconds between background re-renders when Firestore is the source. */
 export const REVALIDATE = 60;
+
+/** Firestore site config layered over seed, so new keys always have a value. */
+function mergeSite(remote: Partial<SiteConfig>): SiteConfig {
+  const base = seed.site;
+  return {
+    ...base,
+    ...remote,
+    seo: { ...base.seo, ...remote.seo },
+    career: { ...base.career, ...remote.career },
+    homeSections: { ...base.homeSections, ...remote.homeSections },
+    pages: { ...base.pages, ...remote.pages },
+    labels: { ...base.labels, ...remote.labels },
+    nav: remote.nav?.length ? remote.nav : base.nav,
+  };
+}
 
 async function fromFirestore(): Promise<Content | null> {
   const store = db();
@@ -26,7 +42,7 @@ async function fromFirestore(): Promise<Content | null> {
     const siteSnap = await getDoc(doc(store, "config", "site"));
     const result = { ...seed } as Content;
     if (siteSnap.exists())
-      result.site = { ...seed.site, ...(siteSnap.data() as SiteConfig) };
+      result.site = mergeSite(siteSnap.data() as Partial<SiteConfig>);
     await Promise.all(
       COLLECTIONS.map(async (name) => {
         const snap = await getDocs(
@@ -78,4 +94,11 @@ export async function getApprovedComments(): Promise<Comment[]> {
   } catch {
     return [];
   }
+}
+
+/** Server-side label lookup bound to the current site config. */
+export async function getT() {
+  const { site } = await getContent();
+  return (key: string, vars?: Record<string, string | number>) =>
+    label(site.labels, key, vars);
 }

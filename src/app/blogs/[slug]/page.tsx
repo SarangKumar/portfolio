@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Markdown } from "@/components/site/markdown";
-import { getContent } from "@/lib/content";
+import { getContent, getT } from "@/lib/content";
 
 export const revalidate = 60;
 type Props = { params: Promise<{ slug: string }> };
@@ -14,13 +14,14 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = (await getContent()).posts.find((x) => x.slug === slug);
-  return { title: p?.title ?? "Post", description: p?.excerpt };
+  return { title: p?.title, description: p?.excerpt };
 }
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
   const p = (await getContent()).posts.find((x) => x.slug === slug);
   if (!p) notFound();
+  const t = await getT();
   return (
     <article className="container-x max-w-3xl py-20">
       <p className="eyebrow">
@@ -33,7 +34,7 @@ export default async function PostPage({ params }: Props) {
       </div>
       <p className="tag mt-12">{p.tags.map((t) => `#${t}`).join("  ")}</p>
       <Link href="/blogs" className="link-u mt-8 inline-block text-sm">
-        ← Archive
+        {t("blogs.back")}
       </Link>
     </article>
   );

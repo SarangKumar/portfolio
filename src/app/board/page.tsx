@@ -1,25 +1,27 @@
-import type { Metadata } from "next";
 import { PageIntro } from "@/components/site/section";
-import { getApprovedComments } from "@/lib/content";
+import { getApprovedComments, getContent, getT } from "@/lib/content";
+import { pageMetadata } from "@/lib/page-meta";
 import { CommentForm } from "./comment-form";
 
 export const revalidate = 60;
-export const metadata: Metadata = { title: "Public Board" };
+export const generateMetadata = () => pageMetadata("board");
 
 export default async function BoardPage() {
-  const comments = await getApprovedComments();
+  const [comments, { site }, t] = await Promise.all([
+    getApprovedComments(),
+    getContent(),
+    getT(),
+  ]);
+  const page = site.pages.board;
   return (
     <>
-      <PageIntro index="01" eyebrow="Public Board" title="Say hello">
-        Leave a note, a question or feedback. Everything is read and approved by
-        hand before it appears here.
+      <PageIntro index="01" eyebrow={page.eyebrow} title={page.title}>
+        {page.intro}
       </PageIntro>
       <div className="container-x grid gap-12 lg:grid-cols-[1fr_24rem]">
         <ul className="space-y-6">
           {comments.length === 0 ? (
-            <li className="text-muted-foreground">
-              No notes yet — be the first.
-            </li>
+            <li className="text-muted-foreground">{t("board.empty")}</li>
           ) : null}
           {comments.map((c) => (
             <li key={c.id} className="border-border border-b pb-6">

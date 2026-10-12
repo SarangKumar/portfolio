@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Post } from "@/content/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/components/site/labels-provider";
 
 export function Archive({ posts }: { posts: Post[] }) {
+  const t = useT();
   const [q, setQ] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [tag, setTag] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export function Archive({ posts }: { posts: Post[] }) {
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search the archive…"
+          placeholder={t("blogs.search")}
           aria-label="Search posts"
           className="border-border focus:border-primary w-full border-b bg-transparent py-3 font-serif text-2xl outline-none"
         />
@@ -57,7 +59,7 @@ export function Archive({ posts }: { posts: Post[] }) {
             onClick={() => setCategory(null)}
             aria-pressed={!category}
           >
-            All
+            {t("blogs.all")}
           </button>
           {categories.map((c) => (
             <button
@@ -84,7 +86,7 @@ export function Archive({ posts }: { posts: Post[] }) {
         </div>
       </div>
       {Object.keys(byYear).length === 0 ? (
-        <p className="text-muted-foreground py-16">No posts match.</p>
+        <p className="text-muted-foreground py-16">{t("blogs.empty")}</p>
       ) : null}
       {Object.entries(byYear)
         .sort(([a], [b]) => b.localeCompare(a))

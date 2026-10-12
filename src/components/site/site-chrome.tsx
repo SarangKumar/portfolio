@@ -5,14 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { NAV } from "@/lib/derive";
+import type { Link as NavLink } from "@/content/types";
 import { cn } from "@/lib/utils";
 import { BeanMark } from "./bean";
+import { useT } from "./labels-provider";
 import { CommandPalette } from "./command-palette";
 import { Terminal, type TerminalData } from "./terminal";
 import { ThemeToggle } from "./theme-toggle";
 
-export function SiteChrome({ data }: { data: TerminalData }) {
+export function SiteChrome({
+  data,
+  nav,
+}: {
+  data: TerminalData;
+  nav: NavLink[];
+}) {
+  const t = useT();
   const pathname = usePathname();
   const [palette, setPalette] = useState(false);
   const [term, setTerm] = useState(false);
@@ -63,7 +71,7 @@ export function SiteChrome({ data }: { data: TerminalData }) {
             aria-label="Primary"
             className="hidden items-center gap-1 lg:flex"
           >
-            {NAV.map((n) => (
+            {nav.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
@@ -87,7 +95,7 @@ export function SiteChrome({ data }: { data: TerminalData }) {
               className="text-muted-foreground hidden gap-2 rounded-full sm:inline-flex"
               aria-label="Open search (⌘K)"
             >
-              <Search className="size-3.5" /> Search{" "}
+              <Search className="size-3.5" /> {t("nav.search")}{" "}
               <kbd className="tag">⌘K</kbd>
             </Button>
             <Button
@@ -132,7 +140,7 @@ export function SiteChrome({ data }: { data: TerminalData }) {
             aria-label="Mobile"
             className="container-x border-border flex flex-col border-t py-3 lg:hidden"
           >
-            {NAV.map((n) => (
+            {nav.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}

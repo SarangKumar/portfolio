@@ -6,6 +6,7 @@ import { useMemo, useRef, useState } from "react";
 import type { SearchItem } from "@/lib/derive";
 import { cn } from "@/lib/utils";
 import { ProjectIcon } from "./project-icon";
+import { useT } from "./labels-provider";
 
 export function filterIndex(index: SearchItem[], q: string) {
   const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -37,6 +38,7 @@ function PaletteBody({
   index: SearchItem[];
   onClose: () => void;
 }) {
+  const t = useT();
   const router = useRouter();
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
@@ -90,7 +92,7 @@ function PaletteBody({
             aria-activedescendant={
               results[active] ? `pal-${results[active].id}` : undefined
             }
-            placeholder="Search projects, writing, library, diagrams…"
+            placeholder={t("palette.placeholder")}
             className="h-12 flex-1 bg-transparent text-sm outline-none"
           />
           <kbd className="tag">esc</kbd>
@@ -102,7 +104,9 @@ function PaletteBody({
           className="max-h-[50vh] overflow-y-auto p-2"
         >
           {results.length === 0 ? (
-            <li className="text-muted-foreground p-4 text-sm">No results.</li>
+            <li className="text-muted-foreground p-4 text-sm">
+              {t("palette.empty")}
+            </li>
           ) : null}
           {results.map((r, i) => (
             <li

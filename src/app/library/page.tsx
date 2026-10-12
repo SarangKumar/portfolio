@@ -1,29 +1,26 @@
-import type { Metadata } from "next";
 import { PageIntro, Section } from "@/components/site/section";
-import { getContent } from "@/lib/content";
+import { getContent, getT } from "@/lib/content";
+import { pageMetadata } from "@/lib/page-meta";
 
 export const revalidate = 60;
-export const metadata: Metadata = { title: "Library" };
+export const generateMetadata = () => pageMetadata("library");
 
-const STATE = {
-  reading: "Reading now",
-  finished: "Finished",
-  queued: "Up next",
-} as const;
+const STATES = ["reading", "finished", "queued"] as const;
 
 export default async function LibraryPage() {
-  const { books, bookmarks, notes } = await getContent();
+  const { books, bookmarks, notes, site } = await getContent();
+  const t = await getT();
+  const page = site.pages.library;
   return (
     <>
-      <PageIntro index="01" eyebrow="Library" title="Things I keep">
-        Books and reading notes, bookmarks worth returning to, and a notebook of
-        ideas.
+      <PageIntro index="01" eyebrow={page.eyebrow} title={page.title}>
+        {page.intro}
       </PageIntro>
-      <Section index="02" title="Books">
+      <Section index="02" title={t("library.books")}>
         <div className="grid gap-6 md:grid-cols-3">
-          {(Object.keys(STATE) as (keyof typeof STATE)[]).map((s) => (
+          {STATES.map((s) => (
             <div key={s}>
-              <h3 className="tag mb-4">{STATE[s]}</h3>
+              <h3 className="tag mb-4">{t(`library.${s}`)}</h3>
               <ul className="space-y-6">
                 {books
                   .filter((b) => b.state === s)
@@ -51,7 +48,7 @@ export default async function LibraryPage() {
           ))}
         </div>
       </Section>
-      <Section index="03" title="Bookmarks & resources">
+      <Section index="03" title={t("library.bookmarks")}>
         <ul className="divide-border divide-y">
           {bookmarks.map((b) => (
             <li key={b.id}>
@@ -75,12 +72,12 @@ export default async function LibraryPage() {
           ))}
         </ul>
       </Section>
-      <Section index="04" title="Notebook">
+      <Section index="04" title={t("library.notebook")}>
         <div className="grid gap-10 md:grid-cols-2">
           {(["idea", "engineering"] as const).map((k) => (
             <div key={k}>
               <h3 className="font-serif text-2xl">
-                {k === "idea" ? "Future project ideas" : "Engineering notes"}
+                {t(k === "idea" ? "library.ideas" : "library.engineering")}
               </h3>
               <ul className="mt-4 space-y-4">
                 {notes

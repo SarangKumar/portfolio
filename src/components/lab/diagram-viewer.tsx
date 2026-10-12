@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import type { Diagram, DiagramNode, DiagramPoint } from "@/content/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/components/site/labels-provider";
 
 const W = 140;
 const H = 52;
@@ -36,14 +37,10 @@ const KIND_STYLE: Record<DiagramNode["kind"], string> = {
 };
 
 type Tab = "decisions" | "tradeoffs" | "bottlenecks" | "failures";
-const TABS: { id: Tab; label: string }[] = [
-  { id: "decisions", label: "Decisions" },
-  { id: "tradeoffs", label: "Trade-offs" },
-  { id: "bottlenecks", label: "Bottlenecks" },
-  { id: "failures", label: "Failure scenarios" },
-];
+const TABS: Tab[] = ["decisions", "tradeoffs", "bottlenecks", "failures"];
 
 export function DiagramViewer({ diagram }: { diagram: Diagram }) {
+  const t = useT();
   const [selected, setSelected] = useState<string | null>(
     diagram.nodes[0]?.id ?? null,
   );
@@ -232,7 +229,7 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
         {diagram.flows.length ? (
           <div className="border-border rounded-2xl border p-5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="eyebrow mr-2">Request flow</span>
+              <span className="eyebrow mr-2">{t("diagram.flow")}</span>
               {diagram.flows.map((f) => (
                 <button
                   key={f.id}
@@ -307,7 +304,7 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
           className="border-border rounded-2xl border p-5"
           aria-live="polite"
         >
-          <p className="eyebrow">Component</p>
+          <p className="eyebrow">{t("diagram.component")}</p>
           {sel ? (
             <>
               <p className="mt-2 font-serif text-2xl">{sel.label}</p>
@@ -317,32 +314,34 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
             </>
           ) : (
             <p className="text-muted-foreground mt-2 text-sm">
-              Select a component.
+              {t("diagram.select")}
             </p>
           )}
         </div>
         <div>
           <div role="tablist" className="flex flex-wrap gap-1">
-            {TABS.map((t) => (
+            {TABS.map((tabId) => (
               <button
-                key={t.id}
+                key={tabId}
                 role="tab"
-                aria-selected={tab === t.id}
-                onClick={() => (setTab(t.id), setPoint(null))}
+                aria-selected={tab === tabId}
+                onClick={() => (setTab(tabId), setPoint(null))}
                 className={cn(
                   "rounded-full px-3 py-1 text-xs transition-colors",
-                  tab === t.id
+                  tab === tabId
                     ? "bg-foreground text-background"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {t.label}
+                {t(`diagram.${tabId}`)}
               </button>
             ))}
           </div>
           <ul role="tabpanel" className="mt-4 space-y-3">
             {points.length === 0 ? (
-              <li className="text-muted-foreground text-sm">None recorded.</li>
+              <li className="text-muted-foreground text-sm">
+                {t("diagram.none")}
+              </li>
             ) : null}
             {points.map((p) => (
               <li key={p.title}>
@@ -362,8 +361,8 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
                   {tab === "failures" ? (
                     <p className="tag mt-2">
                       {point?.title === p.title
-                        ? "Simulating — affected nodes shown"
-                        : "Click to simulate"}
+                        ? t("diagram.simulating")
+                        : t("diagram.simulate")}
                     </p>
                   ) : null}
                 </button>

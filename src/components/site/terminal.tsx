@@ -5,13 +5,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { SearchItem } from "@/lib/derive";
 import { filterIndex } from "./command-palette";
+import { useT } from "./labels-provider";
 import { toggleTheme } from "./theme-toggle";
 
 export type TerminalData = {
   name: string;
   role: string;
+  location: string;
+  handle: string;
   career: string;
   email: string;
+  links: { label: string; href: string }[];
   index: SearchItem[];
 };
 
@@ -25,14 +29,6 @@ const GROUPS: Record<string, SearchItem["group"]> = {
   arch: "Architecture",
 };
 
-const HELP = `commands:
-  ls <projects|blogs|library|architecture>   list published items
-  open <slug|page>                           navigate (e.g. open aavedak, open lab)
-  search <terms>                             search everything
-  whoami | status | contact                  about me
-  theme                                      toggle dark/light
-  clear | exit`;
-
 export function Terminal({
   data,
   onClose,
@@ -41,11 +37,17 @@ export function Terminal({
   onClose: () => void;
 }) {
   const router = useRouter();
-  const [lines, setLines] = useState<Line[]>([
-    {
-      kind: "out",
-      text: `${data.name.toLowerCase().replace(/\s+/g, "")}.sh — type 'help'`,
-    },
+  const t = useT();
+  const vars = {
+    name: data.name,
+    role: data.role,
+    location: data.location,
+    handle: data.handle,
+    career: data.career,
+    email: data.email,
+  };
+  const [lines, setLines] = useState<Line[]>(() => [
+    { kind: "out", text: t("terminal.banner", vars) },
   ]);
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
@@ -68,7 +70,7 @@ export function Terminal({
       case "":
         return setLines((l) => [...l, { kind: "in", text: "" }]);
       case "help":
-        return out(HELP);
+        return out(t("terminal.help"));
       case "clear":
         return setLines([]);
       case "exit":
@@ -77,11 +79,16 @@ export function Terminal({
         toggleTheme();
         return out("theme toggled.");
       case "whoami":
-        return out(`${data.name} — ${data.role}`);
+        return out(t("terminal.whoami", vars));
       case "status":
-        return out(data.career);
+        return out(t("terminal.status", vars));
       case "contact":
-        return out(data.email);
+        return out(
+          [
+            t("terminal.contact", vars),
+            ...data.links.map((l) => `${l.label}: ${l.href}`),
+          ].join("\n"),
+        );
       case "ls": {
         const group = GROUPS[arg.toLowerCase()];
         if (!group)
@@ -115,7 +122,7 @@ export function Terminal({
         return out(`→ ${hit.href}`);
       }
       default:
-        return out(`command not found: ${cmd}. try 'help'`);
+        return out(t("terminal.notFound", { cmd }));
     }
   }
 
@@ -126,7 +133,9 @@ export function Terminal({
       className="fade-up fixed right-4 bottom-4 z-40 w-[min(42rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-[oklch(0.17_0.01_60)] text-[oklch(0.92_0.02_80)] shadow-2xl"
     >
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-2">
-        <span className="font-mono text-xs opacity-70">~/portfolio</span>
+        <span className="font-mono text-xs opacity-70">
+          {t("terminal.cwd")}
+        </span>
         <button
           onClick={onClose}
           aria-label="Close terminal"

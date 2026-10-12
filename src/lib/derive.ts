@@ -1,4 +1,5 @@
 import type { Content } from "@/content/types";
+import { label } from "./labels";
 
 export type SearchItem = {
   id: string;
@@ -10,22 +11,15 @@ export type SearchItem = {
   icon?: string;
 };
 
-export const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/blogs", label: "Blogs" },
-  { href: "/library", label: "Library" },
-  { href: "/lab", label: "Architecture Lab" },
-  { href: "/board", label: "Public Board" },
-] as const;
-
 /** One flat index shared by the ⌘K palette and the terminal. */
 export function buildIndex(c: Content): SearchItem[] {
+  const pageLabel = (href: string) =>
+    c.site.nav.find((n) => n.href === href)?.label ?? href;
   return [
-    ...NAV.map((n) => ({
+    ...c.site.nav.map((n) => ({
       id: `nav-${n.href}`,
       title: n.label,
-      subtitle: "Page",
+      subtitle: n.href,
       href: n.href,
       group: "Pages" as const,
       keywords: n.label,
@@ -36,7 +30,7 @@ export function buildIndex(c: Content): SearchItem[] {
       subtitle: p.summary,
       href: `/projects/${p.slug}`,
       group: "Projects" as const,
-      keywords: `${p.slug} ${p.technologies.join(" ")}`,
+      keywords: `${p.slug} ${p.technologies.join(" ")} ${pageLabel("/projects")}`,
       icon: p.icon,
     })),
     ...c.posts.map((p) => ({
@@ -50,7 +44,7 @@ export function buildIndex(c: Content): SearchItem[] {
     ...c.books.map((b) => ({
       id: b.id,
       title: b.title,
-      subtitle: `${b.author} · ${b.state}`,
+      subtitle: `${b.author} · ${label(c.site.labels, `library.${b.state}`)}`,
       href: `/library#${b.id}`,
       group: "Library" as const,
       keywords: b.author,
@@ -85,7 +79,8 @@ export function deriveSkills(c: Content) {
     .map((name) => ({
       name,
       category:
-        c.skills.find((s) => s.name === name)?.category ?? "From projects",
+        c.skills.find((s) => s.name === name)?.category ??
+        label(c.site.labels, "skills.fromProjects"),
       projects: usage.get(name) ?? [],
     }))
     .sort(

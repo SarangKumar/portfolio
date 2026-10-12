@@ -7,7 +7,18 @@ export type Status = "draft" | "published";
 
 export type Link = { label: string; href: string };
 
+export type PageKey = "projects" | "blogs" | "library" | "lab" | "board";
+export type PageCopy = { eyebrow: string; title: string; intro: string };
+
 export type SiteConfig = {
+  /** Navbar destinations, in order. Labels editable; hrefs are the six routes. */
+  nav: Link[];
+  seo: { title: string; titleTemplate: string; description: string };
+  /** Short handle used by the terminal banner/prompt. */
+  handle: string;
+  pages: Record<PageKey, PageCopy>;
+  /** Content-like labels and section titles, keyed by `area.name`. Supports {placeholders}. */
+  labels: Record<string, string>;
   name: string;
   role: string;
   location: string;

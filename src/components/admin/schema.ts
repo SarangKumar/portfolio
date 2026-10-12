@@ -157,6 +157,29 @@ export const SCHEMAS: Record<
 };
 
 export const SITE_FIELDS: Field[] = [
+  {
+    key: "nav",
+    label:
+      "Navbar [{label, href}] — keep the six routes: / /projects /blogs /library /lab /board",
+    type: "json",
+  },
+  {
+    key: "seo",
+    label: "SEO {title, titleTemplate (use %s), description}",
+    type: "json",
+  },
+  { key: "handle", label: "Terminal handle", type: "text" },
+  {
+    key: "pages",
+    label:
+      "Page intros {projects|blogs|library|lab|board: {eyebrow, title, intro}}",
+    type: "json",
+  },
+  {
+    key: "labels",
+    label: "Labels & section titles (key → text, supports {placeholders})",
+    type: "json",
+  },
   { key: "name", label: "Name", type: "text" },
   { key: "role", label: "Role (hero headline)", type: "text" },
   { key: "location", label: "Location", type: "text" },

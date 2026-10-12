@@ -5,10 +5,9 @@ import { DiagramViewer } from "@/components/lab/diagram-viewer";
 import { Markdown } from "@/components/site/markdown";
 import { ProjectIcon } from "@/components/site/project-icon";
 import { PageIntro, Section, TechTags } from "@/components/site/section";
-import { getContent } from "@/lib/content";
+import { getContent, getT } from "@/lib/content";
 
 export const revalidate = 60;
-
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
@@ -19,20 +18,21 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = (await getContent()).projects.find((x) => x.slug === slug);
-  return { title: p?.title ?? "Project", description: p?.summary };
+  return { title: p?.title, description: p?.summary };
 }
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
   const { projects, diagrams } = await getContent();
+  const t = await getT();
   const p = projects.find((x) => x.slug === slug);
   if (!p) notFound();
   const diagram = diagrams.find((d) => d.slug === p.diagramSlug);
   const sections = [
-    { title: "Architecture", body: p.architecture },
-    { title: "Implementation", body: p.implementation },
-    { title: "Testing", body: p.testing },
-    { title: "Trade-offs", body: p.tradeoffs },
+    { title: t("project.architecture"), body: p.architecture },
+    { title: t("project.implementation"), body: p.implementation },
+    { title: t("project.testing"), body: p.testing },
+    { title: t("project.tradeoffs"), body: p.tradeoffs },
     ...p.sections,
   ].filter((s) => s.body);
 
@@ -43,14 +43,14 @@ export default async function ProjectPage({ params }: Props) {
           src={p.icon}
           title={p.title}
           size={88}
-          morph={p.slug}
           className="fade-up"
+          morph={p.slug}
         />
       </div>
       <PageIntro
         compact
         index={p.year}
-        eyebrow={`Case study · ${p.kind}`}
+        eyebrow={t("project.eyebrow", { kind: t(`project.kind.${p.kind}`) })}
         title={p.title}
       >
         <p>{p.summary}</p>
@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              Live site ↗
+              {t("project.live")}
             </a>
           ) : null}
           {p.githubUrl ? (
@@ -72,7 +72,7 @@ export default async function ProjectPage({ params }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              GitHub ↗
+              {t("project.source")}
             </a>
           ) : null}
           {diagram ? (
@@ -80,7 +80,7 @@ export default async function ProjectPage({ params }: Props) {
               href={`/lab/${diagram.slug}`}
               className="link-u text-foreground"
             >
-              Explore in Architecture Lab →
+              {t("project.exploreLab")}
             </Link>
           ) : null}
         </div>
@@ -88,7 +88,7 @@ export default async function ProjectPage({ params }: Props) {
       <div className="container-x">
         <TechTags items={p.technologies} />
       </div>
-      <Section title="Overview">
+      <Section title={t("project.overview")}>
         <p className="max-w-3xl text-lg leading-relaxed">{p.description}</p>
       </Section>
       {sections.map((s, i) => (
@@ -104,10 +104,10 @@ export default async function ProjectPage({ params }: Props) {
       ))}
       {diagram ? (
         <Section
-          title="Architecture diagram"
+          title={t("project.diagram")}
           aside={
             <Link href={`/lab/${diagram.slug}`} className="tag link-u">
-              Open in Lab
+              {t("project.openLab")}
             </Link>
           }
         >
@@ -116,7 +116,7 @@ export default async function ProjectPage({ params }: Props) {
       ) : null}
       <div className="container-x">
         <Link href="/projects" className="link-u text-sm">
-          ← All projects
+          {t("project.back")}
         </Link>
       </div>
     </article>

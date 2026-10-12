@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
 import { ProjectCard } from "@/components/site/project-card";
 import { PageIntro, Section } from "@/components/site/section";
-import { getContent } from "@/lib/content";
+import { getContent, getT } from "@/lib/content";
 import { deriveSkills } from "@/lib/derive";
+import { pageMetadata } from "@/lib/page-meta";
 
 export const revalidate = 60;
-export const metadata: Metadata = { title: "Projects" };
+export const generateMetadata = () => pageMetadata("projects");
 
 export default async function ProjectsPage() {
   const content = await getContent();
+  const t = await getT();
+  const page = content.site.pages.projects;
   const shipped = content.projects.filter((p) => p.kind !== "idea");
   const ideas = content.projects.filter((p) => p.kind === "idea");
   const skills = deriveSkills(content);
@@ -16,9 +18,8 @@ export default async function ProjectsPage() {
 
   return (
     <>
-      <PageIntro index="01" eyebrow="Selected work" title="Projects">
-        Hover or focus a project for a quick look; open it for the full case
-        study — architecture, implementation, testing and trade-offs.
+      <PageIntro index="01" eyebrow={page.eyebrow} title={page.title}>
+        {page.intro}
       </PageIntro>
       <section className="container-x">
         <div className="border-border border-t">
@@ -28,7 +29,7 @@ export default async function ProjectsPage() {
         </div>
       </section>
       {ideas.length ? (
-        <Section index="02" title="Future projects">
+        <Section index="02" title={t("projects.future")}>
           <div className="border-border border-t">
             {ideas.map((p, i) => (
               <ProjectCard key={p.id} project={p} index={shipped.length + i} />
@@ -36,7 +37,7 @@ export default async function ProjectsPage() {
           </div>
         </Section>
       ) : null}
-      <Section index="03" title="Skills — derived from the work above">
+      <Section index={ideas.length ? "03" : "02"} title={t("projects.skills")}>
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
           {categories.map((c) => (
             <div key={c}>
