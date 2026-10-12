@@ -25,6 +25,8 @@ export type SiteConfig = {
   /** Content-like labels and section titles, keyed by `area.name`. Supports {placeholders}. */
   labels: Record<string, string>;
   name: string;
+  /** Short navbar brand (e.g. first name). Full `name` is used for SEO/JSON-LD. */
+  brand: string;
   role: string;
   location: string;
   tagline: string;

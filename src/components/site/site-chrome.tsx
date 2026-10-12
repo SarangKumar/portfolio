@@ -64,9 +64,15 @@ export function SiteChrome({
         className="bg-background/80 border-border sticky top-0 z-30 border-b backdrop-blur-md"
       >
         <div className="container-x flex h-14 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 font-medium">
+          <Link
+            href="/"
+            aria-label="Home"
+            className="flex items-center gap-2 font-medium"
+          >
             <BeanMark />
-            <span className="font-serif text-lg">{data.name}</span>
+            <span className="font-serif text-lg">
+              {data.brand ?? data.name}
+            </span>
           </Link>
           <nav
             aria-label="Primary"

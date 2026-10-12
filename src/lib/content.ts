@@ -21,9 +21,12 @@ import { label } from "./labels";
 export const REVALIDATE = 60;
 
 /** The navbar shipped before Experience moved in and Library moved to the footer. */
-const LEGACY_NAV = "/,/projects,/blogs,/library,/lab,/board";
+const LEGACY_NAVS = [
+  "/,/projects,/blogs,/library,/lab,/board",
+  "/,/experience,/projects,/blogs,/lab,/board",
+];
 const isLegacyNav = (nav?: SiteConfig["nav"]) =>
-  nav?.map((n) => n.href).join(",") === LEGACY_NAV;
+  LEGACY_NAVS.includes(nav?.map((n) => n.href).join(",") ?? "");
 
 /** Firestore site config layered over seed, so new keys always have a value. */
 function mergeSite(remote: Partial<SiteConfig>): SiteConfig {

@@ -10,6 +10,7 @@ import { toggleTheme } from "./theme-toggle";
 
 export type TerminalData = {
   name: string;
+  brand?: string;
   role: string;
   location: string;
   handle: string;

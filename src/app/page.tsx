@@ -1,3 +1,4 @@
+import { HeroRobot } from "@/components/site/hero-robot";
 import { Download } from "lucide-react";
 import { OpenToWork } from "@/components/site/open-to-work";
 import Link from "next/link";
@@ -39,35 +40,46 @@ export default async function Home() {
         <div
           data-parallax="-0.15"
           data-parallax-max="48"
-          className="container-x relative pt-20 pb-16 sm:pt-32"
+          className="container-x relative grid items-center gap-10 pt-20 pb-16 sm:pt-32 lg:grid-cols-[minmax(0,1fr)_auto]"
         >
-          <p className="eyebrow fade-up">
-            01/ {t("home.from", { location: site.location })}
-          </p>
-          <h1
-            className="display fade-up mt-6 text-6xl sm:text-8xl lg:text-9xl"
-            style={{ ["--delay" as string]: "80ms" }}
-          >
-            {site.role}
-          </h1>
-          <p
-            className="fade-up mt-6 max-w-xl text-xl sm:text-2xl"
-            style={{ ["--delay" as string]: "160ms" }}
-          >
-            {site.tagline}
-          </p>
-          <OpenToWork
-            career={site.career}
-            resumeUrl={content.resume.pdfUrl}
-            className="fade-up mt-10 max-w-2xl"
-          />
+          <div className="min-w-0">
+            <p className="eyebrow fade-up">
+              01/ {t("home.from", { location: site.location })}
+            </p>
+            <h1
+              className="display fade-up mt-6 text-6xl sm:text-8xl xl:text-9xl"
+              style={{ ["--delay" as string]: "80ms" }}
+            >
+              {site.role}
+            </h1>
+            <p
+              className="fade-up mt-6 max-w-xl text-xl sm:text-2xl"
+              style={{ ["--delay" as string]: "160ms" }}
+            >
+              {site.tagline}
+            </p>
+            <OpenToWork
+              career={site.career}
+              resumeUrl={content.resume.pdfUrl}
+              className="fade-up mt-8"
+            />
+            <div
+              className="fade-up mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm"
+              style={{ ["--delay" as string]: "240ms" }}
+            >
+              <Link href="/projects" className="link-u">
+                {t("home.cta")}
+              </Link>
+            </div>
+          </div>
           <div
-            className="fade-up mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm"
-            style={{ ["--delay" as string]: "240ms" }}
+            aria-hidden={false}
+            data-parallax="0.12"
+            data-parallax-max="40"
+            className="fade-up hidden justify-center py-10 lg:flex"
+            style={{ ["--delay" as string]: "320ms" }}
           >
-            <Link href="/projects" className="link-u">
-              {t("home.cta")}
-            </Link>
+            <HeroRobot size={300} />
           </div>
         </div>
         {site.homeSections.skills ? (
@@ -117,7 +129,7 @@ export default async function Home() {
           index={idx()}
           title={t("home.resume")}
           aside={
-            <span className="flex gap-4">
+            <span className="flex flex-wrap gap-x-4 gap-y-2 whitespace-nowrap">
               <Link href={site.experienceHref} className="tag link-u">
                 {t("experience.all")}
               </Link>
@@ -130,7 +142,7 @@ export default async function Home() {
                   className="tag link-u inline-flex items-center gap-1.5 whitespace-nowrap"
                 >
                   <Download className="size-3.5 shrink-0" aria-hidden />
-                  {t("resume.download")}
+                  {t("resume.download").replace(/\s*[↓⬇]\s*$/, "")}
                 </a>
               ) : null}
             </span>

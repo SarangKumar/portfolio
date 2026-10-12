@@ -271,7 +271,6 @@ const portfolioDiagram: Diagram = {
 export const seed: Content = {
   site: {
     nav: [
-      { href: "/", label: "Home" },
       { href: "/experience", label: "Experience" },
       { href: "/projects", label: "Projects" },
       { href: "/blogs", label: "Blogs" },
@@ -439,6 +438,7 @@ export const seed: Content = {
     name: "Sarang Kumar",
     role: "Software Engineer",
     location: "Bangalore, IN",
+    brand: "Sarang",
     tagline: "Building calm, well-tested software for real users.",
     intro:
       "Software engineer working across frontend, backend and systems. I build reusable application infrastructure, automate the boring parts, and care about the details most teams skip.",
@@ -456,9 +456,12 @@ export const seed: Content = {
       detail: "Full-time, Bangalore or remote.",
       roles: ["Frontend", "Backend", "Full-stack", "Cloud", "DevOps"],
       ctas: [
-        { label: "Download resume", href: "resume" },
-        { label: "Contact", href: "mailto:sarangkumar1578@gmail.com" },
-        { label: "LinkedIn", href: "https://www.linkedin.com/in/sarangkumar4" },
+        { label: "Resume ↓", href: "resume" },
+        { label: "Get in touch →", href: "mailto:sarangkumar1578@gmail.com" },
+        {
+          label: "LinkedIn ↗",
+          href: "https://www.linkedin.com/in/sarangkumar4",
+        },
       ],
       navIndicator: true,
     },

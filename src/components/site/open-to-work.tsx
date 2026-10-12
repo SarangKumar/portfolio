@@ -1,4 +1,3 @@
-import { Download } from "lucide-react";
 import type { SiteConfig } from "@/content/types";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +27,7 @@ export function StatusDot({
   );
 }
 
-/** Config-driven "Open to work" block (site.career). Renders nothing when off. */
+/** Config-driven, understated "open to work" line (site.career). Nothing when off. */
 export function OpenToWork({
   career,
   resumeUrl,
@@ -46,54 +45,34 @@ export function OpenToWork({
     }))
     .filter((c) => c.href);
   return (
-    <div
-      className={cn(
-        "border-primary/40 bg-primary/[0.06] relative rounded-3xl border p-6 sm:p-8",
-        className,
-      )}
-    >
-      <p className="eyebrow text-primary flex items-center gap-3">
+    <div className={cn("space-y-2", className)}>
+      <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <StatusDot on />
-        {career.label}
+        <span className="font-serif text-xl sm:text-2xl">
+          {career.headline}
+        </span>
+        {career.roles?.length ? (
+          <span className="text-muted-foreground font-mono text-xs tracking-wide sm:text-sm">
+            {career.roles.join(" · ")}
+          </span>
+        ) : null}
       </p>
-      <p className="display mt-3 text-3xl sm:text-4xl">{career.headline}</p>
-      {career.roles?.length ? (
-        <ul className="mt-5 flex flex-wrap gap-2" aria-label="Roles">
-          {career.roles.map((r) => (
-            <li key={r} className="chip border-primary/40 text-foreground">
-              {r}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      {career.detail ? (
-        <p className="text-muted-foreground mt-4 text-sm">{career.detail}</p>
-      ) : null}
-      {ctas.length ? (
-        <div className="mt-6 flex flex-wrap gap-3">
-          {ctas.map((c, i) => (
-            <a
-              key={c.label}
-              href={c.href}
-              {...(c.href.startsWith("http") || c.href.endsWith(".pdf")
-                ? { target: "_blank", rel: "noreferrer" }
-                : {})}
-              {...(c.href.endsWith(".pdf") ? { download: true } : {})}
-              className={cn(
-                "inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full px-5 text-sm font-medium transition-colors",
-                i === 0
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "border-border hover:border-primary border",
-              )}
-            >
-              {c.href.endsWith(".pdf") ? (
-                <Download className="size-4 shrink-0" aria-hidden />
-              ) : null}
-              {c.label}
-            </a>
-          ))}
-        </div>
-      ) : null}
+      <p className="text-muted-foreground flex flex-wrap items-center gap-x-5 gap-y-1 pl-[1.375rem] text-sm">
+        {career.detail ? <span>{career.detail}</span> : null}
+        {ctas.map((c) => (
+          <a
+            key={c.label}
+            href={c.href}
+            {...(c.href.startsWith("http") || c.href.endsWith(".pdf")
+              ? { target: "_blank", rel: "noreferrer" }
+              : {})}
+            {...(c.href.endsWith(".pdf") ? { download: true } : {})}
+            className="link-u text-foreground hover:text-primary whitespace-nowrap transition-colors"
+          >
+            {c.label}
+          </a>
+        ))}
+      </p>
     </div>
   );
 }

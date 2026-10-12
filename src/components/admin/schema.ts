@@ -225,7 +225,7 @@ export const SITE_FIELDS: Field[] = [
   {
     key: "nav",
     label:
-      "Navbar [{label, href}] — six destinations (routes: / /experience /projects /blogs /library /lab /board)",
+      "Navbar [{label, href}] — brand links home (routes: /experience /projects /blogs /library /lab /board)",
     type: "json",
   },
   {
@@ -255,7 +255,13 @@ export const SITE_FIELDS: Field[] = [
     label: "Labels & section titles (key → text, supports {placeholders})",
     type: "json",
   },
-  { key: "name", label: "Name", type: "text" },
+  { key: "name", label: "Full name (SEO, JSON-LD, resume)", type: "text" },
+  {
+    key: "brand",
+    label: "Navbar brand (short name)",
+    type: "text",
+    placeholder: "e.g. Sarang",
+  },
   { key: "role", label: "Role (hero headline)", type: "text" },
   { key: "location", label: "Location", type: "text" },
   { key: "tagline", label: "Tagline", type: "text" },

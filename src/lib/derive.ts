@@ -16,7 +16,13 @@ export function buildIndex(c: Content): SearchItem[] {
   const pageLabel = (href: string) =>
     c.site.nav.find((n) => n.href === href)?.label ?? href;
   return [
-    ...[...c.site.nav, ...c.site.footerNav].map((n) => ({
+    ...[
+      ...(c.site.nav.some((n) => n.href === "/")
+        ? []
+        : [{ href: "/", label: "Home" }]),
+      ...c.site.nav,
+      ...c.site.footerNav,
+    ].map((n) => ({
       id: `nav-${n.href}`,
       title: n.label,
       subtitle: n.href,

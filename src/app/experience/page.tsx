@@ -44,7 +44,7 @@ export default async function ExperiencePage() {
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center rounded-full px-5 font-medium transition-colors"
             >
               <Download className="size-3.5 shrink-0" aria-hidden />
-              {t("resume.download")}
+              {t("resume.download").replace(/\s*[↓⬇]\s*$/, "")}
             </a>
           ) : null}
         </div>

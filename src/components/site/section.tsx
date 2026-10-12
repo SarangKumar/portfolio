@@ -51,8 +51,12 @@ export function Section({
 }) {
   return (
     <section className={cn("container-x py-14", className)}>
-      <div className="rule mb-8 flex items-baseline justify-between gap-4 pt-4">
-        <h2 className="eyebrow" data-parallax="0.08" data-parallax-max="14">
+      <div className="rule mb-8 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pt-4">
+        <h2
+          className="eyebrow whitespace-nowrap"
+          data-parallax="0.08"
+          data-parallax-max="14"
+        >
           {index ? `${index}/ ` : ""}
           {title}
         </h2>

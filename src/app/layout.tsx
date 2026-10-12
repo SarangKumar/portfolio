@@ -63,6 +63,7 @@ export default async function RootLayout({
             nav={site.nav}
             data={{
               name: site.name,
+              brand: site.brand || site.name,
               role: site.role,
               location: site.location,
               handle: site.handle,
