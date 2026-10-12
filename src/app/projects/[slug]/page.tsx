@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DiagramViewer } from "@/components/lab/diagram-viewer";
 import { Markdown } from "@/components/site/markdown";
 import { ProjectIcon } from "@/components/site/project-icon";
 import { PageIntro, Section, TechTags } from "@/components/site/section";
@@ -101,6 +102,18 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </Section>
       ))}
+      {diagram ? (
+        <Section
+          title="Architecture diagram"
+          aside={
+            <Link href={`/lab/${diagram.slug}`} className="tag link-u">
+              Open in Lab
+            </Link>
+          }
+        >
+          <DiagramViewer diagram={diagram} />
+        </Section>
+      ) : null}
       <div className="container-x">
         <Link href="/projects" className="link-u text-sm">
           ← All projects

@@ -289,3 +289,42 @@
     animation: none !important;
   }
 }
+
+/* ---- Diagram beans ---- */
+.edge-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: edge-draw 700ms var(--ease-out-soft) var(--delay, 0ms) forwards;
+}
+@keyframes edge-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.bean-node {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.bean-active {
+  animation: bean-breathe 2.6s ease-in-out infinite;
+}
+@keyframes bean-breathe {
+  0%,
+  100% {
+    scale: 1;
+    rotate: 0deg;
+  }
+  50% {
+    scale: 1.035;
+    rotate: -1.2deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .edge-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .bean-active {
+    animation: none;
+  }
+}

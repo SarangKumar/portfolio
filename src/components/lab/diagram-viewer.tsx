@@ -1,13 +1,31 @@
 "use client";
 
 import { Pause, Play, RotateCcw } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import type { Diagram, DiagramNode, DiagramPoint } from "@/content/types";
 import { cn } from "@/lib/utils";
 
 const W = 140;
 const H = 52;
+
+/** Bean outline in a W×H box — same asymmetric bean as the site identity. */
+const BEAN =
+  "M74 3C113 1 137 12 137 27C137 43 112 51 70 50C29 49 3 42 3 27C3 13 31 5 74 3Z";
+
+function subscribeMotion(cb: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+function useReducedMotion() {
+  return useSyncExternalStore(
+    subscribeMotion,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => true,
+  );
+}
 
 const KIND_STYLE: Record<DiagramNode["kind"], string> = {
   client: "fill-background stroke-foreground/40",
@@ -43,6 +61,11 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
   const activeEdge = flow && step >= 0 ? flow.steps[step]?.edge : undefined;
   const failed =
     tab === "failures" && point ? new Set(point.nodes) : new Set<string>();
+  const reducedMotion = useReducedMotion();
+  const activeEdgeDef = diagram.edges.find((e) => e.id === activeEdge);
+  const activeNodes = new Set(
+    activeEdgeDef ? [activeEdgeDef.from, activeEdgeDef.to] : [],
+  );
   const highlighted = point ? new Set(point.nodes) : new Set<string>();
 
   useEffect(() => {
@@ -85,7 +108,7 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
                 <path d="M0 0 10 5 0 10z" className="fill-muted-foreground" />
               </marker>
             </defs>
-            {diagram.edges.map((e) => {
+            {diagram.edges.map((e, i) => {
               const a = nodeById.get(e.from);
               const b = nodeById.get(e.to);
               if (!a || !b) return null;
@@ -95,30 +118,49 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
                 y2 = b.y + H / 2;
               const ang = Math.atan2(y2 - y1, x2 - x1);
               const inset = Math.min(
-                W / 2 / Math.abs(Math.cos(ang) || 1e-6),
-                H / 2 / Math.abs(Math.sin(ang) || 1e-6),
+                (W / 2 - 6) / Math.abs(Math.cos(ang) || 1e-6),
+                (H / 2 - 2) / Math.abs(Math.sin(ang) || 1e-6),
               );
+              const sx = x1 + Math.cos(ang) * inset,
+                sy = y1 + Math.sin(ang) * inset,
+                ex = x2 - Math.cos(ang) * (inset + 4),
+                ey = y2 - Math.sin(ang) * (inset + 4);
+              const d = `M${sx} ${sy} L${ex} ${ey}`;
               const active = e.id === activeEdge;
               return (
                 <g key={e.id}>
-                  <line
-                    x1={x1 + Math.cos(ang) * inset}
-                    y1={y1 + Math.sin(ang) * inset}
-                    x2={x2 - Math.cos(ang) * (inset + 4)}
-                    y2={y2 - Math.sin(ang) * (inset + 4)}
+                  <path
+                    d={d}
+                    pathLength={1}
                     markerEnd="url(#arrow)"
+                    style={{ ["--delay" as string]: `${200 + i * 90}ms` }}
                     className={cn(
-                      "transition-all",
-                      active
-                        ? "stroke-primary flow-dash"
-                        : "stroke-muted-foreground/50",
+                      "edge-draw fill-none transition-[stroke,stroke-width] duration-300",
+                      active ? "stroke-primary" : "stroke-muted-foreground/50",
                     )}
-                    strokeWidth={active ? 2.5 : 1.2}
+                    strokeWidth={active ? 2 : 1.2}
                   />
+                  {active ? (
+                    <path
+                      d={d}
+                      className="flow-dash stroke-primary/60 fill-none"
+                      strokeWidth={4}
+                      strokeLinecap="round"
+                    />
+                  ) : null}
+                  {active && !reducedMotion ? (
+                    <circle r={4} className="fill-primary">
+                      <animateMotion
+                        dur="1.4s"
+                        repeatCount="indefinite"
+                        path={d}
+                      />
+                    </circle>
+                  ) : null}
                   {e.label ? (
                     <text
                       x={(x1 + x2) / 2}
-                      y={(y1 + y2) / 2 - 6}
+                      y={(y1 + y2) / 2 - 8}
                       textAnchor="middle"
                       className="fill-muted-foreground font-mono text-[10px]"
                     >
@@ -143,21 +185,21 @@ export function DiagramViewer({ diagram }: { diagram: Diagram }) {
                     (e.key === "Enter" || e.key === " ") &&
                     (e.preventDefault(), setSelected(n.id))
                   }
-                  className="cursor-pointer outline-none [&:focus-visible>rect]:stroke-ring"
+                  className="cursor-pointer outline-none [&:focus-visible>path]:stroke-ring"
                 >
-                  <rect
-                    x={n.x}
-                    y={n.y}
-                    width={W}
-                    height={H}
-                    rx={26}
-                    strokeWidth={isSel || highlighted.has(n.id) ? 2.5 : 1.2}
+                  <path
+                    d={BEAN}
+                    transform={`translate(${n.x} ${n.y})`}
+                    strokeWidth={isSel || highlighted.has(n.id) ? 2.2 : 1.2}
                     className={cn(
-                      "transition-all",
+                      "bean-node transition-[fill,stroke,stroke-width] duration-300",
                       isFailed
                         ? "fill-destructive/20 stroke-destructive"
                         : KIND_STYLE[n.kind],
                       isSel && !isFailed && "stroke-primary",
+                      (isSel || activeNodes.has(n.id)) &&
+                        !isFailed &&
+                        "bean-active",
                     )}
                   />
                   <text
