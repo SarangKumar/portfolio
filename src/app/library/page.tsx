@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { PageIntro, Section } from "@/components/site/section";
-import { getContent, REVALIDATE } from "@/lib/content";
+import { getContent } from "@/lib/content";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Library" };
 
 const STATE = {

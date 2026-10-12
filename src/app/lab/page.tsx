@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/site/section";
-import { getContent, REVALIDATE } from "@/lib/content";
+import { getContent } from "@/lib/content";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Architecture Lab" };
 
 export default async function LabPage() {

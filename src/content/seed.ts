@@ -293,7 +293,7 @@ export const seed: Content = {
       { label: "GitHub", href: "https://github.com/SarangKumar" },
       { label: "LinkedIn", href: "https://www.linkedin.com/in/sarangkumar4" },
     ],
-    featuredProjectSlugs: ["aavedak", "vinyaas"],
+    featuredProjectSlugs: ["vinyaas", "aavedak", "dotfiles"],
     featuredPostSlugs: [],
     homeSections: { featured: true, focus: true, writing: true, skills: true },
   },
@@ -302,8 +302,9 @@ export const seed: Content = {
       id: "proj-aavedak",
       slug: "aavedak",
       title: "Aavedak",
+      icon: "/projects/aavedak.png",
       year: "2026",
-      kind: "in-progress",
+      kind: "shipped",
       summary:
         "A personal job-search operating system — resumes, cover letters, ATS scoring, job discovery, referrals and application tracking in one pipeline. It recommends and prepares; you decide and send.",
       description:
@@ -332,12 +333,13 @@ export const seed: Content = {
       sections: [],
       diagramSlug: "aavedak",
       status: "published",
-      order: 1,
+      order: 2,
     },
     {
       id: "proj-vinyaas",
       slug: "vinyaas",
       title: "Vinyaas",
+      icon: "/projects/vinyaas.png",
       year: "2026",
       kind: "shipped",
       summary:
@@ -366,7 +368,40 @@ export const seed: Content = {
         "Copy-in source means full ownership and no override API — but upgrades become an explicit `vinyaas update` that overwrites local edits after confirmation, rather than a version bump.",
       sections: [],
       status: "published",
-      order: 2,
+      order: 1,
+    },
+    {
+      id: "proj-dotfiles",
+      slug: "dotfiles",
+      title: ".dotfiles",
+      icon: "/projects/dotfiles.svg",
+      year: "2026",
+      kind: "shipped",
+      summary:
+        "My macOS development environment as code — one script installs Homebrew packages, Oh My Zsh and symlinked configs for zsh, git, tmux and more.",
+      description:
+        "A reproducible machine setup: a Brewfile declares the CLI tools and runtimes, GNU Stow symlinks each config package into $HOME, and a non-destructive test script validates the repo before anything is installed.",
+      technologies: [
+        "Shell",
+        "Bash",
+        "Zsh",
+        "GNU Stow",
+        "Homebrew",
+        "tmux",
+        "Git",
+      ],
+      githubUrl: "https://github.com/SarangKumar/.dotfiles",
+      architecture:
+        "Each top-level directory is a Stow package mirroring the layout of `$HOME`:\n\n- `zsh/` — `.zshrc` plus split `aliases.zsh`, `exports.zsh` and `functions.zsh`\n- `git/` — `.gitconfig`\n- `tmux/` — `.tmux.conf`\n- `scripts/` — small executables in `~/.local/bin`\n\nA `Brewfile` keeps software installation separate from configuration.",
+      implementation:
+        "`install.sh` runs with `set -e`: it installs Homebrew if missing (handling both Apple Silicon and Intel prefixes), disables analytics, runs `brew bundle`, installs Oh My Zsh without letting it overwrite the Stow-managed `.zshrc`, then runs `stow -R` for every package. Helper scripts include `brewup` (update, upgrade and clean up Homebrew) and `cproj` (jump into a project directory).\n\nThe Brewfile covers Stow, git and git-lfs, jq, bat, eza, fzf, ripgrep, fd, tmux, Node, Python, pnpm, Prettier, the AWS CLI and Starship.",
+      testing:
+        "`test.sh` is intentionally non-destructive: it checks that the repository is valid and ready to install — without installing packages, editing configs or creating symlinks — and reports passes, failures and warnings.",
+      tradeoffs:
+        "Symlinks via Stow keep every config editable in one git repo, at the cost of a fixed directory convention. Every step is idempotent, so re-running the installer is safe — but it targets macOS only.",
+      sections: [],
+      status: "published",
+      order: 3,
     },
     {
       id: "proj-shift-manager",
@@ -387,7 +422,7 @@ export const seed: Content = {
       tradeoffs: "Internal repo, so no public source or demo.",
       sections: [],
       status: "published",
-      order: 3,
+      order: 4,
     },
     {
       id: "proj-next",

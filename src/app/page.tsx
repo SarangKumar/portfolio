@@ -2,10 +2,10 @@ import Link from "next/link";
 import { BeanBlob } from "@/components/site/bean";
 import { ProjectCard } from "@/components/site/project-card";
 import { Section } from "@/components/site/section";
-import { getContent, REVALIDATE } from "@/lib/content";
+import { getContent } from "@/lib/content";
 import { deriveSkills } from "@/lib/derive";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 export default async function Home() {
   const content = await getContent();

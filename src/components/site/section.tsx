@@ -6,14 +6,21 @@ export function PageIntro({
   eyebrow,
   title,
   children,
+  compact,
 }: {
   index: string;
   eyebrow: string;
   title: string;
   children?: ReactNode;
+  compact?: boolean;
 }) {
   return (
-    <header className="fade-up container-x pt-16 pb-12 sm:pt-24">
+    <header
+      className={cn(
+        "fade-up container-x pb-12",
+        compact ? "pt-8" : "pt-16 sm:pt-24",
+      )}
+    >
       <p className="eyebrow">
         {index}/ {eyebrow}
       </p>

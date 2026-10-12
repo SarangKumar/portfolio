@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Markdown } from "@/components/site/markdown";
+import { ProjectIcon } from "@/components/site/project-icon";
 import { PageIntro, Section, TechTags } from "@/components/site/section";
-import { getContent, REVALIDATE } from "@/lib/content";
+import { getContent } from "@/lib/content";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,7 +37,16 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <article>
+      <div className="container-x pt-16 sm:pt-24">
+        <ProjectIcon
+          src={p.icon}
+          title={p.title}
+          size={88}
+          className="fade-up"
+        />
+      </div>
       <PageIntro
+        compact
         index={p.year}
         eyebrow={`Case study · ${p.kind}`}
         title={p.title}
@@ -60,7 +70,7 @@ export default async function ProjectPage({ params }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              Source ↗
+              GitHub ↗
             </a>
           ) : null}
           {diagram ? (

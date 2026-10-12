@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { ProjectCard } from "@/components/site/project-card";
 import { PageIntro, Section } from "@/components/site/section";
-import { getContent, REVALIDATE } from "@/lib/content";
+import { getContent } from "@/lib/content";
 import { deriveSkills } from "@/lib/derive";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Projects" };
 
 export default async function ProjectsPage() {

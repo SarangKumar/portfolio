@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import type { SearchItem } from "@/lib/derive";
 import { cn } from "@/lib/utils";
+import { ProjectIcon } from "./project-icon";
 
 export function filterIndex(index: SearchItem[], q: string) {
   const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -116,10 +117,15 @@ function PaletteBody({
                 i === active && "bg-accent",
               )}
             >
-              <span className="min-w-0">
-                <span className="block truncate text-sm">{r.title}</span>
-                <span className="text-muted-foreground block truncate text-xs">
-                  {r.subtitle}
+              <span className="flex min-w-0 items-center gap-3">
+                {r.group === "Projects" ? (
+                  <ProjectIcon src={r.icon} title={r.title} size={28} />
+                ) : null}
+                <span className="min-w-0">
+                  <span className="block truncate text-sm">{r.title}</span>
+                  <span className="text-muted-foreground block truncate text-xs">
+                    {r.subtitle}
+                  </span>
                 </span>
               </span>
               <span className="tag shrink-0">{r.group}</span>

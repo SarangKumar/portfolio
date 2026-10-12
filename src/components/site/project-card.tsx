@@ -8,9 +8,10 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import type { Project } from "@/content/types";
+import { ProjectIcon } from "./project-icon";
 
 const KIND: Record<Project["kind"], string> = {
-  shipped: "Shipped",
+  shipped: "Live",
   "in-progress": "In progress",
   idea: "Idea",
 };
@@ -28,16 +29,24 @@ export function ProjectCard({
       <HoverCardTrigger>
         <Link
           href={`/projects/${project.slug}`}
-          className="group border-border lift fade-up grid gap-2 border-b py-6 sm:grid-cols-[3rem_1fr_auto] sm:items-baseline sm:gap-6"
+          className="group border-border lift fade-up grid gap-2 border-b py-6 sm:grid-cols-[3rem_1fr_auto] sm:items-center sm:gap-6"
           style={{ ["--delay" as string]: `${index * 60}ms` }}
         >
           <span className="tag">{String(index + 1).padStart(2, "0")}</span>
-          <span>
-            <span className="display group-hover:text-primary block text-3xl transition-colors sm:text-4xl">
-              {project.title}
-            </span>
-            <span className="text-muted-foreground mt-2 block max-w-2xl text-sm">
-              {project.summary}
+          <span className="flex items-start gap-4">
+            <ProjectIcon
+              src={project.icon}
+              title={project.title}
+              size={52}
+              className="transition-transform duration-300 group-hover:scale-105"
+            />
+            <span>
+              <span className="display group-hover:text-primary block text-3xl transition-colors sm:text-4xl">
+                {project.title}
+              </span>
+              <span className="text-muted-foreground mt-2 block max-w-2xl text-sm">
+                {project.summary}
+              </span>
             </span>
           </span>
           <span className="tag flex items-center gap-2">
@@ -48,20 +57,17 @@ export function ProjectCard({
       </HoverCardTrigger>
       <HoverCardContent side="bottom" align="start" className="w-[22rem] p-0">
         <div className="space-y-3 p-4">
-          <div className="flex items-center justify-between">
-            <span className="font-serif text-xl">{project.title}</span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-3">
+              <ProjectIcon src={project.icon} title={project.title} size={36} />
+              <span className="font-serif text-xl">{project.title}</span>
+            </span>
             <span className="chip">
               <span className="bean bg-primary size-2" />
               {KIND[project.kind]}
             </span>
           </div>
           <p className="text-muted-foreground text-sm">{project.description}</p>
-          {project.architecture ? (
-            <p className="text-xs">
-              <span className="eyebrow">Architecture · </span>
-              {project.architecture.slice(0, 160)}…
-            </p>
-          ) : null}
           <div className="flex flex-wrap gap-1">
             {project.technologies.map((t) => (
               <span key={t} className="chip">
@@ -80,7 +86,7 @@ export function ProjectCard({
                 rel="noreferrer"
                 className="link-u"
               >
-                Live
+                Live ↗
               </a>
             ) : null}
             {project.githubUrl ? (
@@ -90,7 +96,7 @@ export function ProjectCard({
                 rel="noreferrer"
                 className="link-u"
               >
-                Source
+                GitHub ↗
               </a>
             ) : null}
           </div>

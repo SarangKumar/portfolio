@@ -34,6 +34,8 @@ export type Project = {
   id: string;
   slug: string;
   title: string;
+  /** Path under /public to the project's app icon. */
+  icon?: string;
   year: string;
   summary: string;
   description: string;

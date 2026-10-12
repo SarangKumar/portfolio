@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/site/section";
-import { getContent, REVALIDATE } from "@/lib/content";
+import { getContent } from "@/lib/content";
 import { Archive } from "./archive";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Blogs" };
 
 export default async function BlogsPage() {

@@ -253,7 +253,9 @@ function CollectionEditor({ name }: { name: CollectionName }) {
   }, [store, name]);
   useEffect(() => {
     let live = true;
-    Promise.resolve().then(() => live && load());
+    Promise.resolve().then(() => {
+      if (live) load();
+    });
     return () => {
       live = false;
     };
@@ -438,7 +440,9 @@ function Moderation() {
   }, [store]);
   useEffect(() => {
     let live = true;
-    Promise.resolve().then(() => live && load());
+    Promise.resolve().then(() => {
+      if (live) load();
+    });
     return () => {
       live = false;
     };

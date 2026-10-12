@@ -7,6 +7,7 @@ export type SearchItem = {
   href: string;
   group: "Pages" | "Projects" | "Writing" | "Library" | "Architecture";
   keywords: string;
+  icon?: string;
 };
 
 export const NAV = [
@@ -36,6 +37,7 @@ export function buildIndex(c: Content): SearchItem[] {
       href: `/projects/${p.slug}`,
       group: "Projects" as const,
       keywords: `${p.slug} ${p.technologies.join(" ")}`,
+      icon: p.icon,
     })),
     ...c.posts.map((p) => ({
       id: p.id,

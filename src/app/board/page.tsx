@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/site/section";
-import { getApprovedComments, REVALIDATE } from "@/lib/content";
+import { getApprovedComments } from "@/lib/content";
 import { CommentForm } from "./comment-form";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Public Board" };
 
 export default async function BoardPage() {
