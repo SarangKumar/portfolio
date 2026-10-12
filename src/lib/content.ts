@@ -20,6 +20,11 @@ import { label } from "./labels";
 /** Seconds between background re-renders when Firestore is the source. */
 export const REVALIDATE = 60;
 
+/** The navbar shipped before Experience moved in and Library moved to the footer. */
+const LEGACY_NAV = "/,/projects,/blogs,/library,/lab,/board";
+const isLegacyNav = (nav?: SiteConfig["nav"]) =>
+  nav?.map((n) => n.href).join(",") === LEGACY_NAV;
+
 /** Firestore site config layered over seed, so new keys always have a value. */
 function mergeSite(remote: Partial<SiteConfig>): SiteConfig {
   const base = seed.site;
@@ -31,7 +36,9 @@ function mergeSite(remote: Partial<SiteConfig>): SiteConfig {
     homeSections: { ...base.homeSections, ...remote.homeSections },
     pages: { ...base.pages, ...remote.pages },
     labels: { ...base.labels, ...remote.labels },
-    nav: remote.nav?.length ? remote.nav : base.nav,
+    // An untouched legacy navbar is upgraded to the current seed; any custom nav wins.
+    nav: remote.nav?.length && !isLegacyNav(remote.nav) ? remote.nav : base.nav,
+    footerNav: remote.footerNav ?? base.footerNav,
   };
 }
 

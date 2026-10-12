@@ -1,3 +1,4 @@
+import { seoMeta } from "@/lib/page-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const d = (await getContent()).diagrams.find((x) => x.slug === slug);
-  return { title: d?.title };
+  return seoMeta(d?.title, d?.summary, `/lab/${slug}`);
 }
 
 export default async function DiagramPage({ params }: Props) {

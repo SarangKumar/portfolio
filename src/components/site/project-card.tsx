@@ -30,13 +30,19 @@ export function ProjectCard({
         >
           <span className="tag">{String(index + 1).padStart(2, "0")}</span>
           <span className="flex items-start gap-4">
-            <ProjectIcon
-              src={project.icon}
-              title={project.title}
-              size={52}
-              morph={project.slug}
-              className="transition-transform duration-300 group-hover:scale-105"
-            />
+            <span
+              data-parallax="-0.06"
+              data-parallax-max="12"
+              className="shrink-0"
+            >
+              <ProjectIcon
+                src={project.icon}
+                title={project.title}
+                size={52}
+                morph={project.slug}
+                className="transition-transform duration-300 group-hover:scale-105"
+              />
+            </span>
             <span>
               <span className="display group-hover:text-primary block text-3xl transition-colors sm:text-4xl">
                 {project.title}

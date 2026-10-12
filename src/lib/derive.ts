@@ -16,7 +16,7 @@ export function buildIndex(c: Content): SearchItem[] {
   const pageLabel = (href: string) =>
     c.site.nav.find((n) => n.href === href)?.label ?? href;
   return [
-    ...c.site.nav.map((n) => ({
+    ...[...c.site.nav, ...c.site.footerNav].map((n) => ({
       id: `nav-${n.href}`,
       title: n.label,
       subtitle: n.href,
@@ -24,14 +24,6 @@ export function buildIndex(c: Content): SearchItem[] {
       group: "Pages" as const,
       keywords: n.label,
     })),
-    {
-      id: "page-experience",
-      title: label(c.site.labels, "experience.title"),
-      subtitle: c.site.experienceHref,
-      href: c.site.experienceHref,
-      group: "Pages" as const,
-      keywords: "experience career work education",
-    },
     ...c.experience.map((e) => ({
       id: e.id,
       title: `${e.role} · ${e.company}`,
@@ -98,10 +90,10 @@ export type DerivedSkill = {
  * Skills view: every technology used by a published project or experience
  * role, resolved through the admin-managed `skills` collection (name/alias
  * match → rename/merge; hidden → dropped; category/order/flags → grouping).
- * Unmatched technologies land in the "From projects" category.
+ * Technologies with no matching skill (name/alias) are not shown — add a skill
+ * or alias in /admin to surface them.
  */
 export function deriveSkills(c: Content) {
-  const fallbackCategory = label(c.site.labels, "skills.fromProjects");
   const byKey = new Map<string, Content["skills"][number]>();
   for (const s of c.skills)
     for (const k of [s.name, ...(s.aliases ?? [])])
@@ -110,18 +102,19 @@ export function deriveSkills(c: Content) {
   const hidden = new Set<string>();
   const touch = (raw: string) => {
     const s = byKey.get(raw.toLowerCase());
-    if (s?.hidden) {
+    if (!s) return null;
+    if (s.hidden) {
       hidden.add(s.name);
       return null;
     }
-    const name = s?.name ?? raw;
+    const name = s.name;
     if (!out.has(name))
       out.set(name, {
         name,
-        category: s?.category || fallbackCategory,
-        proficiency: s?.proficiency ?? "",
-        featured: Boolean(s?.featured),
-        order: s?.order ?? 999,
+        category: s.category,
+        proficiency: s.proficiency ?? "",
+        featured: Boolean(s.featured),
+        order: s.order ?? 999,
         projects: [],
         experience: [],
       });

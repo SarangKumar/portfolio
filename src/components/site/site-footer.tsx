@@ -6,7 +6,7 @@ import type { Link as L } from "@/content/types";
 import { useT } from "./labels-provider";
 
 export function SiteFooter({
-  experienceHref,
+  footerNav,
   name,
   email,
   links,
@@ -14,7 +14,7 @@ export function SiteFooter({
   name: string;
   email: string;
   links: L[];
-  experienceHref: string;
+  footerNav: L[];
 }) {
   const pathname = usePathname();
   const t = useT();
@@ -25,7 +25,7 @@ export function SiteFooter({
         <p className="eyebrow">{t("footer.eyebrow")}</p>
         <a
           href={`mailto:${email}`}
-          className="display link-u mt-4 block text-4xl break-all sm:text-6xl"
+          className="display link-u mt-4 inline-block max-w-full py-1 text-[clamp(1.25rem,7.2vw,3.75rem)] leading-tight whitespace-nowrap"
         >
           {email}
         </a>
@@ -45,9 +45,11 @@ export function SiteFooter({
                 {l.label}
               </a>
             ))}
-            <Link href={experienceHref} className="link-u">
-              {t("footer.experience")}
-            </Link>
+            {footerNav.map((l) => (
+              <Link key={l.href} href={l.href} className="link-u">
+                {l.label}
+              </Link>
+            ))}
             <Link href="/admin" className="link-u">
               {t("footer.admin")}
             </Link>

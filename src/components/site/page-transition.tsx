@@ -17,7 +17,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       exit="page-exit"
       default="none"
     >
-      <div>{children}</div>
+      <div className="page-fallback">{children}</div>
     </ViewTransition>
   );
 }

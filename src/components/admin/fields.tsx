@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { Field } from "./schema";
+import { PLACEHOLDERS, type Field } from "./schema";
+
+const ph = (f: Field) => f.placeholder ?? PLACEHOLDERS[f.key] ?? "";
 
 type Value = unknown;
 
@@ -47,6 +49,7 @@ export function FieldInput({
     control = (
       <Input
         id={id}
+        placeholder={ph(field)}
         type="number"
         value={Number(value ?? 0)}
         onChange={(e) => onChange(Number(e.target.value))}
@@ -56,6 +59,7 @@ export function FieldInput({
     control = (
       <Input
         id={id}
+        placeholder={ph(field)}
         value={((value as string[]) ?? []).join(", ")}
         onChange={(e) =>
           onChange(
@@ -71,6 +75,7 @@ export function FieldInput({
     control = (
       <Textarea
         id={id}
+        placeholder={ph(field)}
         rows={4}
         value={((value as string[]) ?? []).join("\n")}
         onChange={(e) =>
@@ -92,6 +97,7 @@ export function FieldInput({
     control = (
       <Textarea
         id={id}
+        placeholder={ph(field)}
         rows={t === "markdown" ? 8 : 3}
         value={String(value ?? "")}
         onChange={(e) => onChange(e.target.value)}
@@ -102,6 +108,7 @@ export function FieldInput({
     control = (
       <Input
         id={id}
+        placeholder={ph(field)}
         value={String(value ?? "")}
         onChange={(e) => onChange(e.target.value)}
       />
@@ -131,7 +138,7 @@ function JsonField({
   onError: (key: string, err: string | null) => void;
 }) {
   const [text, setText] = useState(() =>
-    JSON.stringify(value ?? null, null, 2),
+    value == null ? "" : JSON.stringify(value, null, 2),
   );
   const [err, setErr] = useState<string | null>(null);
   return (
@@ -141,13 +148,14 @@ function JsonField({
       </label>
       <Textarea
         id={id}
+        placeholder={ph(field)}
         rows={6}
         value={text}
         className="font-mono text-xs"
         onChange={(e) => {
           setText(e.target.value);
           try {
-            onChange(JSON.parse(e.target.value));
+            onChange(e.target.value.trim() ? JSON.parse(e.target.value) : null);
             setErr(null);
             onError(field.key, null);
           } catch {

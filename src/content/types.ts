@@ -13,6 +13,8 @@ export type PageCopy = { eyebrow: string; title: string; intro: string };
 export type SiteConfig = {
   /** Navbar destinations, in order. Labels editable; hrefs are the six routes. */
   nav: Link[];
+  /** Secondary destinations shown in the footer (e.g. Library). */
+  footerNav: Link[];
   experienceHref: string;
   /** Display order of skill categories. */
   skillCategories: string[];
@@ -29,7 +31,18 @@ export type SiteConfig = {
   intro: string;
   about: string;
   currentFocus: string[];
-  career: { available: boolean; label: string; detail: string };
+  career: {
+    available: boolean;
+    /** Short status, e.g. "Open to work". */
+    label: string;
+    headline: string;
+    detail: string;
+    roles: string[];
+    /** href "resume" resolves to the resume PDF. */
+    ctas: Link[];
+    /** Show the indicator in the navbar. */
+    navIndicator: boolean;
+  };
   email: string;
   links: Link[];
   featuredProjectSlugs: string[];

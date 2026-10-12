@@ -9,6 +9,8 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { themeScript } from "@/components/site/theme-toggle";
 import { getContent } from "@/lib/content";
 import { buildIndex } from "@/lib/derive";
+import { JsonLd } from "@/components/site/json-ld";
+import { SITE_URL, abs } from "@/lib/site-url";
 import "./globals.css";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -31,6 +33,13 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
     },
     authors: [{ name: site.name }],
+    metadataBase: new URL(SITE_URL),
+    alternates: { canonical: "/" },
+    twitter: {
+      card: "summary_large_image",
+      title: site.seo.title,
+      description: site.seo.description,
+    },
   };
 }
 
@@ -57,11 +66,57 @@ export default async function RootLayout({
               role: site.role,
               location: site.location,
               handle: site.handle,
-              career: `${site.career.label} — ${site.career.detail}`,
+              career: site.career.available
+                ? `${site.career.label}: ${site.career.headline} — ${site.career.roles.join(", ")}. ${site.career.detail}`
+                : "Not looking right now.",
+              careerOn: site.career.available && site.career.navIndicator,
+              careerLabel: site.career.label,
               email: site.email,
               links: site.links,
               resumeUrl: content.resume.pdfUrl,
               index: buildIndex(content),
+            }}
+          />
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Person",
+                  "@id": abs("/#person"),
+                  name: site.name,
+                  jobTitle: site.role,
+                  email: `mailto:${site.email}`,
+                  url: abs("/"),
+                  address: {
+                    "@type": "PostalAddress",
+                    addressLocality: site.location,
+                  },
+                  sameAs: site.links
+                    .map((l) => l.href)
+                    .filter((h) => h.startsWith("http")),
+                  knowsAbout: content.skills
+                    .filter((s) => !s.hidden)
+                    .map((s) => s.name),
+                  ...(site.career.available
+                    ? {
+                        seeks: {
+                          "@type": "Demand",
+                          name: `${site.career.headline}: ${site.career.roles.join(", ")}`,
+                          description: site.career.detail,
+                        },
+                      }
+                    : {}),
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": abs("/#website"),
+                  url: abs("/"),
+                  name: site.seo.title,
+                  description: site.seo.description,
+                  author: { "@id": abs("/#person") },
+                },
+              ],
             }}
           />
           <ParallaxController />
@@ -72,7 +127,7 @@ export default async function RootLayout({
             name={site.name}
             email={site.email}
             links={site.links}
-            experienceHref={site.experienceHref}
+            footerNav={site.footerNav}
           />
         </LabelsProvider>
       </body>

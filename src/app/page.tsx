@@ -1,3 +1,5 @@
+import { Download } from "lucide-react";
+import { OpenToWork } from "@/components/site/open-to-work";
 import Link from "next/link";
 import { BeanBlob } from "@/components/site/bean";
 import { ExperienceList } from "@/components/site/experience-list";
@@ -29,18 +31,20 @@ export default async function Home() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" />
+        <BeanBlob className="top-10 -right-24 h-80 w-[28rem]" speed={-0.35} />
         <BeanBlob
           className="bottom-0 -left-32 h-64 w-96 opacity-60"
-          speed={0.1}
+          speed={0.25}
         />
-        <div className="container-x relative pt-20 pb-16 sm:pt-32">
+        <div
+          data-parallax="-0.15"
+          data-parallax-max="48"
+          className="container-x relative pt-20 pb-16 sm:pt-32"
+        >
           <p className="eyebrow fade-up">
             01/ {t("home.from", { location: site.location })}
           </p>
           <h1
-            data-parallax="-0.05"
-            data-parallax-max="28"
             className="display fade-up mt-6 text-6xl sm:text-8xl lg:text-9xl"
             style={{ ["--delay" as string]: "80ms" }}
           >
@@ -52,17 +56,15 @@ export default async function Home() {
           >
             {site.tagline}
           </p>
+          <OpenToWork
+            career={site.career}
+            resumeUrl={content.resume.pdfUrl}
+            className="fade-up mt-10 max-w-2xl"
+          />
           <div
             className="fade-up mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm"
             style={{ ["--delay" as string]: "240ms" }}
           >
-            <span className="chip">
-              <span
-                className={`bean size-2 ${site.career.available ? "bg-emerald-500" : "bg-muted-foreground"}`}
-              />
-              {site.career.label}
-            </span>
-            <span className="text-muted-foreground">{site.career.detail}</span>
             <Link href="/projects" className="link-u">
               {t("home.cta")}
             </Link>
@@ -125,23 +127,15 @@ export default async function Home() {
                   download
                   target="_blank"
                   rel="noreferrer"
-                  className="tag link-u"
+                  className="tag link-u inline-flex items-center gap-1.5 whitespace-nowrap"
                 >
+                  <Download className="size-3.5 shrink-0" aria-hidden />
                   {t("resume.download")}
                 </a>
               ) : null}
             </span>
           }
         >
-          <p className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-            <span className="chip">
-              <span
-                className={`bean size-2 ${site.career.available ? "bg-emerald-500" : "bg-muted-foreground"}`}
-              />
-              {site.career.label}
-            </span>
-            <span className="text-muted-foreground">{site.career.detail}</span>
-          </p>
           {content.resume.summary ? (
             <p className="text-foreground/85 mb-10 max-w-3xl text-lg leading-relaxed">
               {content.resume.summary}
@@ -155,7 +149,12 @@ export default async function Home() {
         <Section index={idx()} title={t("home.focus")}>
           <ol className="grid gap-6 md:grid-cols-3">
             {site.currentFocus.map((f, i) => (
-              <li key={f} className="border-border lift rounded-2xl border p-6">
+              <li
+                key={f}
+                data-parallax={-0.04 * ((i % 3) + 1)}
+                data-parallax-max="24"
+                className="border-border lift rounded-2xl border p-6"
+              >
                 <span className="tag">{String(i + 1).padStart(2, "0")}</span>
                 <p className="mt-6 font-serif text-2xl leading-snug">{f}</p>
               </li>

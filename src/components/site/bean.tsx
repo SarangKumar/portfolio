@@ -30,7 +30,7 @@ export function BeanBlob({
     <div
       aria-hidden
       data-parallax={speed}
-      data-parallax-max={80}
+      data-parallax-max={160}
       className={cn(
         "bean bg-primary/15 pointer-events-none absolute blur-2xl",
         className,

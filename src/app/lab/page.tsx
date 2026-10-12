@@ -19,6 +19,8 @@ export default async function LabPage() {
         {diagrams.map((d, i) => (
           <Link
             key={d.id}
+            data-parallax={-0.04 * ((i % 3) + 1)}
+            data-parallax-max="24"
             href={`/lab/${d.slug}`}
             className="group border-border lift fade-up rounded-3xl border p-8"
             style={{ ["--delay" as string]: `${i * 80}ms` }}

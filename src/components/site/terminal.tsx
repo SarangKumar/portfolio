@@ -14,6 +14,8 @@ export type TerminalData = {
   location: string;
   handle: string;
   career: string;
+  careerOn?: boolean;
+  careerLabel?: string;
   email: string;
   links: { label: string; href: string }[];
   resumeUrl: string;

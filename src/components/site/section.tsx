@@ -16,6 +16,8 @@ export function PageIntro({
 }) {
   return (
     <header
+      data-parallax="-0.1"
+      data-parallax-max="28"
       className={cn(
         "fade-up container-x pb-12",
         compact ? "pt-8" : "pt-16 sm:pt-24",
@@ -24,13 +26,7 @@ export function PageIntro({
       <p className="eyebrow">
         {index}/ {eyebrow}
       </p>
-      <h1
-        data-parallax="-0.03"
-        data-parallax-max="10"
-        className="display mt-4 text-5xl sm:text-7xl"
-      >
-        {title}
-      </h1>
+      <h1 className="display mt-4 text-5xl sm:text-7xl">{title}</h1>
       {children ? (
         <div className="text-muted-foreground mt-6 max-w-2xl text-lg">
           {children}
@@ -56,7 +52,7 @@ export function Section({
   return (
     <section className={cn("container-x py-14", className)}>
       <div className="rule mb-8 flex items-baseline justify-between gap-4 pt-4">
-        <h2 className="eyebrow" data-parallax="0.03" data-parallax-max="8">
+        <h2 className="eyebrow" data-parallax="0.08" data-parallax-max="14">
           {index ? `${index}/ ` : ""}
           {title}
         </h2>

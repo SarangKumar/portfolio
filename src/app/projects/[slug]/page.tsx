@@ -1,8 +1,11 @@
+import { seoMeta } from "@/lib/page-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DiagramViewer } from "@/components/lab/diagram-viewer";
 import { Markdown } from "@/components/site/markdown";
+import { JsonLd } from "@/components/site/json-ld";
+import { abs } from "@/lib/site-url";
 import { ProjectIcon } from "@/components/site/project-icon";
 import { PageIntro, Section, TechTags } from "@/components/site/section";
 import { getContent, getT } from "@/lib/content";
@@ -18,7 +21,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = (await getContent()).projects.find((x) => x.slug === slug);
-  return { title: p?.title, description: p?.summary };
+  return seoMeta(p?.title, p?.summary, `/projects/${slug}`);
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -38,6 +41,25 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <article>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": p.githubUrl ? "SoftwareSourceCode" : "CreativeWork",
+          name: p.title,
+          description: p.summary,
+          url: abs(`/projects/${p.slug}`),
+          dateCreated: p.year,
+          keywords: p.technologies.join(", "),
+          creator: { "@id": abs("/#person") },
+          ...(p.githubUrl
+            ? {
+                codeRepository: p.githubUrl,
+                programmingLanguage: p.technologies,
+              }
+            : {}),
+          ...(p.demoUrl ? { sameAs: p.demoUrl } : {}),
+        }}
+      />
       <div className="container-x pt-16 sm:pt-24">
         <ProjectIcon
           src={p.icon}

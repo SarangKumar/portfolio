@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import type { Link as NavLink } from "@/content/types";
 import { cn } from "@/lib/utils";
 import { BeanMark } from "./bean";
+import { StatusDot } from "./open-to-work";
 import { useT } from "./labels-provider";
 import { CommandPalette } from "./command-palette";
 import { Terminal, type TerminalData } from "./terminal";
@@ -88,6 +89,15 @@ export function SiteChrome({
             ))}
           </nav>
           <div className="flex items-center gap-1">
+            {data.careerOn ? (
+              <Link
+                href="/experience"
+                className="border-primary/40 text-foreground hover:bg-primary/10 mr-1 hidden items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium xl:inline-flex"
+              >
+                <StatusDot on />
+                {data.careerLabel}
+              </Link>
+            ) : null}
             <Button
               variant="outline"
               size="sm"

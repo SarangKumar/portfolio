@@ -14,8 +14,25 @@ const HREF: Record<PageKey, string> = {
 export async function pageMetadata(key: PageKey): Promise<Metadata> {
   const { site } = await getContent();
   const page = site.pages[key];
+  const title =
+    [...site.nav, ...site.footerNav].find((n) => n.href === HREF[key])?.label ??
+    page.title;
+  return seoMeta(title, page.intro, HREF[key], site.name);
+}
+
+/** title/description/canonical + matching Open Graph & Twitter fields. */
+export function seoMeta(
+  title: string | undefined,
+  description: string | undefined,
+  path: string,
+  siteName?: string,
+): Metadata {
+  const full = title && siteName ? `${title} — ${siteName}` : title;
   return {
-    title: site.nav.find((n) => n.href === HREF[key])?.label ?? page.title,
-    description: page.intro,
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: { title: full, description, url: path },
+    twitter: { card: "summary_large_image", title: full, description },
   };
 }

@@ -1,3 +1,6 @@
+import { seoMeta } from "@/lib/page-meta";
+import { JsonLd } from "@/components/site/json-ld";
+import { abs } from "@/lib/site-url";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,7 +17,23 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = (await getContent()).posts.find((x) => x.slug === slug);
-  return { title: p?.title, description: p?.excerpt };
+  return {
+    title: p?.title,
+    description: p?.excerpt,
+    ...seoMeta(p?.title, p?.excerpt, `/blogs/${slug}`),
+    ...(p
+      ? {
+          openGraph: {
+            title: p.title,
+            description: p.excerpt,
+            url: `/blogs/${slug}`,
+            type: "article",
+            publishedTime: p.date,
+            tags: p.tags,
+          },
+        }
+      : {}),
+  };
 }
 
 export default async function PostPage({ params }: Props) {
@@ -24,6 +43,19 @@ export default async function PostPage({ params }: Props) {
   const t = await getT();
   return (
     <article className="container-x max-w-3xl py-20">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: p.title,
+          description: p.excerpt,
+          datePublished: p.date,
+          keywords: p.tags.join(", "),
+          url: abs(`/blogs/${p.slug}`),
+          mainEntityOfPage: abs(`/blogs/${p.slug}`),
+          author: { "@id": abs("/#person") },
+        }}
+      />
       <p className="eyebrow">
         {p.kind} · {p.category} · {p.date}
       </p>

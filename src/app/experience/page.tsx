@@ -1,3 +1,6 @@
+import { seoMeta } from "@/lib/page-meta";
+import { Download } from "lucide-react";
+import { OpenToWork } from "@/components/site/open-to-work";
 import type { Metadata } from "next";
 import { ExperienceList } from "@/components/site/experience-list";
 import { PageIntro, Section } from "@/components/site/section";
@@ -9,10 +12,11 @@ export const revalidate = 60;
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   const { resume } = await getContent();
-  return {
-    title: t("experience.title"),
-    description: resume.summary || t("experience.intro"),
-  };
+  return seoMeta(
+    t("experience.title"),
+    resume.summary || t("experience.intro"),
+    "/experience",
+  );
 }
 
 /** Experience + resume in one editorial page. */
@@ -31,12 +35,6 @@ export default async function ExperiencePage() {
           {resume.summary || t("experience.intro")}
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-          <span className="chip">
-            <span
-              className={`bean size-2 ${site.career.available ? "bg-emerald-500" : "bg-muted-foreground"}`}
-            />
-            {site.career.label}
-          </span>
           {resume.pdfUrl ? (
             <a
               href={resume.pdfUrl}
@@ -45,10 +43,16 @@ export default async function ExperiencePage() {
               rel="noreferrer"
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center rounded-full px-5 font-medium transition-colors"
             >
+              <Download className="size-3.5 shrink-0" aria-hidden />
               {t("resume.download")}
             </a>
           ) : null}
         </div>
+        <OpenToWork
+          career={site.career}
+          resumeUrl={resume.pdfUrl}
+          className="mt-10"
+        />
       </PageIntro>
 
       <Section index="02" title={t("resume.experience")} className="py-20">
