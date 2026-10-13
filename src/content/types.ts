@@ -76,6 +76,10 @@ export type Project = {
   githubUrl?: string;
   demoUrl?: string;
   kind: "shipped" | "in-progress" | "idea";
+  /** Optional badge text overriding the kind label (e.g. "Open source"). */
+  statusLabel?: string;
+  /** Optional one-line install / setup command shown on the case study. */
+  installCommand?: string;
   architecture: string;
   implementation: string;
   testing: string;

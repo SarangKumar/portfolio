@@ -54,7 +54,8 @@ export function ProjectCard({
             </span>
           </span>
           <span className="tag flex items-center gap-2">
-            {t(`project.kind.${project.kind}`)} · {project.year}
+            {project.statusLabel || t(`project.kind.${project.kind}`)} ·{" "}
+            {project.year}
             <ArrowUpRight
               size={16}
               strokeWidth={1.75}
@@ -73,7 +74,7 @@ export function ProjectCard({
             </span>
             <span className="chip">
               <span className="bean bg-primary size-2" />
-              {t(`project.kind.${project.kind}`)}
+              {project.statusLabel || t(`project.kind.${project.kind}`)}
             </span>
           </div>
           <p className="text-muted-foreground text-sm">{project.description}</p>

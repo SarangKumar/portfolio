@@ -583,28 +583,32 @@ export const seed: Content = {
       icon: "/projects/dotfiles.svg",
       year: "2026",
       kind: "shipped",
+      statusLabel: "Open source",
+      installCommand:
+        "git clone https://github.com/SarangKumar/.dotfiles ~/.dotfiles && cd ~/.dotfiles && ./test.sh && ./install.sh",
       summary:
-        "My macOS development environment as code — one script installs Homebrew packages, Oh My Zsh and symlinked configs for zsh, git, tmux and more.",
+        "One command to rebuild my whole dev setup on a new or formatted Mac: Homebrew, runtimes, editors, CLI tools, fonts and symlinked shell config.",
       description:
-        "A reproducible machine setup: a Brewfile declares the CLI tools and runtimes, GNU Stow symlinks each config package into $HOME, and a non-destructive test script validates the repo before anything is installed.",
+        "Clone it and run install.sh. It installs Homebrew, everything in the Brewfile (Node, pnpm, Python, AWS and Google Cloud CLIs, VS Code, Cursor, Ghostty, Docker Desktop, Raycast and Nerd Fonts), Oh My Zsh, and then uses GNU Stow to symlink zsh, git, tmux, Starship and Ghostty configs into $HOME.",
       technologies: [
-        "Shell",
         "Bash",
         "Zsh",
-        "GNU Stow",
         "Homebrew",
+        "GNU Stow",
+        "Oh My Zsh",
+        "Starship",
         "tmux",
         "Git",
       ],
       githubUrl: "https://github.com/SarangKumar/.dotfiles",
       architecture:
-        "Each top-level directory is a Stow package mirroring the layout of `$HOME`:\n\n- `zsh/` — `.zshrc` plus split `aliases.zsh`, `exports.zsh` and `functions.zsh`\n- `git/` — `.gitconfig`\n- `tmux/` — `.tmux.conf`\n- `scripts/` — small executables in `~/.local/bin`\n\nA `Brewfile` keeps software installation separate from configuration.",
+        "One command, `./install.sh`, takes a new or freshly formatted Mac to a ready dev machine. Software and configuration are kept apart:\n\n- `Brewfile` declares every package, app and font, installed with `brew bundle`\n- Each top-level directory is a GNU Stow package mirroring `$HOME`, symlinked into place:\n  - `zsh/`: `.zshrc` plus split `aliases.zsh`, `exports.zsh` and `functions.zsh`\n  - `git/`: `.gitconfig`\n  - `tmux/`: `.tmux.conf`\n  - `ghostty/` and `starship/`: terminal and prompt config\n  - `scripts/`: small executables in `~/.local/bin`",
       implementation:
-        "`install.sh` runs with `set -e`: it installs Homebrew if missing (handling both Apple Silicon and Intel prefixes), disables analytics, runs `brew bundle`, installs Oh My Zsh without letting it overwrite the Stow-managed `.zshrc`, then runs `stow -R` for every package. Helper scripts include `brewup` (update, upgrade and clean up Homebrew) and `cproj` (jump into a project directory).\n\nThe Brewfile covers Stow, git and git-lfs, jq, bat, eza, fzf, ripgrep, fd, tmux, Node, Python, pnpm, Prettier, the AWS CLI and Starship.",
+        "`install.sh` runs with `set -e` and is safe to re-run:\n\n1. Installs Homebrew if missing and loads it for both Apple Silicon (`/opt/homebrew`) and Intel (`/usr/local`), then turns Homebrew analytics off.\n2. Runs `brew update` and `brew bundle` against the Brewfile.\n3. Installs Oh My Zsh with `RUNZSH=no CHSH=no KEEP_ZSHRC=yes`, so it never overwrites the Stow-managed `.zshrc`.\n4. Runs `stow -R` for git, ghostty, scripts, starship, tmux and zsh.\n\n**What the Brewfile installs**\n\n- **Dev runtimes & tooling:** Node, pnpm, Python, Prettier, Git, Git LFS\n- **Cloud:** AWS CLI, Google Cloud CLI\n- **CLI utilities:** Stow, jq, tree, bat, eza, fzf, ripgrep, fd, htop, wget, tmux\n- **Shell:** Starship prompt, zsh-autosuggestions, zsh-autocomplete, zsh-syntax-highlighting\n- **Apps:** Visual Studio Code, Cursor, Ghostty, Warp, Raycast, Docker Desktop, AppCleaner\n- **Nerd Fonts:** JetBrains Mono, Meslo LG, Fira Code, Hack, Iosevka, Ubuntu Mono\n\nHelper scripts: `brewup` (update, upgrade and clean up Homebrew) and `cproj <name>` (jump into a project directory).",
       testing:
-        "`test.sh` is intentionally non-destructive: it checks that the repository is valid and ready to install — without installing packages, editing configs or creating symlinks — and reports passes, failures and warnings.",
+        "`test.sh` is intentionally non-destructive. Before anything is installed, it checks that the repository is valid and ready, and reports passes, failures and warnings. It installs no packages, edits no configs and creates no symlinks.",
       tradeoffs:
-        "Symlinks via Stow keep every config editable in one git repo, at the cost of a fixed directory convention. Every step is idempotent, so re-running the installer is safe — but it targets macOS only.",
+        "Symlinks via Stow keep every config editable in one git repo, at the cost of a fixed layout: the repo must live at `~/.dotfiles`. Each step is idempotent, so re-running is safe, but the setup targets macOS only, and secrets and machine-specific values stay out of the repo.",
       sections: [],
       status: "published",
       order: 3,

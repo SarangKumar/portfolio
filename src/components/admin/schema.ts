@@ -40,6 +40,12 @@ export const SCHEMAS: Record<
         label: "Kind",
         type: { options: ["shipped", "in-progress", "idea"] },
       },
+      {
+        key: "statusLabel",
+        label: "Status badge (overrides kind, e.g. Open source)",
+        type: "text",
+      },
+      { key: "installCommand", label: "Install command", type: "text" },
       { key: "order", label: "Order", type: "number" },
       { key: "summary", label: "Summary", type: "textarea" },
       { key: "description", label: "Description", type: "textarea" },

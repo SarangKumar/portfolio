@@ -73,10 +73,22 @@ export default async function ProjectPage({ params }: Props) {
       <PageIntro
         compact
         index={p.year}
-        eyebrow={t("project.eyebrow", { kind: t(`project.kind.${p.kind}`) })}
+        eyebrow={t("project.eyebrow", {
+          kind: p.statusLabel || t(`project.kind.${p.kind}`),
+        })}
         title={p.title}
       >
         <p>{p.summary}</p>
+        {p.installCommand ? (
+          <pre className="border-border bg-muted/40 mt-6 overflow-x-auto rounded-lg border px-4 py-3 font-mono text-xs sm:text-sm">
+            <code>
+              <span aria-hidden className="text-primary-ink select-none">
+                ${" "}
+              </span>
+              {p.installCommand}
+            </code>
+          </pre>
+        ) : null}
         <div className="mt-6 flex flex-wrap gap-6 text-sm">
           {p.demoUrl ? (
             <a

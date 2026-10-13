@@ -46,53 +46,70 @@ export function OpenToWork({
       href: c.href === "resume" ? (resumeUrl ?? "") : c.href,
     }))
     .filter((c) => c.href);
+  const meta = [career.locations, career.detail?.replace(/\.\s*$/, "")].filter(
+    Boolean,
+  ) as string[];
   return (
-    <div className={cn("space-y-2", className)}>
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+    <div className={cn("space-y-4", className)}>
+      <p className="flex items-center gap-3">
         <StatusDot on />
-        <span className="font-serif text-xl sm:text-2xl">
+        <span className="font-serif text-xl leading-tight sm:text-2xl">
           {career.headline}
         </span>
       </p>
-      {career.roles?.length ? (
-        <div className="pl-[1.375rem]">
-          <div className="overflow-hidden">
-            <ul
-              aria-label="Roles"
-              className="roles-list text-muted-foreground font-mono text-xs tracking-wide sm:text-sm"
-            >
-              {career.roles.map((r) => (
-                <li key={r}>{r}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      ) : null}
-      <p className="text-muted-foreground flex flex-wrap items-center gap-x-5 gap-y-1 pl-[1.375rem] text-sm">
-        {career.locations ? (
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin {...ICON} aria-hidden className="shrink-0" />
-            {career.locations}
-          </span>
+      <div className="space-y-3 sm:pl-[1.375rem]">
+        {career.roles?.length ? (
+          <ul aria-label="Roles" className="flex flex-wrap gap-2">
+            {career.roles.map((r) => (
+              <li
+                key={r}
+                className="border-border text-muted-foreground rounded-full border px-2.5 py-0.5 font-mono text-xs tracking-wide"
+              >
+                {r}
+              </li>
+            ))}
+          </ul>
         ) : null}
-        {career.detail ? <span>{career.detail}</span> : null}
-        {ctas.map((c) => (
-          <a
-            key={c.label}
-            href={c.href}
-            {...(c.href.startsWith("http") || c.href.endsWith(".pdf")
-              ? { target: "_blank", rel: "noreferrer" }
-              : {})}
-            {...(c.href.endsWith(".pdf") ? { download: true } : {})}
-            className="text-foreground hover:text-primary-ink decoration-primary inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
-          >
-            <IconText
-              text={c.label}
-              icon={/[←→↗↓⬇]/.test(c.label) ? undefined : iconForHref(c.href)}
-            />
-          </a>
-        ))}
-      </p>
+        {meta.length ? (
+          <p className="text-muted-foreground flex items-start gap-1.5 text-sm">
+            <MapPin {...ICON} aria-hidden className="mt-0.5 shrink-0" />
+            <span>
+              {meta.map((m, i) => (
+                <span key={m}>
+                  {i > 0 ? (
+                    <span aria-hidden className="text-primary-ink px-1.5">
+                      ·
+                    </span>
+                  ) : null}
+                  {m}
+                </span>
+              ))}
+            </span>
+          </p>
+        ) : null}
+        {ctas.length ? (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-0 pt-1 text-sm sm:gap-x-6">
+            {ctas.map((c) => (
+              <a
+                key={c.label}
+                href={c.href}
+                {...(c.href.startsWith("http") || c.href.endsWith(".pdf")
+                  ? { target: "_blank", rel: "noreferrer" }
+                  : {})}
+                {...(c.href.endsWith(".pdf") ? { download: true } : {})}
+                className="text-foreground hover:text-primary-ink decoration-primary inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
+              >
+                <IconText
+                  text={c.label}
+                  icon={
+                    /[←→↗↓⬇]/.test(c.label) ? undefined : iconForHref(c.href)
+                  }
+                />
+              </a>
+            ))}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
