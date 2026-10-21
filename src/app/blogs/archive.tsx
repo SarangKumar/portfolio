@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PostRow } from "@/components/site/content-cards";
 import { useMemo, useState } from "react";
 import type { Post } from "@/content/types";
 import { cn } from "@/lib/utils";
@@ -96,22 +96,7 @@ export function Archive({ posts }: { posts: Post[] }) {
             <ul className="divide-border divide-y">
               {list.map((p) => (
                 <li key={p.id}>
-                  <Link
-                    href={`/blogs/${p.slug}`}
-                    className="group grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:gap-6"
-                  >
-                    <span>
-                      <span className="group-hover:text-primary-ink block font-serif text-2xl transition-colors">
-                        {p.title}
-                      </span>
-                      <span className="text-muted-foreground mt-1 block text-sm">
-                        {p.excerpt}
-                      </span>
-                    </span>
-                    <span className="tag">
-                      {p.kind} · {p.category} · {p.date.slice(5)}
-                    </span>
-                  </Link>
+                  <PostRow post={p} />
                 </li>
               ))}
             </ul>

@@ -1,4 +1,8 @@
-import { ArrowUpRight } from "lucide-react";
+import {
+  BOOK_CARD_CLASS,
+  BookCard,
+  BookmarkRow,
+} from "@/components/site/content-cards";
 import { PageIntro, Section } from "@/components/site/section";
 import { getContent, getT } from "@/lib/content";
 import { pageMetadata } from "@/lib/page-meta";
@@ -26,22 +30,8 @@ export default async function LibraryPage() {
                 {books
                   .filter((b) => b.state === s)
                   .map((b) => (
-                    <li
-                      key={b.id}
-                      id={b.id}
-                      className="border-border lift scroll-mt-24 rounded-2xl border p-5"
-                    >
-                      <p className="font-serif text-xl leading-snug">
-                        {b.title}
-                      </p>
-                      <p className="text-muted-foreground text-sm">
-                        {b.author}
-                      </p>
-                      {b.notes ? (
-                        <p className="mt-3 text-sm leading-relaxed">
-                          “{b.notes}”
-                        </p>
-                      ) : null}
+                    <li key={b.id} id={b.id} className={BOOK_CARD_CLASS}>
+                      <BookCard book={b} />
                     </li>
                   ))}
               </ul>
@@ -53,28 +43,7 @@ export default async function LibraryPage() {
         <ul className="divide-border divide-y">
           {bookmarks.map((b) => (
             <li key={b.id}>
-              <a
-                href={b.href}
-                target="_blank"
-                rel="noreferrer"
-                className="group grid gap-1 py-4 sm:grid-cols-[1fr_auto]"
-              >
-                <span>
-                  <span className="group-hover:text-primary-ink inline-flex items-center gap-1.5 font-serif text-xl transition-colors">
-                    {b.title}
-                    <ArrowUpRight
-                      size={16}
-                      strokeWidth={1.75}
-                      aria-hidden
-                      className="shrink-0"
-                    />
-                  </span>
-                  <span className="text-muted-foreground block text-sm">
-                    {b.description}
-                  </span>
-                </span>
-                <span className="tag">{b.tags.join(" · ")}</span>
-              </a>
+              <BookmarkRow bookmark={b} />
             </li>
           ))}
         </ul>

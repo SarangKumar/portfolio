@@ -58,7 +58,12 @@ export function Terminal({
   const [hIndex, setHIndex] = useState(-1);
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => endRef.current?.scrollIntoView({ block: "end" }), [lines]);
+  // Block body on purpose: Chrome's scrollIntoView() now returns a Promise, and an
+  // expression-bodied effect would hand that Promise to React as its cleanup;
+  // React then calls it on unmount ("is not a function") and the page crashes.
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "end" });
+  }, [lines]);
 
   function list(items: SearchItem[]) {
     if (!items.length) return "nothing found.";

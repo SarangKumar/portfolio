@@ -44,7 +44,7 @@ function Icon({ src, title, size = 40, className }: Omit<Props, "morph">) {
       alt=""
       width={size}
       height={size}
-      unoptimized={src.endsWith(".svg")}
+      unoptimized={src.endsWith(".svg") || src.startsWith("data:")}
       className={cn("shrink-0 rounded-[24%] drop-shadow-sm", className)}
     />
   );

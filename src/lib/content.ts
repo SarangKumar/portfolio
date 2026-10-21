@@ -56,6 +56,13 @@ function mergeSite(remote: Partial<SiteConfig>): SiteConfig {
   };
 }
 
+/** An icon uploaded from admin (iconData) wins over the /public path. */
+function withIcon(doc: Record<string, unknown>): Record<string, unknown> {
+  return typeof doc.iconData === "string" && doc.iconData
+    ? { ...doc, icon: doc.iconData }
+    : doc;
+}
+
 async function fromFirestore(): Promise<Content | null> {
   const store = db();
   if (!store) return null;
@@ -76,10 +83,9 @@ async function fromFirestore(): Promise<Content | null> {
           query(collection(store, name), where("status", "==", "published")),
         );
         if (!snap.empty) {
-          (result as Record<string, unknown>)[name] = snap.docs.map((d) => ({
-            ...d.data(),
-            id: d.id,
-          }));
+          (result as Record<string, unknown>)[name] = snap.docs.map((d) =>
+            withIcon({ ...d.data(), id: d.id }),
+          );
         }
       }),
     );

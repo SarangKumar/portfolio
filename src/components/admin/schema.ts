@@ -9,13 +9,35 @@ export type FieldType =
   | "number"
   | "bool"
   | "json"
+  /** Structured editor for site.career (roles as a multi-select). */
+  | "career"
+  /** Project icon: preview + upload (stored as a small data URL). */
+  | "icon"
+  /** The homepage section toggles as one multi-select. */
+  | "sections"
   | { options: string[] };
+
+/** Where a multi-select / suggestion field gets its choices from. */
+export type OptionSource =
+  | "tech"
+  | "projectSlugs"
+  | "postSlugs"
+  | "experienceIds"
+  | "postTags"
+  | "postCategories"
+  | "bookmarkTags"
+  | "skillCategories"
+  | "roles";
 export type Field = {
   key: string;
   label: string;
   type: FieldType;
   /** Example shown as an input placeholder (never saved). */
   placeholder?: string;
+  /** list: render a multi-select with these choices; text: suggestions. */
+  options?: OptionSource;
+  /** With options: only allow listed values (ids/slugs). */
+  strict?: boolean;
 };
 
 const status: Field = {
@@ -34,6 +56,7 @@ export const SCHEMAS: Record<
     fields: [
       { key: "title", label: "Title", type: "text" },
       { key: "slug", label: "Slug", type: "text" },
+      { key: "iconData", label: "Icon", type: "icon" },
       { key: "year", label: "Year", type: "text" },
       {
         key: "kind",
@@ -51,8 +74,9 @@ export const SCHEMAS: Record<
       { key: "description", label: "Description", type: "textarea" },
       {
         key: "technologies",
-        label: "Technologies (comma separated — feeds Skills)",
+        label: "Technologies (feeds Skills)",
         type: "list",
+        options: "tech",
       },
       { key: "demoUrl", label: "Live URL", type: "text" },
       { key: "githubUrl", label: "Source URL", type: "text" },
@@ -81,8 +105,13 @@ export const SCHEMAS: Record<
       { key: "slug", label: "Slug", type: "text" },
       { key: "kind", label: "Kind", type: { options: ["article", "note"] } },
       { key: "date", label: "Date (YYYY-MM-DD)", type: "text" },
-      { key: "category", label: "Category", type: "text" },
-      { key: "tags", label: "Tags", type: "list" },
+      {
+        key: "category",
+        label: "Category",
+        type: "text",
+        options: "postCategories",
+      },
+      { key: "tags", label: "Tags", type: "list", options: "postTags" },
       { key: "excerpt", label: "Excerpt", type: "textarea" },
       { key: "body", label: "Body (markdown)", type: "markdown" },
       status,
@@ -110,7 +139,7 @@ export const SCHEMAS: Record<
       { key: "title", label: "Title", type: "text" },
       { key: "href", label: "URL", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
-      { key: "tags", label: "Tags", type: "list" },
+      { key: "tags", label: "Tags", type: "list", options: "bookmarkTags" },
       status,
     ],
   },
@@ -138,11 +167,13 @@ export const SCHEMAS: Record<
         label:
           "Aliases — project/experience tech with these names merge into this skill",
         type: "list",
+        options: "tech",
       },
       {
         key: "category",
         label: "Category (group; order set in Site → skillCategories)",
         type: "text",
+        options: "skillCategories",
       },
       { key: "order", label: "Order within category", type: "number" },
       {
@@ -160,8 +191,20 @@ export const SCHEMAS: Record<
         label: "Hidden (also hides matching derived tech)",
         type: "bool",
       },
-      { key: "projects", label: "Extra linked project slugs", type: "list" },
-      { key: "experience", label: "Extra linked experience ids", type: "list" },
+      {
+        key: "projects",
+        label: "Extra linked projects",
+        type: "list",
+        options: "projectSlugs",
+        strict: true,
+      },
+      {
+        key: "experience",
+        label: "Extra linked roles",
+        type: "list",
+        options: "experienceIds",
+        strict: true,
+      },
       status,
     ],
   },
@@ -191,7 +234,12 @@ export const SCHEMAS: Record<
         label: "Resume highlights (one per line)",
         type: "lines",
       },
-      { key: "skills", label: "Skills (feed the skills view)", type: "list" },
+      {
+        key: "skills",
+        label: "Skills (feed the skills view)",
+        type: "list",
+        options: "tech",
+      },
       { key: "order", label: "Order", type: "number" },
       status,
     ],
@@ -247,8 +295,9 @@ export const SITE_FIELDS: Field[] = [
   },
   {
     key: "skillCategories",
-    label: "Skill category order (comma separated)",
+    label: "Skill category order (in display order)",
     type: "list",
+    options: "skillCategories",
   },
   {
     key: "pages",
@@ -277,25 +326,27 @@ export const SITE_FIELDS: Field[] = [
   { key: "currentFocus", label: "Current focus (one per line)", type: "lines" },
   {
     key: "career",
-    label:
-      "Career / open to work {available,label,headline,locations,detail,roles[],ctas[{label,href; href resume = PDF}],navIndicator}",
-    type: "json",
+    label: "Career / open to work",
+    type: "career",
   },
   {
     key: "featuredProjectSlugs",
-    label: "Featured project slugs",
+    label: "Featured projects",
     type: "list",
+    options: "projectSlugs",
+    strict: true,
   },
   {
     key: "featuredPostSlugs",
-    label: "Featured post slugs (empty = latest)",
+    label: "Featured posts (empty = latest)",
     type: "list",
+    options: "postSlugs",
+    strict: true,
   },
   {
     key: "homeSections",
-    label:
-      "Homepage sections {featured,focus,writing,skills,resume,experience}",
-    type: "json",
+    label: "Homepage sections (picked = shown, in the order Home renders them)",
+    type: "sections",
   },
   { key: "links", label: "Links [{label, href}]", type: "json" },
 ];

@@ -69,6 +69,8 @@ export type Project = {
   title: string;
   /** Path under /public to the project's app icon. */
   icon?: string;
+  /** Icon uploaded from admin (small WebP/PNG data URL); overrides `icon`. */
+  iconData?: string;
   year: string;
   summary: string;
   description: string;

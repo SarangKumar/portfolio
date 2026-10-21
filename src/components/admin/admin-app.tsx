@@ -22,6 +22,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DiagramViewer } from "@/components/lab/diagram-viewer";
 import { BeanMark } from "@/components/site/bean";
 import { Markdown } from "@/components/site/markdown";
+import { ProjectIcon } from "@/components/site/project-icon";
 import { Button } from "@/components/ui/button";
 import { seed } from "@/content/seed";
 import {
@@ -33,7 +34,9 @@ import {
 import { auth, db } from "@/lib/firebase/client";
 import { adminEmail, isFirebaseConfigured } from "@/lib/firebase/config";
 import { cn } from "@/lib/utils";
-import { FieldInput } from "./fields";
+import { useAdminOptions } from "./admin-options";
+import { CardPreview, HAS_CARD } from "./card-preview";
+import { FieldInput, OptionsContext } from "./fields";
 import { RESUME_FIELDS, SCHEMAS, SITE_FIELDS, type Field } from "./schema";
 
 type Doc = Record<string, unknown> & { id: string };
@@ -111,6 +114,7 @@ function Dashboard({ user }: { user: User }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const store = db()!;
+  const options = useAdminOptions(store, reload);
   const [careerOn, setCareerOn] = useState<boolean | null>(null);
   const [careerMsg, setCareerMsg] = useState<string | null>(null);
   useEffect(() => {
@@ -176,68 +180,70 @@ function Dashboard({ user }: { user: User }) {
   ];
 
   return (
-    <div className="container-x grid gap-10 py-10 md:grid-cols-[14rem_1fr]">
-      <aside className="space-y-6 md:sticky md:top-10 md:self-start">
-        <Link href="/" className="flex items-center gap-2">
-          <BeanMark />
-          <span className="font-serif text-xl">Admin</span>
-        </Link>
-        <nav className="flex flex-col gap-1" aria-label="Admin">
-          {nav.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => setView(n.id)}
-              aria-current={view === n.id ? "page" : undefined}
-              className={cn(
-                "rounded-lg px-3 py-1.5 text-left text-sm",
-                view === n.id
-                  ? "bg-primary/12"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {n.label}
-            </button>
-          ))}
-        </nav>
-        <div className="space-y-2 text-xs">
-          <Button size="xs" variant="outline" onClick={importSeed}>
-            Import seed content
-          </Button>
-          <p className="text-muted-foreground truncate">{user.email}</p>
-          <Button size="xs" variant="ghost" onClick={() => signOut(auth()!)}>
-            Sign out
-          </Button>
-          {msg ? <p role="status">{msg}</p> : null}
-        </div>
-        <p className="text-muted-foreground text-xs">
-          Published changes appear on the site within ~60s.
-        </p>
-      </aside>
-      <section key={`${view}-${reload}`} className="min-w-0 space-y-8">
-        {careerSwitch}
-        {view === "site" ? (
-          <DocEditor
-            careerOn={careerOn}
-            careerSwitch={careerSwitch}
-            docId="site"
-            title="Site & homepage"
-            fields={SITE_FIELDS}
-            fallback={seed.site}
-          />
-        ) : view === "resume" ? (
-          <DocEditor
-            docId="resume"
-            title="Resume"
-            fields={RESUME_FIELDS}
-            fallback={seed.resume}
-          />
-        ) : view === "comments" ? (
-          <Moderation />
-        ) : (
-          <CollectionEditor name={view} />
-        )}
-      </section>
-    </div>
+    <OptionsContext.Provider value={options}>
+      <div className="container-x grid gap-10 py-10 md:grid-cols-[14rem_1fr]">
+        <aside className="space-y-6 md:sticky md:top-10 md:self-start">
+          <Link href="/" className="flex items-center gap-2">
+            <BeanMark />
+            <span className="font-serif text-xl">Admin</span>
+          </Link>
+          <nav className="flex flex-col gap-1" aria-label="Admin">
+            {nav.map((n) => (
+              <button
+                key={n.id}
+                onClick={() => setView(n.id)}
+                aria-current={view === n.id ? "page" : undefined}
+                className={cn(
+                  "rounded-lg px-3 py-1.5 text-left text-sm",
+                  view === n.id
+                    ? "bg-primary/12"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {n.label}
+              </button>
+            ))}
+          </nav>
+          <div className="space-y-2 text-xs">
+            <Button size="xs" variant="outline" onClick={importSeed}>
+              Import seed content
+            </Button>
+            <p className="text-muted-foreground truncate">{user.email}</p>
+            <Button size="xs" variant="ghost" onClick={() => signOut(auth()!)}>
+              Sign out
+            </Button>
+            {msg ? <p role="status">{msg}</p> : null}
+          </div>
+          <p className="text-muted-foreground text-xs">
+            Published changes appear on the site within ~60s.
+          </p>
+        </aside>
+        <section key={`${view}-${reload}`} className="min-w-0 space-y-8">
+          {careerSwitch}
+          {view === "site" ? (
+            <DocEditor
+              careerOn={careerOn}
+              careerSwitch={careerSwitch}
+              docId="site"
+              title="Site & homepage"
+              fields={SITE_FIELDS}
+              fallback={seed.site}
+            />
+          ) : view === "resume" ? (
+            <DocEditor
+              docId="resume"
+              title="Resume"
+              fields={RESUME_FIELDS}
+              fallback={seed.resume}
+            />
+          ) : view === "comments" ? (
+            <Moderation />
+          ) : (
+            <CollectionEditor name={view} />
+          )}
+        </section>
+      </div>
+    </OptionsContext.Provider>
   );
 }
 
@@ -417,6 +423,12 @@ function blank(name: CollectionName): Doc {
   return empty;
 }
 
+/** An uploaded icon wins over the /public path — the rule the site uses too. */
+function iconSrc(it: Doc) {
+  const str = (v: unknown) => (typeof v === "string" ? v : "");
+  return str(it.iconData) || str(it.icon) || undefined;
+}
+
 function CollectionEditor({ name }: { name: CollectionName }) {
   const store = db()!;
   const schema = SCHEMAS[name];
@@ -479,6 +491,7 @@ function CollectionEditor({ name }: { name: CollectionName }) {
 
   if (edit) {
     const invalid = Object.values(errors).some(Boolean);
+    const hasCard = HAS_CARD.includes(name);
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4">
@@ -501,13 +514,17 @@ function CollectionEditor({ name }: { name: CollectionName }) {
             </Button>
           </div>
         </div>
-        <div className={cn("grid gap-8", preview && "xl:grid-cols-2")}>
+        <div
+          className={cn("grid gap-8", (preview || hasCard) && "xl:grid-cols-2")}
+        >
           <div className="max-w-2xl space-y-4">
             {schema.fields.map((f) => (
               <FieldInput
                 key={f.key}
                 field={f}
                 value={edit[f.key]}
+                iconPath={typeof edit.icon === "string" ? edit.icon : undefined}
+                iconTitle={String(edit[schema.titleKey] ?? "")}
                 onChange={(v) => setEdit({ ...edit, [f.key]: v })}
                 onError={(k, e) => setErrors((x) => ({ ...x, [k]: e }))}
               />
@@ -525,7 +542,12 @@ function CollectionEditor({ name }: { name: CollectionName }) {
               </Button>
             </div>
           </div>
-          {preview ? <Preview name={name} item={edit} /> : null}
+          {hasCard || preview ? (
+            <div className="min-w-0 space-y-6">
+              {hasCard ? <CardPreview name={name} item={edit} /> : null}
+              {preview ? <Preview name={name} item={edit} /> : null}
+            </div>
+          ) : null}
         </div>
       </div>
     );
@@ -578,13 +600,22 @@ function CollectionEditor({ name }: { name: CollectionName }) {
             className="flex items-center justify-between gap-4 py-3"
           >
             <button
-              className="min-w-0 text-left"
+              className="flex min-w-0 items-center gap-3 text-left"
               onClick={() => (setEdit(it), setIsNew(false), setErrors({}))}
             >
-              <span className="block truncate">
-                {String(it[schema.titleKey] || it.id)}
+              {name === "projects" ? (
+                <ProjectIcon
+                  src={iconSrc(it)}
+                  title={String(it[schema.titleKey] || it.id)}
+                  size={36}
+                />
+              ) : null}
+              <span className="min-w-0">
+                <span className="block truncate">
+                  {String(it[schema.titleKey] || it.id)}
+                </span>
+                <span className="tag">{String(it.status)}</span>
               </span>
-              <span className="tag">{String(it.status)}</span>
             </button>
             {fromSeed ? <span className="tag shrink-0">seed</span> : null}
             <span className={cn("flex shrink-0 gap-1", fromSeed && "hidden")}>
