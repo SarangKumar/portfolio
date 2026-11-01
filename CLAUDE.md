@@ -135,8 +135,20 @@ Blockquote/Muted`, etc.) for prose and page titles, not raw `<p>`/`<h1>`.
   exactly like the site. That's why `content-cards.tsx` exists: `PostRow`,
   `BookCard`, `BookmarkRow` were extracted out of the blog/library pages to be
   shared. Drafts are merged over `seed[name][0]` so missing fields can't crash
-  it. It's a **fixed** height (`h-72 lg:h-[26rem]`), not `h-full` — `h-full`
+  it. It's a **fixed** height (`h-64 sm:h-72`), not `h-full` — `h-full`
   collapsed it, since the grid track has no resolved height to fill.
+- The card preview is a **full-width row above the form**, never a side column,
+  and that's load-bearing. The public cards size themselves with _viewport_
+  breakpoints (`ProjectCard` is `sm:grid-cols-[3rem_1fr_auto]`), but a column
+  in the editor's `xl:grid-cols-2` split is only ~396px wide: the sidebar
+  (14rem) and gaps leave ~824px, halved, less `px-5`. On a wide screen every
+  `sm:`/`lg:` rule still matched while the box was ~356px, so the card rendered
+  its desktop layout crushed into half the width. Full-width makes the preview
+  ~824px against the real page's 1088px — over the 640px `sm` threshold — and
+  on a phone it's genuinely narrow, so the mobile layout is the correct one.
+  Don't "fix" a cramped preview by shrinking the card; give it width, or the
+  viewport breakpoints will keep lying. (A container query would be the other
+  answer, but it means rewriting shared public components.)
 - The "Preview" button only toggles the long-form markdown preview; the card
   preview is always live for collections in `HAS_CARD`.
 

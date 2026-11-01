@@ -514,9 +514,8 @@ function CollectionEditor({ name }: { name: CollectionName }) {
             </Button>
           </div>
         </div>
-        <div
-          className={cn("grid gap-8", (preview || hasCard) && "xl:grid-cols-2")}
-        >
+        {hasCard ? <CardPreview name={name} item={edit} /> : null}
+        <div className={cn("grid gap-8", preview && "xl:grid-cols-2")}>
           <div className="max-w-2xl space-y-4">
             {schema.fields.map((f) => (
               <FieldInput
@@ -542,12 +541,7 @@ function CollectionEditor({ name }: { name: CollectionName }) {
               </Button>
             </div>
           </div>
-          {hasCard || preview ? (
-            <div className="min-w-0 space-y-6">
-              {hasCard ? <CardPreview name={name} item={edit} /> : null}
-              {preview ? <Preview name={name} item={edit} /> : null}
-            </div>
-          ) : null}
+          {preview ? <Preview name={name} item={edit} /> : null}
         </div>
       </div>
     );

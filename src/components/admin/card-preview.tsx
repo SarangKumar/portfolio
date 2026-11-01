@@ -44,7 +44,7 @@ export function CardPreview({
   if (name === "projects") {
     const p = draft as unknown as Project;
     card = (
-      <ul>
+      <div className="border-border border-t">
         <ProjectCard
           project={{
             ...p,
@@ -54,7 +54,7 @@ export function CardPreview({
           }}
           index={0}
         />
-      </ul>
+      </div>
     );
   } else if (name === "posts") {
     const p = draft as unknown as Post;
@@ -88,7 +88,7 @@ export function CardPreview({
   return (
     <aside
       aria-label="Live preview"
-      className="border-border bg-background flex h-72 flex-col overflow-hidden rounded-2xl border lg:sticky lg:top-6 lg:h-[26rem]"
+      className="border-border bg-background z-10 flex h-64 flex-col overflow-hidden rounded-2xl border sm:sticky sm:top-4 sm:h-72"
     >
       <p className="eyebrow border-border shrink-0 border-b px-5 py-3">
         Live preview · as on the site

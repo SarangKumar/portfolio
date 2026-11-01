@@ -1,6 +1,7 @@
 "use client";
 
 import { IconText, iconForHref } from "./icon-text";
+import { BuyMeCoffeeButton } from "./buy-me-coffee-button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Link as L } from "@/content/types";
@@ -46,6 +47,11 @@ export function SiteFooter({
                 <IconText text={l.label} icon={iconForHref(l.href)} />
               </a>
             ))}
+            <BuyMeCoffeeButton
+              size="sm"
+              variant="outline"
+              className="mx-2 my-1"
+            />
             {footerNav.map((l) => (
               <Link
                 key={l.href}
