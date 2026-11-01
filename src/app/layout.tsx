@@ -6,7 +6,6 @@ import { ParallaxController } from "@/components/site/parallax";
 import { PageTransition } from "@/components/site/page-transition";
 import { SiteChrome } from "@/components/site/site-chrome";
 import { SiteFooter } from "@/components/site/site-footer";
-import { themeScript } from "@/components/site/theme-toggle";
 import { getContent } from "@/lib/content";
 import { buildIndex } from "@/lib/derive";
 import { VercelInsights } from "@/components/site/vercel-insights";
@@ -61,7 +60,9 @@ export default async function RootLayout({
       className={`${sans.variable} ${mono.variable} ${serif.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Sets the theme class before first paint; must be synchronous. */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/theme.js" />
       </head>
       <body className="flex min-h-full flex-col">
         <LabelsProvider labels={site.labels}>
