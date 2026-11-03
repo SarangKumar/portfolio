@@ -10,6 +10,7 @@ import { abs } from "@/lib/site-url";
 import { ProjectIcon } from "@/components/site/project-icon";
 import { PageIntro, Section, TechTags } from "@/components/site/section";
 import { getContent, getT } from "@/lib/content";
+import { projectLinks } from "@/lib/project-links";
 
 export const revalidate = 60;
 type Props = { params: Promise<{ slug: string }> };
@@ -32,6 +33,8 @@ export default async function ProjectPage({ params }: Props) {
   const p = projects.find((x) => x.slug === slug);
   if (!p) notFound();
   const diagram = diagrams.find((d) => d.slug === p.diagramSlug);
+  const links = projectLinks(p);
+  const sameAs = [p.demoUrl, ...links.map((l) => l.href)].filter(Boolean);
   const sections = [
     { title: t("project.architecture"), body: p.architecture },
     { title: t("project.implementation"), body: p.implementation },
@@ -58,7 +61,7 @@ export default async function ProjectPage({ params }: Props) {
                 programmingLanguage: p.technologies,
               }
             : {}),
-          ...(p.demoUrl ? { sameAs: p.demoUrl } : {}),
+          ...(sameAs.length ? { sameAs } : {}),
         }}
       />
       <div className="container-x pt-16 sm:pt-24">
@@ -110,6 +113,17 @@ export default async function ProjectPage({ params }: Props) {
               <IconText text={t("project.source")} />
             </a>
           ) : null}
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="link-u text-foreground"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <IconText text={l.label} icon="external" />
+            </a>
+          ))}
           {diagram ? (
             <Link
               href={`/lab/${diagram.slug}`}

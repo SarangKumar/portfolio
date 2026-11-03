@@ -124,6 +124,13 @@ Blockquote/Muted`, etc.) for prose and page titles, not raw `<p>`/`<h1>`.
 - Vinyaas's GitHub repo is named `shilp`, not `vinyaas`
   (github.com/SarangKumar/shilp) — that's correct, not a typo; the product
   was renamed but the repo wasn't.
+- `Project.links` (`Link[]`, optional) holds the extra places a project lives —
+  Chrome Web Store, npm, app stores — beyond `demoUrl`/`githubUrl`. The label is
+  optional: `projectLinks()` in `src/lib/project-links.ts` drops blank rows and
+  fills a missing label from the host (`chromewebstore.google.com` → "Chrome Web
+  Store"). Rendered on the project card popover and the case study, and folded
+  into the case study's JSON-LD `sameAs`. Edited in admin via the `links` field
+  type (label + URL rows), not raw JSON.
 - `profile.highlights` (`src/data/profile.ts`) powers the stat strip on
   `/resume`. Each entry must be traceable to a real achievement line already
   in `src/data/experience.ts` — it's a restatement for punch, not a new fact.
@@ -171,6 +178,16 @@ Blockquote/Muted`, etc.) for prose and page titles, not raw `<p>`/`<h1>`.
   Don't "fix" a cramped preview by shrinking the card; give it width, or the
   viewport breakpoints will keep lying. (A container query would be the other
   answer, but it means rewriting shared public components.)
+- `CollectionEditor.save()` wraps the `setDoc` in try/catch and shows a banner:
+  a rejected write (signed out, expired token, rules not deployed, offline) used
+  to close the form and look exactly like a successful save, so hand edits
+  seemed to vanish. Keep every Firestore write in admin reporting its error.
+- When diagnosing "my edit isn't showing", read Firestore directly rather than
+  trusting the UI: a throwaway `.mjs` in the repo root (so `firebase` resolves)
+  with the `NEXT_PUBLIC_FIREBASE_*` vars sourced from `.env` can list a
+  collection with the public rules. Project docs are ids like `proj-aavedak`;
+  Chestha's doc id and slug are both `vistaar` (the title was changed, the slug
+  wasn't) — same renamed-but-not-migrated pattern as Vinyaas/`shilp`.
 - The "Preview" button only toggles the long-form markdown preview; the card
   preview is always live for collections in `HAS_CARD`.
 

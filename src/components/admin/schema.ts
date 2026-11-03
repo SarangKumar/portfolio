@@ -15,6 +15,8 @@ export type FieldType =
   | "icon"
   /** The homepage section toggles as one multi-select. */
   | "sections"
+  /** Repeating label + URL rows (a project's extra store/registry links). */
+  | "links"
   | { options: string[] };
 
 /** Where a multi-select / suggestion field gets its choices from. */
@@ -80,6 +82,12 @@ export const SCHEMAS: Record<
       },
       { key: "demoUrl", label: "Live URL", type: "text" },
       { key: "githubUrl", label: "Source URL", type: "text" },
+      {
+        key: "links",
+        label: "Other links (Chrome Web Store, npm, app stores…)",
+        type: "links",
+        placeholder: "https://chromewebstore.google.com/detail/…",
+      },
       {
         key: "diagramSlug",
         label: "Architecture Lab diagram slug",

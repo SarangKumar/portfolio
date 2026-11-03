@@ -1,13 +1,15 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { ImageUp, X } from "lucide-react";
+import { ImageUp, Plus, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MultiInput, type MultiInputOption } from "@/components/ui/multi-input";
 import { FileUpload, FileUploadDropzone } from "@/components/ui/file-upload";
 import { ProjectIcon } from "@/components/site/project-icon";
-import type { SiteConfig } from "@/content/types";
+import { Button } from "@/components/ui/button";
+import type { Link, SiteConfig } from "@/content/types";
+import { labelForUrl } from "@/lib/project-links";
 import { PLACEHOLDERS, type Field, type OptionSource } from "./schema";
 
 /** Choices for multi-select / suggestion fields, loaded once by the dashboard. */
@@ -75,6 +77,16 @@ export function FieldInput({
         value={typeof value === "string" ? value : ""}
         fallback={iconPath}
         title={iconTitle}
+        onChange={onChange}
+      />
+    );
+  } else if (t === "links") {
+    return (
+      <LinksField
+        id={id}
+        label={field.label}
+        placeholder={ph(field)}
+        value={Array.isArray(value) ? (value as Link[]) : []}
         onChange={onChange}
       />
     );
@@ -223,6 +235,71 @@ export function FieldInput({
       </label>
       {control}
     </div>
+  );
+}
+
+/**
+ * Repeating label + URL rows. The label is optional — `projectLinks` falls back
+ * to the host, and the placeholder shows what that fallback would be.
+ */
+function LinksField({
+  id,
+  label,
+  placeholder,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  placeholder: string;
+  value: Link[];
+  onChange: (v: Value) => void;
+}) {
+  const rows = value.length ? value : [{ label: "", href: "" }];
+  const set = (i: number, patch: Partial<Link>) =>
+    onChange(rows.map((r, j) => (i === j ? { ...r, ...patch } : r)));
+  return (
+    <fieldset className="border-border space-y-2 rounded-xl border p-4">
+      <legend className="text-muted-foreground px-1 text-xs">{label}</legend>
+      {rows.map((row, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Input
+            id={i === 0 ? id : undefined}
+            aria-label="Link URL"
+            placeholder={placeholder}
+            value={row.href ?? ""}
+            onChange={(e) => set(i, { href: e.target.value })}
+          />
+          <Input
+            aria-label="Link label"
+            className="sm:max-w-56"
+            placeholder={
+              row.href?.trim() ? labelForUrl(row.href.trim()) : "Label"
+            }
+            value={row.label ?? ""}
+            onChange={(e) => set(i, { label: e.target.value })}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Remove link"
+            onClick={() => onChange(rows.filter((_, j) => j !== i))}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => onChange([...rows, { label: "", href: "" }])}
+      >
+        <Plus className="size-4" />
+        Add link
+      </Button>
+    </fieldset>
   );
 }
 

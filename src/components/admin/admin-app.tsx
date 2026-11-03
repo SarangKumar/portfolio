@@ -436,6 +436,7 @@ function CollectionEditor({ name }: { name: CollectionName }) {
   const [edit, setEdit] = useState<Doc | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | null>>({});
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
 
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -483,7 +484,15 @@ function CollectionEditor({ name }: { name: CollectionName }) {
       String(next.slug || next[schema.titleKey] || Date.now())
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-");
-    await setDoc(doc(store, name, id), { ...next, id });
+    // A rejected write (signed out, rules, offline) must not look like a save:
+    // keep the form open and show why.
+    try {
+      await setDoc(doc(store, name, id), { ...next, id });
+    } catch (e) {
+      setSaveError(errText(e));
+      return;
+    }
+    setSaveError(null);
     setEdit(null);
     setIsNew(false);
     load();
@@ -540,6 +549,12 @@ function CollectionEditor({ name }: { name: CollectionName }) {
                 Save & publish
               </Button>
             </div>
+            {saveError ? (
+              <Banner>
+                Save failed: {saveError}. Check that you&apos;re signed in as
+                the admin and firestore.rules are deployed.
+              </Banner>
+            ) : null}
           </div>
           {preview ? <Preview name={name} item={edit} /> : null}
         </div>

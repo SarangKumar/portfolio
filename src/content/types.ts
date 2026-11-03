@@ -77,6 +77,11 @@ export type Project = {
   technologies: string[];
   githubUrl?: string;
   demoUrl?: string;
+  /**
+   * Extra places the project lives, beyond live/source — e.g. the Chrome Web
+   * Store, npm, an app store. Label is optional: it falls back to the host.
+   */
+  links?: Link[];
   kind: "shipped" | "in-progress" | "idea";
   /** Optional badge text overriding the kind label (e.g. "Open source"). */
   statusLabel?: string;
